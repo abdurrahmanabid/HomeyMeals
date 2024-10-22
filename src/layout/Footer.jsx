@@ -1,8 +1,8 @@
 import {
-      FaFacebookF,
-      FaInstagram,
-      FaLinkedinIn,
-      FaTwitter,
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaTwitter,
 } from "react-icons/fa";
 
 const Footer = () => {
@@ -27,22 +27,22 @@ const Footer = () => {
             </h3>
             <ul className="space-y-2">
               <li>
-                <a href="/about" className="hover:text-primary">
+                <a href="/about" className="hover:text-accent3">
                   About Us
                 </a>
               </li>
               <li>
-                <a href="/contact" className="hover:text-primary">
+                <a href="/contact" className="hover:text-accent3">
                   Contact Us
                 </a>
               </li>
               <li>
-                <a href="/terms" className="hover:text-primary">
+                <a href="/terms" className="hover:text-accent3">
                   Terms & Conditions
                 </a>
               </li>
               <li>
-                <a href="/privacy" className="hover:text-primary">
+                <a href="/privacy" className="hover:text-accent3">
                   Privacy Policy
                 </a>
               </li>
@@ -53,16 +53,16 @@ const Footer = () => {
           <div className="w-full md:w-1/3">
             <h3 className="text-lg font-semibold text-white mb-4">Follow Us</h3>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-primary">
+              <a href="#" className="hover:text-accent3">
                 <FaFacebookF className="w-6 h-6" />
               </a>
-              <a href="#" className="hover:text-primary">
+              <a href="#" className="hover:text-accent3">
                 <FaTwitter className="w-6 h-6" />
               </a>
-              <a href="#" className="hover:text-primary">
+              <a href="#" className="hover:text-accent3">
                 <FaInstagram className="w-6 h-6" />
               </a>
-              <a href="#" className="hover:text-primary">
+              <a href="#" className="hover:text-accent3">
                 <FaLinkedinIn className="w-6 h-6" />
               </a>
             </div>

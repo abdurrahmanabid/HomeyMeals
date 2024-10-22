@@ -10,6 +10,7 @@ export default {
         accent2: "#6DC7EB", // Even Lighter Blue
         accent3: "#9FE1F7", // Soft Light Blue
         accent4: "#C7F0FB", // Lightest Blue
+        accent5: "#eff9fc", // Lightest Blue
       },
     },
   },
