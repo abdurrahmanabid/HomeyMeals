@@ -1,12 +1,12 @@
 import { useState } from "react";
 import {
-      FaUserCircle
+  FaUserCircle
 } from "react-icons/fa";
+import logo from './../assets/imgs/favicon.png';
 
 const SellerNavbar = () => {
   const [menuOpen, setMenuOpen] = useState(false); // For mobile menu
   const [avatarOpen, setAvatarOpen] = useState(false); // For avatar dropdown
-
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
@@ -19,9 +19,10 @@ const SellerNavbar = () => {
     <nav className="bg-white shadow-md py-4">
       <div className="container mx-auto px-4 flex justify-between items-center">
         {/* Logo */}
-        <div className="text-2xl font-bold text-primary">
-          HomeyMeals (Seller)
+        <div className="flex gap-3 items-center"><img src={logo} alt="logo" height={50} width={50}/>
+        <h1 className="text-2xl font-bold text-primary">HomeyMeals</h1>
         </div>
+
 
         {/* Desktop Navigation Links (Hidden on Mobile) */}
         <div className="hidden md:flex space-x-6">
@@ -51,8 +52,8 @@ const SellerNavbar = () => {
             onClick={toggleAvatar}
             className="flex items-center space-x-2"
           >
-            <FaUserCircle className="text-3xl text-secondary" />
-            <span className="text-secondary">Seller</span>
+            <FaUserCircle className="text-3xl text-primary" />
+            <span className="text-primary">Seller</span>
           </button>
 
           {/* Avatar Dropdown Menu */}
