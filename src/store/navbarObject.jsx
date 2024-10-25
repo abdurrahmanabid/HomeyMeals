@@ -1,7 +1,7 @@
 export const consumer = [
   {
-    name: "Menus",
-    path: "./menus",
+    name: "Home",
+    path: "/",
   },
   {
     name: "Order",

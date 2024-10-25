@@ -1,20 +1,23 @@
 import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Footer from "./layout/Footer";
-import SellerNavbar from "./layout/SellerNavbar";
+import Navbar from './layout/Navbar';
+import AllMenus from "./Seller/pages/AllMenus";
 import Home from "./Seller/pages/Home";
 import NotFound from "./Seller/pages/NotFound";
+import { consumer } from './store/navbarObject';
 
 function App() {
   return (
     <Router>
       <div className="App">
         {/* Insert the Navbar component (optional) */}
-        <SellerNavbar />
+        <Navbar data={consumer} />
 
         {/* Define Routes */}
         <Routes>
           <Route path="/" element={<Home/>} />
+          <Route path="/menu" element={<AllMenus/>} />
 
 
           <Route path="*" element={<NotFound/>} />
