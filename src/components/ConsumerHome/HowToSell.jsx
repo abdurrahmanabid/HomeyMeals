@@ -1,6 +1,6 @@
 import { Player } from "@lottiefiles/react-lottie-player";
 import React from "react";
-import sellLottie from "../../assets/lottie/review.json";
+import sellLottie from "../../assets/lottie/seller.json";
 
 const HowToSell = () => {
   return (
