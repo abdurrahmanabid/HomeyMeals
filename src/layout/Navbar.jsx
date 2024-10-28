@@ -1,13 +1,10 @@
 import { useState } from "react";
-import {
-  FaUserCircle
-} from "react-icons/fa";
+import { BiLogInCircle } from "react-icons/bi";
+import { Link } from "react-router-dom";
 import logo from './../assets/imgs/favicon.png';
 
-const Navbar = ({ data = [] }) => {
-  const [menuOpen, setMenuOpen] = useState(false); // For mobile menu
+const Navbar = () => {
   const [avatarOpen, setAvatarOpen] = useState(false); // For avatar dropdown
-  const toggleMenu = () => setMenuOpen(!menuOpen);
   const toggleAvatar = () => setAvatarOpen(!avatarOpen);
 
   return (
@@ -19,84 +16,35 @@ const Navbar = ({ data = [] }) => {
           <h1 className="text-2xl font-bold text-primary">HomeyMeals</h1>
         </div>
 
-        {/* Desktop Navigation Links */}
-        <div className="hidden md:flex space-x-6">
-          {data.map((item, index) => (
-            <a
-              href={item.path}
-              key={index}
-              className="text-secondary hover:text-primary transition"
-            >
-              {item.name}
-            </a>
-          ))}
-        </div>
-
         {/* Avatar Section */}
         <div className="relative">
           <button
-            onClick={toggleAvatar}
+            onMouseEnter={toggleAvatar}
             className="flex items-center space-x-2"
           >
-            <FaUserCircle className="text-3xl text-primary" />
-            <span className="text-primary">Seller</span>
+            <BiLogInCircle className="text-3xl text-primary" />
           </button>
           {avatarOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-md z-50">
-              <a
-                href="/seller/profile"
+            <div
+              className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-md z-50"
+              onMouseLeave={toggleAvatar}
+            >
+              <Link
+              to={'./login'}
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
-                Profile
-              </a>
-              <a
-                href="/seller/logout"
+                Log-in
+              </Link>
+              <Link
+                to="/register"
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
-                Logout
-              </a>
+                Registration
+              </Link>
             </div>
           )}
         </div>
-
-        {/* Mobile Menu Toggle */}
-        <div className="md:hidden">
-          <button
-            onClick={toggleMenu}
-            className="text-secondary focus:outline-none"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              ></path>
-            </svg>
-          </button>
-        </div>
       </div>
-
-      {/* Mobile Navigation Links */}
-      {menuOpen && (
-        <div className="md:hidden px-4 pb-4">
-          {data.map((item, index) => (
-            <a
-              href={item.path}
-              key={index}
-              className="block text-secondary hover:text-primary py-2 transition"
-            >
-              {item.name}
-            </a>
-          ))}
-        </div>
-      )}
     </nav>
   );
 };
