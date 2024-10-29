@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import MenuHeader from "../../components/MenuHeader";
-import ProductList from "../../components/ProductList";
-import SearchComponent from "./../../components/SearchComponent";
-import meals from "./../../store/meals";
+import MenuHeader from "../components/MenuHeader";
+import ProductList from "../components/ProductList";
+import SearchComponent from "../components/SearchComponent";
+import meals from "../store/meals";
 
 const AllMenus = () => {
   const [filteredMeals, setFilteredMeals] = useState(meals); // Initialize with all meals

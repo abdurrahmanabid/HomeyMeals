@@ -1,12 +1,12 @@
 import React from "react";
-import Banner from "../../components/ConsumerHome/Banner";
-import ExploreMenu from "../../components/ConsumerHome/ExploreMenu";
-import FeaturesCard from "../../components/ConsumerHome/FeaturesCard";
-import HowToDeliver from "../../components/ConsumerHome/HowToDelivery";
-import HowToOrder from "../../components/ConsumerHome/HowtoOrder";
-import HowToSell from "../../components/ConsumerHome/HowToSell";
-import Review from "../../components/ConsumerHome/Review";
-import Sector from "../../components/Sector";
+import Banner from "../components/ConsumerHome/Banner";
+import ExploreMenu from "../components/ConsumerHome/ExploreMenu";
+import FeaturesCard from "../components/ConsumerHome/FeaturesCard";
+import HowToDeliver from "../components/ConsumerHome/HowToDelivery";
+import HowToOrder from "../components/ConsumerHome/HowtoOrder";
+import HowToSell from "../components/ConsumerHome/HowToSell";
+import Review from "../components/ConsumerHome/Review";
+import Sector from "../components/Sector";
 
 const Home = () => {
   return (

@@ -1,14 +1,14 @@
-import React from "react";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { Login } from "./components/Login";
-import { Register } from "./components/Register";
-import MainLayout from "./layout/MainLayout/MainLayouts";
-import SellerLayout from "./layout/SellerLayout/SellerLayout";
-import AllMenus from "./Seller/pages/AllMenus";
-import Home from "./Seller/pages/Home";
-import NotFound from "./Seller/pages/NotFound";
-import { TermsAndConditions } from "./Seller/pages/TermsAndConditions";
 
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Login } from './components/LogIn';
+import ProductDetail from './components/ProductDetails';
+import { Register } from './components/Register';
+import MainLayout from './layout/MainLayout/MainLayouts';
+import SellerLayout from './layout/SellerLayout/SellerLayout';
+import AllMenus from './pages/AllMenus';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
+import { TermsAndConditions } from './pages/TermsAndConditions';
 function App() {
   return (
     <Router>
@@ -29,8 +29,13 @@ function App() {
           </Route>
           <Route path="*" element={<NotFound />} />
 
-          <Route path="/homeyMeals/seller" element={<SellerLayout />}>
-            <Route path="allMenu" element={<AllMenus />} />
+          <Route path="/seller" element={<SellerLayout />}>
+            <Route path="allMenu" element={<ProductDetail />} />
+            <Route path="home" element={<Home />} />
+          </Route>
+
+          <Route path="/student" element={<SellerLayout />}>
+            <Route path="allMenu" element={<ProductDetail />} />
             <Route path="home" element={<Home />} />
           </Route>
         </Routes>
