@@ -1,10 +1,11 @@
 import { Player } from "@lottiefiles/react-lottie-player";
 import { Button, Checkbox, Label, Select, TextInput } from "flowbite-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import registerLottie from "../assets/lottie/registration.json";
 
 export function Register() {
+  const navigate = useNavigate()
   const [user, setUser] = useState({
     fullName: "",
     email: "",
@@ -26,6 +27,14 @@ export function Register() {
   const handleRegister = (e) => {
     e.preventDefault();
     console.log("User registered:", user);
+    localStorage.setItem("user",JSON.stringify(user));
+    if(user.role==='Student'){
+      navigate("/student");
+    }else if(user.role==='Seller'){
+      navigate("/seller");
+    }else{
+      navigate("/rider");
+    }
   };
 
   return (

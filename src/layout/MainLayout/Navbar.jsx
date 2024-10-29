@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { BiLogInCircle } from "react-icons/bi";
 import { Link } from "react-router-dom";
-import logo from './../assets/imgs/favicon.png';
+import logo from './../../assets/imgs/favicon.png';
 
 const Navbar = () => {
   const [avatarOpen, setAvatarOpen] = useState(false); // For avatar dropdown

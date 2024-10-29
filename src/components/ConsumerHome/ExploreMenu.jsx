@@ -17,7 +17,7 @@ const ExploreMenu = () => {
       image: "https://via.placeholder.com/150",
     },
     {
-      id: 2,
+      id: 3,
       title: "Jalapeño-Popper Chicken",
       description: "with corn and zucchini",
       image: "https://via.placeholder.com/150",
