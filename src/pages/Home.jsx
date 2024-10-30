@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Banner from "../components/ConsumerHome/Banner";
 import ExploreMenu from "../components/ConsumerHome/ExploreMenu";
 import FeaturesCard from "../components/ConsumerHome/FeaturesCard";
@@ -9,6 +10,14 @@ import Review from "../components/ConsumerHome/Review";
 import Sector from "../components/Sector";
 
 const Home = () => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user) {
+        navigate(`/${user.role}`);
+      }
+    }, []);
   return (
     <div className="flex flex-col justify-center items-center overflow-hidden">
       <Banner />

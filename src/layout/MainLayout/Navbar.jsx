@@ -1,33 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BiLogInCircle, BiMenu } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
 import { Link } from "react-router-dom";
 import logo from "./../../assets/imgs/favicon.png";
 
 const Navbar = ({ data }) => {
+  const user = JSON.parse(localStorage.getItem("user"));
   const [avatarOpen, setAvatarOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // For mobile menu toggle
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showNavbar, setShowNavbar] = useState(true); // Track navbar visibility
+  const [lastScrollY, setLastScrollY] = useState(0); // Track last scroll position
 
   const toggleAvatar = () => setAvatarOpen(!avatarOpen);
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      // Show navbar when scrolling up, hide when scrolling down
+      if (currentScrollY > lastScrollY) {
+        setShowNavbar(false); // Scrolling down
+      } else {
+        setShowNavbar(true); // Scrolling up
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
   return (
-    <nav className="bg-primary  py-4 mt-4  shadow-xl">
+    <nav
+      className={`fixed top-0 left-0 w-full bg-primary py-4 shadow-xl z-50 transition-transform duration-300 ${
+        showNavbar ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <div className="container mx-auto px-4 flex justify-between items-center">
         {/* Logo */}
-        <div className="flex gap-3 items-center ">
+        <Link
+          to={user ? `/${user?.role}` : "/"}
+          className="flex gap-3 items-center hover:scale-105 hover:text-accent3 transition-all"
+        >
           <img src={logo} alt="logo" height={50} width={50} />
-          <h1 className="text-2xl font-bold text-white ">HomeyMeals</h1>
-        </div>
+          <h1 className="text-2xl font-bold text-white">HomeyMeals</h1>
+        </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-6 ">
+        <div className="hidden md:flex space-x-6">
           {data &&
             data.map((item, index) => (
               <Link
                 key={index}
                 to={item.path}
-                className="text-white font-bold"
+                className="text-white font-bold hover:scale-105 hover:text-accent3 transition-all"
               >
                 {item.name}
               </Link>
@@ -41,12 +68,12 @@ const Navbar = ({ data }) => {
             className="flex items-center space-x-2"
           >
             {data ? (
-              <div className="flex justify-center text-white items-center gap-3">
+              <div className="flex justify-center text-white items-center gap-3 hover:scale-105 hover:text-accent3 transition-all">
                 <h1>User Name</h1>
                 <CgProfile className="text-3xl text-white" />
               </div>
             ) : (
-              <BiLogInCircle className="text-3xl text-white" />
+              <BiLogInCircle className="text-3xl text-white hover:scale-105 hover:text-accent3 transition-all" />
             )}
           </button>
           {avatarOpen && (
