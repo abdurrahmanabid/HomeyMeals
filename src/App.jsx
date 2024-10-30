@@ -4,11 +4,12 @@ import { Login } from './components/LogIn';
 import ProductDetail from './components/ProductDetails';
 import { Register } from './components/Register';
 import MainLayout from './layout/MainLayout/MainLayouts';
-import SellerLayout from './layout/SellerLayout/SellerLayout';
 import AllMenus from './pages/AllMenus';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import { TermsAndConditions } from './pages/TermsAndConditions';
+import StudentHome from "./pages/student/StudentHome";
+import { consumer, seller } from './store/navbarObject';
 function App() {
   return (
     <Router>
@@ -29,12 +30,13 @@ function App() {
           </Route>
           <Route path="*" element={<NotFound />} />
 
-          <Route path="/seller" element={<SellerLayout />}>
+          <Route path="/seller" element={<MainLayout data={seller} />}>
             <Route path="allMenu" element={<ProductDetail />} />
             <Route path="home" element={<Home />} />
           </Route>
 
-          <Route path="/student" element={<SellerLayout />}>
+          <Route path="/student" element={<MainLayout data={consumer} />}>
+            <Route path="" element={<StudentHome />} />
             <Route path="allMenu" element={<ProductDetail />} />
             <Route path="home" element={<Home />} />
           </Route>

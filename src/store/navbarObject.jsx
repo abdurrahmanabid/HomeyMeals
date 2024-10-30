@@ -1,8 +1,5 @@
 export const consumer = [
-  {
-    name: "Home",
-    path: "/",
-  },
+  
   {
     name: "Order",
     path: "./order",
@@ -10,6 +7,10 @@ export const consumer = [
   {
     name: "Menu",
     path: "./menu",
+  },
+  {
+    name: "Checkout",
+    path: "/",
   },
 ];
 export const seller = [
