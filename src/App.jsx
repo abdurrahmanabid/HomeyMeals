@@ -8,15 +8,15 @@ import AllMenus from './pages/AllMenus';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import { TermsAndConditions } from './pages/TermsAndConditions';
-import StudentHome from "./pages/student/StudentHome";
-import { consumer, seller } from './store/navbarObject';
 import StudentCheckout from "./pages/student/StudentCheckout";
-import StudentOrder from "./pages/student/StudentsOrder";
+import StudentHome from "./pages/student/StudentHome";
 import StudentMenu from "./pages/student/StudentMenu";
+import StudentOrder from "./pages/student/StudentsOrder";
+import { consumer, seller } from './store/navbarObject';
 function App() {
   return (
     <Router>
-      <div className="App">
+      <div className="App pt-[80px]">
         {/* Insert the Navbar component (optional) */}
 
         {/* Define Routes */}
@@ -41,7 +41,6 @@ function App() {
           <Route path="/student" element={<MainLayout data={consumer} />}>
             <Route path="" element={<StudentHome />} />
             <Route path="allMenu" element={<ProductDetail />} />
-            <Route path="home" element={<Home />} />
             <Route path="checkout" element={<StudentCheckout />} />
             <Route path="order" element={<StudentOrder />} />
             <Route path="menu" element={<StudentMenu />} />
