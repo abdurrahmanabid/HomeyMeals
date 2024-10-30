@@ -10,6 +10,9 @@ import NotFound from './pages/NotFound';
 import { TermsAndConditions } from './pages/TermsAndConditions';
 import StudentHome from "./pages/student/StudentHome";
 import { consumer, seller } from './store/navbarObject';
+import StudentCheckout from "./pages/student/StudentCheckout";
+import StudentOrder from "./pages/student/StudentsOrder";
+import StudentMenu from "./pages/student/StudentMenu";
 function App() {
   return (
     <Router>
@@ -39,6 +42,10 @@ function App() {
             <Route path="" element={<StudentHome />} />
             <Route path="allMenu" element={<ProductDetail />} />
             <Route path="home" element={<Home />} />
+            <Route path="checkout" element={<StudentCheckout />} />
+            <Route path="order" element={<StudentOrder />} />
+            <Route path="menu" element={<StudentMenu />} />
+
           </Route>
         </Routes>
       </div>

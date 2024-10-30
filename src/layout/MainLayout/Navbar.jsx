@@ -12,22 +12,22 @@ const Navbar = ({ data }) => {
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
   return (
-    <nav className="bg-white shadow-md py-4">
+    <nav className="bg-primary  py-4 mt-4  shadow-xl">
       <div className="container mx-auto px-4 flex justify-between items-center">
         {/* Logo */}
-        <div className="flex gap-3 items-center">
+        <div className="flex gap-3 items-center ">
           <img src={logo} alt="logo" height={50} width={50} />
-          <h1 className="text-2xl font-bold text-primary">HomeyMeals</h1>
+          <h1 className="text-2xl font-bold text-white ">HomeyMeals</h1>
         </div>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-6">
+        <div className="hidden md:flex space-x-6 ">
           {data &&
             data.map((item, index) => (
               <Link
                 key={index}
                 to={item.path}
-                className="text-gray-700 hover:text-primary"
+                className="text-white font-bold"
               >
                 {item.name}
               </Link>
@@ -41,12 +41,12 @@ const Navbar = ({ data }) => {
             className="flex items-center space-x-2"
           >
             {data ? (
-              <div className="flex justify-center items-center gap-3">
+              <div className="flex justify-center text-white items-center gap-3">
                 <h1>User Name</h1>
-                <CgProfile className="text-3xl text-primary" />
+                <CgProfile className="text-3xl text-white" />
               </div>
             ) : (
-              <BiLogInCircle className="text-3xl text-primary" />
+              <BiLogInCircle className="text-3xl text-white" />
             )}
           </button>
           {avatarOpen && (
@@ -109,7 +109,7 @@ const Navbar = ({ data }) => {
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden text-3xl text-primary"
+          className="md:hidden text-3xl text-white"
           onClick={toggleMobileMenu}
         >
           <BiMenu />
