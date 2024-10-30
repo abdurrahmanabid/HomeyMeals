@@ -1,105 +1,106 @@
-import ReactImageGallery from "react-image-gallery";
+import React from "react";
+import { GiFoodTruck } from "react-icons/gi";
 import Rater from "react-rater";
 import "react-rater/lib/react-rater.css";
+import Button from "./Button";
 
 const ProductDetail = () => {
   const productDetailItem = {
     images: [
-      {
-        original:
-          "https://www.themealdb.com/images/media/meals/hqaejl1695738653.jpg",
-      },
+      "https://www.themealdb.com/images/media/meals/hqaejl1695738653.jpg",
     ],
-    title: "BIG ITALIAN SOFA",
+    title: "Bread Toast",
     reviews: "150",
     availability: true,
-    brand: "apex",
-    category: "Sofa",
+    brand: "Lailatul Borat",
+    category: "Fast Food",
     sku: "BE45VGTRK",
     price: 450,
     previousPrice: 599,
     description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem exercitationem voluptate sint eius ea assumenda provident eos repellendus qui neque! Velit ratione illo maiores voluptates commodi eaque illum, laudantium non!",
+      "Experience luxury and comfort with this Italian-inspired sofa, designed with precision and crafted from the finest materials to bring elegance and relaxation to your living space.",
     size: ["XS", "S", "M", "L", "XL"],
-    color: ["gray", "violet", "red"],
+    color: ["Gray", "Violet", "Red"],
   };
-  const plusMinuceButton =
-    "flex h-8 w-8 cursor-pointer items-center justify-center border duration-100 hover:bg-neutral-100 focus:ring-2 focus:ring-gray-500 active:ring-2 active:ring-gray-500";
+
   return (
-    <section className="container flex-grow mx-auto max-w-[1200px] border-b py-5 lg:grid lg:grid-cols-2 lg:py-10">
-      {/* image gallery */}
-      <div className="container mx-auto px-4">
-        <ReactImageGallery
-          showBullets={false}
-          showFullscreenButton={false}
-          showPlayButton={false}
-          items={productDetailItem.images}
+    <section className="container mx-auto  py-10 lg:flex  gap-10 ">
+      {/* Product Image */}
+      <div className="px-4 lg:px-0">
+        <img
+          src={productDetailItem.images[0]}
+          alt={productDetailItem.title}
+          className="w-96 lg:min-w-96  rounded-lg shadow-md"
         />
-
-        {/* /image gallery  */}
       </div>
-      {/* description  */}
 
-      <div className="mx-auto px-5 lg:px-5">
-        <h2 className="pt-3 text-2xl font-bold lg:pt-0">
+      {/* Product Details */}
+      <div className="px-5 lg:px-0 space-y-2">
+        {/* Title */}
+        <h2 className="text-3xl font-semibold text-gray-800">
           {productDetailItem.title}
         </h2>
-        <div className="mt-1">
-          <div className="flex items-center">
-            <Rater
-              style={{ fontSize: "20px" }}
-              total={5}
-              interactive={false}
-              rating={3.5}
-            />
 
-            <p className="ml-3 text-sm text-gray-400">
-              ({productDetailItem.reviews})
-            </p>
-          </div>
+        {/* Ratings and Reviews */}
+        <div className="flex items-center">
+          <Rater
+            total={5}
+            interactive={false}
+            rating={4}
+            style={{ fontSize: "20px" }}
+          />
+          <span className="ml-3 text-sm text-gray-500">
+            {productDetailItem.reviews} Reviews
+          </span>
         </div>
-        <p className="mt-5 font-bold">
+
+        {/* Availability */}
+        <p className="text-lg font-medium">
           Availability:{" "}
-          {productDetailItem.availability ? (
-            <span className="text-green-600">In Stock </span>
-          ) : (
-            <span className="text-red-600">Expired</span>
-          )}
+          <span
+            className={`font-semibold ${
+              productDetailItem.availability ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {productDetailItem.availability ? "In Stock" : "Out of Stock"}
+          </span>
         </p>
-        <p className="font-bold">
-          Brand: <span className="font-normal">{productDetailItem.brand}</span>
+
+        {/* Brand, Category, SKU */}
+        <p className="text-lg font-medium">
+          Seller:{" "}
+          <span className="text-gray-700 font-normal">
+            {productDetailItem.brand}
+          </span>
         </p>
-        <p className="font-bold">
-          Cathegory:{" "}
-          <span className="font-normal">{productDetailItem.category}</span>
+        <p className="text-lg font-medium">
+          Category:{" "}
+          <span className="text-gray-700 font-normal">
+            {productDetailItem.category}
+          </span>
         </p>
-        <p className="font-bold">
-          SKU: <span className="font-normal">{productDetailItem.sku}</span>
+        <p className="text-lg font-medium">
+          SKU:{" "}
+          <span className="text-gray-700 font-normal">
+            {productDetailItem.sku}
+          </span>
         </p>
-        <p className="mt-4 text-4xl font-bold text-violet-900">
+
+        {/* Price */}
+        <p className="text-3xl font-bold text-secondary">
           ${productDetailItem.price}{" "}
-          <span className="text-xs text-gray-400 line-through">
+          <span className="text-lg text-gray-400 line-through ml-2">
             ${productDetailItem.previousPrice}
           </span>
         </p>
-        <p className="pt-5 text-sm leading-5 text-gray-500">
+
+        {/* Description */}
+        <p className="text-gray-600 text-sm leading-relaxed">
           {productDetailItem.description}
         </p>
-        <div className="mt-6">
-          <p className="pb-2 text-xs text-gray-500">Size</p>
-          <div className="flex gap-1">
-            {productDetailItem.size.map((x, index) => {
-              return (
-                <div
-                  key={index}
-                  className="flex h-8 w-8 cursor-pointer items-center justify-center border duration-100 hover:bg-neutral-100 focus:ring-2 focus:ring-gray-500 active:ring-2 active:ring-gray-500"
-                >
-                  {x}
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        <Button className="flex bg-secondary hover:bg-accent1 hover:text-gray-900 mt-5">
+          <GiFoodTruck size={30} /> Order Now
+        </Button>
       </div>
     </section>
   );

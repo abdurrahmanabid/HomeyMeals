@@ -1,13 +1,12 @@
 import { Outlet } from "react-router-dom";
-import { consumer } from '../../store/navbarObject';
 import Footer from './Footer';
 import Navbar from './Navbar';
 
-const MainLayout = () => {
+const MainLayout = ({data}) => {
 
   return (
     <div className="bg-gradient-to-b from-gray-200 to-transparent">
-        <Navbar data={consumer} />
+        <Navbar data={data} />
       <div className=" mx-auto ">
         <Outlet></Outlet>
       </div>
