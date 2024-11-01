@@ -11,6 +11,7 @@ import { TermsAndConditions } from './pages/TermsAndConditions';
 import StudentCheckout from "./pages/student/StudentCheckout";
 import StudentHome from "./pages/student/StudentHome";
 import StudentMenu from "./pages/student/StudentMenu";
+import StudentProfileDetails from "./pages/student/StudentProfileDetails";
 import StudentOrder from "./pages/student/StudentsOrder";
 import { consumer, seller } from './store/navbarObject';
 function App() {
@@ -44,7 +45,7 @@ function App() {
             <Route path="checkout" element={<StudentCheckout />} />
             <Route path="order" element={<StudentOrder />} />
             <Route path="menu" element={<StudentMenu />} />
-
+            <Route path="profile" element={<StudentProfileDetails />} />
           </Route>
         </Routes>
       </div>
