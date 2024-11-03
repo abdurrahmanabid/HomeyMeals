@@ -1,6 +1,8 @@
 import React from "react";
 
 const ProfileDetails = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+
   return (
     <div className="container mx-auto px-6 py-10">
       <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto">
@@ -14,7 +16,7 @@ const ProfileDetails = () => {
             />
           </div>
           <h1 className="mt-4 text-2xl font-semibold text-gray-800">
-            Alex Johnson
+            {user.fullName}
           </h1>
           <p className="text-gray-600">Student at Dhaka University</p>
           <span className="mt-2 inline-block rounded-full bg-blue-200 py-1 px-3 text-sm text-blue-700">

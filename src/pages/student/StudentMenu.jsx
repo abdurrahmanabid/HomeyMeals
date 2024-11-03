@@ -1,33 +1,39 @@
-import React, { useState } from "react"; // Import useState
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MealCard from "../../components/MealCard";
-import CategoryFilter from "./../../components/CategoryFilter";
-import mealData from "./../../store/mealData";
+import CategoryFilter from "../../components/CategoryFilter";
+import mealData from "../../store/mealData";
 
 const MealList = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const categories = [
-    "All",
-    "Appetizers",
-    "Main Courses",
-    "Desserts",
-    "Drinks",
-  ];
-  const navigate = useNavigate()
+  const categories = ["All", "Appetizers", "Main Courses", "Desserts", "Drinks"];
+  const navigate = useNavigate();
+
   // Filter meals based on selected category
   const filteredMeals =
     selectedCategory === "All"
-      ? mealData // Assuming mealData is an array of meals
+      ? mealData
       : mealData.filter((meal) => meal.category === selectedCategory);
 
   const handleOrder = (mealName) => {
     console.log(`${mealName} has been added to your cart!`);
-    navigate('/student/checkout')
+    navigate('/student/checkout');
   };
-  const handleAddToCart =()=>{
-    // toast.success("Added Sucsessfully")
-  }
+
+  const handleAddToCart = (meal) => {
+    // Retrieve cart data from localStorage or initialize an empty array
+    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    // Add the selected meal to the cart
+    const updatedCart = [...existingCart, meal];
+
+    // Save updated cart back to localStorage
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+    // Show an alert to confirm the addition
+    alert(`${meal.name} has been added to your cart!`);
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -45,7 +51,12 @@ const MealList = () => {
       {/* Display filtered meals */}
       <div className="flex flex-wrap justify-center">
         {filteredMeals.map((meal) => (
-          <MealCard key={meal.id} meal={meal} handleOrder={handleOrder} handleAddToCart={handleAddToCart} />
+          <MealCard
+            key={meal.id}
+            meal={meal}
+            handleOrder={() => handleOrder(meal.name)}
+            handleAddToCart={() => handleAddToCart(meal)}
+          />
         ))}
       </div>
     </div>
