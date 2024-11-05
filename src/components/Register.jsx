@@ -1,44 +1,38 @@
 import { Player } from "@lottiefiles/react-lottie-player";
 import { Button, Checkbox, Label, Select, TextInput } from "flowbite-react";
-import { useState } from "react";
+import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import registerLottie from "../assets/lottie/registration.json";
+import { registerValidationSchema } from './../validation/registerValidation';
 
 export function Register() {
-  const navigate = useNavigate()
-  const [user, setUser] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    repassword: "",
-    phone: "",
-    role: "",
-    agree: false,
+  const navigate = useNavigate();
+  const formik = useFormik({
+    initialValues: {
+      fullName: "",
+      email: "",
+      password: "",
+      repassword: "",
+      phone: "",
+      role: "",
+      agree: false,
+    },
+    validationSchema:registerValidationSchema,
+    onSubmit: (values) => {
+      console.log("User registered:", values);
+      localStorage.setItem("user", JSON.stringify(values));
+      if (values.role === "Student") {
+        navigate("/student");
+      } else if (values.role === "Seller") {
+        navigate("/seller");
+      } else {
+        navigate("/rider");
+      }
+    },
   });
 
-  const handleChange = (e) => {
-    const { id, value, type, checked } = e.target;
-    setUser((prevUser) => ({
-      ...prevUser,
-      [id]: type === "checkbox" ? checked : value,
-    }));
-  };
-
-  const handleRegister = (e) => {
-    e.preventDefault();
-    console.log("User registered:", user);
-    localStorage.setItem("user",JSON.stringify(user));
-    if(user.role==='Student'){
-      navigate("/student");
-    }else if(user.role==='Seller'){
-      navigate("/seller");
-    }else{
-      navigate("/rider");
-    }
-  };
-
   return (
-    <div className="flex flex-col md:flex-row justify-center items-center md:my-20 p-5">
+    <div className="flex flex-col md:flex-row justify-center items-center md:my-20 p-5 bg-accent5">
       {/* Lottie Animation */}
       <div className="flex flex-col md:flex-row justify-center items-center p-5 bg-white shadow-lg border border-t-secondary border-b-secondary rounded-lg">
         <div className="hidden lg:block">
@@ -53,10 +47,9 @@ export function Register() {
 
         {/* Registration Form */}
         <form
-          onSubmit={handleRegister}
+          onSubmit={formik.handleSubmit}
           className="flex flex-col gap-4 w-96 max-w-md lg:border rounded-lg lg:p-6 lg:shadow-xl"
         >
-          {/* Welcome Message */}
           <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">
             Create Your Account
           </h2>
@@ -67,10 +60,13 @@ export function Register() {
               id="fullName"
               type="text"
               placeholder="Your full name"
-              required
+              
               shadow
-              onChange={handleChange}
+              {...formik.getFieldProps("fullName")}
             />
+            {formik.touched.fullName && formik.errors.fullName && (
+              <p className="text-red-500 text-sm">{formik.errors.fullName}</p>
+            )}
           </div>
 
           <div>
@@ -79,10 +75,13 @@ export function Register() {
               id="email"
               type="email"
               placeholder="name@email.com"
-              required
+              
               shadow
-              onChange={handleChange}
+              {...formik.getFieldProps("email")}
             />
+            {formik.touched.email && formik.errors.email && (
+              <p className="text-red-500 text-sm">{formik.errors.email}</p>
+            )}
           </div>
 
           <div>
@@ -90,11 +89,14 @@ export function Register() {
             <TextInput
               id="password"
               type="password"
-              required
+              
               shadow
               placeholder="••••••••"
-              onChange={handleChange}
+              {...formik.getFieldProps("password")}
             />
+            {formik.touched.password && formik.errors.password && (
+              <p className="text-red-500 text-sm">{formik.errors.password}</p>
+            )}
           </div>
 
           <div>
@@ -106,37 +108,46 @@ export function Register() {
             <TextInput
               id="repassword"
               type="password"
-              required
+              
               shadow
               placeholder="••••••••"
-              onChange={handleChange}
+              {...formik.getFieldProps("repassword")}
             />
+            {formik.touched.repassword && formik.errors.repassword && (
+              <p className="text-red-500 text-sm">{formik.errors.repassword}</p>
+            )}
           </div>
 
           <div>
             <Label htmlFor="phone" value="Phone Number" className="mb-2" />
             <TextInput
               id="phone"
-              type="number"
-              required
+              type="text"
+              
               shadow
               placeholder="+88 01787765129"
-              onChange={handleChange}
+              {...formik.getFieldProps("phone")}
             />
+            {formik.touched.phone && formik.errors.phone && (
+              <p className="text-red-500 text-sm">{formik.errors.phone}</p>
+            )}
           </div>
 
           <div className="max-w-md">
             <Label htmlFor="role" value="Select your role" className="mb-2" />
-            <Select id="role" required onChange={handleChange}>
+            <Select id="role"  {...formik.getFieldProps("role")}>
               <option value="">Select Role</option>
               <option value="Student">Student</option>
               <option value="Seller">Seller</option>
               <option value="Rider">Rider</option>
             </Select>
+            {formik.touched.role && formik.errors.role && (
+              <p className="text-red-500 text-sm">{formik.errors.role}</p>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
-            <Checkbox id="agree" onChange={handleChange} />
+            <Checkbox id="agree" {...formik.getFieldProps("agree")} />
             <Label htmlFor="agree" className="flex">
               I agree with the&nbsp;
               <Link
@@ -146,6 +157,9 @@ export function Register() {
                 terms and conditions
               </Link>
             </Label>
+            {formik.touched.agree && formik.errors.agree && (
+              <p className="text-red-500 text-sm">{formik.errors.agree}</p>
+            )}
           </div>
 
           <Button

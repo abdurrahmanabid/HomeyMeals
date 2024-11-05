@@ -8,13 +8,12 @@ import AllMenus from './pages/AllMenus';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import { TermsAndConditions } from './pages/TermsAndConditions';
+import StudentCart from "./pages/student/StudentCart";
 import StudentCheckout from "./pages/student/StudentCheckout";
-import StudentHome from "./pages/student/StudentHome";
 import StudentMenu from "./pages/student/StudentMenu";
 import StudentProfileDetails from "./pages/student/StudentProfileDetails";
 import StudentOrder from "./pages/student/StudentsOrder";
 import { consumer, seller } from './store/navbarObject';
-import StudentCart from "./pages/student/StudentCart";
 function App() {
   return (
     <Router>
@@ -41,7 +40,7 @@ function App() {
           </Route>
 
           <Route path="/student" element={<MainLayout data={consumer} />}>
-            <Route path="" element={<StudentHome />} />
+            <Route path="" element={<Home />} />
             <Route path="allMenu" element={<ProductDetail />} />
             <Route path="checkout" element={<StudentCheckout />} />
             <Route path="order" element={<StudentOrder />} />
