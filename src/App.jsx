@@ -14,6 +14,7 @@ import StudentMenu from "./pages/student/StudentMenu";
 import StudentProfileDetails from "./pages/student/StudentProfileDetails";
 import StudentOrder from "./pages/student/StudentsOrder";
 import { consumer, seller } from './store/navbarObject';
+import StudentCart from "./pages/student/StudentCart";
 function App() {
   return (
     <Router>
@@ -46,6 +47,8 @@ function App() {
             <Route path="order" element={<StudentOrder />} />
             <Route path="menu" element={<StudentMenu />} />
             <Route path="profile" element={<StudentProfileDetails />} />
+            <Route path="cart" element={<StudentCart />} />
+
           </Route>
         </Routes>
       </div>

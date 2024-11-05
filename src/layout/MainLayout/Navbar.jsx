@@ -3,6 +3,7 @@ import { BiLogInCircle, BiMenu } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
 import { Link } from "react-router-dom";
 import logo from "./../../assets/imgs/favicon.png";
+import { remove } from "lodash";
 
 const Navbar = ({ data }) => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -30,6 +31,10 @@ const Navbar = ({ data }) => {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
+  
+  const handleLogout=()=>{
+    localStorage.removeItem("user");
+  }
 
   return (
     <nav
@@ -69,7 +74,7 @@ const Navbar = ({ data }) => {
           >
             {data ? (
               <div className="flex justify-center text-white items-center gap-3 hover:scale-105 hover:text-accent3 transition-all">
-                <h1>User Name</h1>
+                <h1>{user.fullName}</h1>
                 <CgProfile className="text-3xl text-white" />
               </div>
             ) : (
@@ -88,10 +93,10 @@ const Navbar = ({ data }) => {
                       className="w-10 h-10 rounded-full shadow-xl"
                     />
                     <div>
-                      <p className="text-gray-800 font-semibold">John Doe</p>{" "}
+                      <p className="text-gray-800 font-semibold">{user.fullName}</p>{" "}
                       {/* Dummy name */}
                       <p className="text-gray-500 text-sm">
-                        johndoe@example.com
+                        {user.email}
                       </p>{" "}
                       {/* Dummy email */}
                     </div>
@@ -107,6 +112,7 @@ const Navbar = ({ data }) => {
                   <Link
                     to="/#"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    onClick={handleLogout}
                   >
                     Logout
                   </Link>

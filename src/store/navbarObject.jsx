@@ -8,10 +8,10 @@ export const consumer = [
     path: "./order",
   },
  
-  // {
-  //   name: "Checkout",
-  //   path: "./checkout",
-  // },
+  {
+    name: "cart",
+    path: "./cart",
+  },
 ];
 export const seller = [
    {
