@@ -10,24 +10,37 @@ import Review from "../components/ConsumerHome/Review";
 import Sector from "../components/Sector";
 
 const Home = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
 
-    useEffect(() => {
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (user) {
-        navigate(`/${user.role}`);
-      }
-    }, []);
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      navigate(`/${user.role}`);
+    }
+  }, []);
   return (
     <div className="flex flex-col justify-center items-center overflow-hidden">
       <Banner />
       <FeaturesCard />
-      <Sector>How to Order</Sector>
-      <HowToOrder />
-      <Sector>How To Sell</Sector>
-      <HowToSell/>
-      <Sector>How To Delivery</Sector>
-      <HowToDeliver/>
+      {(user?.role === "Student" || !user) && (
+        <>
+          <Sector>How to Order</Sector>
+          <HowToOrder />
+        </>
+      )}
+      {(user?.role === "Seller" || !user) && (
+        <>
+          <Sector>How To Sell</Sector>
+          <HowToSell />
+        </>
+      )}
+      {(user?.role === "Rider" || !user) && (
+        <>
+          <Sector>How To Delivery</Sector>
+          <HowToDeliver />
+        </>
+      )}
       <Sector>Explore The Menu</Sector>
       <ExploreMenu />
       <Sector>What Customers Say About Us</Sector>

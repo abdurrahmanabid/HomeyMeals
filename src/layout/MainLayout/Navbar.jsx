@@ -3,7 +3,6 @@ import { BiLogInCircle, BiMenu } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
 import { Link } from "react-router-dom";
 import logo from "./../../assets/imgs/favicon.png";
-import { remove } from "lodash";
 
 const Navbar = ({ data }) => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -84,7 +83,9 @@ const Navbar = ({ data }) => {
           {avatarOpen && (
             <div>
               {data ? (
-                <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 shadow-lg rounded-md z-50">
+                <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 shadow-lg rounded-md z-50"
+                onMouseLeave={toggleAvatar}
+                >
                   {/* Profile Info */}
                   <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200">
                     <img
