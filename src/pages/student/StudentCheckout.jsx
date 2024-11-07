@@ -1,9 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const StudentCheckout = () => {
+  const [orderData, setOrderData] = useState([]);
+
+  useEffect(() => {
+    const storedOrderData = localStorage.getItem("selectedItems");
+    if (storedOrderData) {
+      setOrderData(JSON.parse(storedOrderData)); // Set the order data from localStorage
+    }
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Submit the order logic
+    console.log("Order submitted");
+   
+  }; 
+  
+  const calculateTotalPrice = () => {
+      return orderData.reduce((total, item) => total + parseFloat(item.price), 0).toFixed(2);
+    };
   return (
     <div>
-      <div className="flex flex-col items-center border-b bg-white py-4 sm:flex-row sm:px-10 lg:px-20 xl:px-32">
+      <div className="flex flex-col mb-5 items-center border-b bg-white py-4 sm:flex-row sm:px-10 lg:px-20 xl:px-32">
         <a href="#" className="text-2xl font-bold text-gray-800">
           sneekpeeks
         </a>
@@ -85,43 +104,51 @@ const StudentCheckout = () => {
           </div>
         </div>
       </div>
-      <div className="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
+      <div className="grid mb-8 sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
         {/* Order Summary Section */}
         <div className="px-4 pt-8">
-          <p className="text-xl font-medium">Order Summary</p>
-          <p className="text-gray-400">
-            Check your items and select a suitable shipping method.
-          </p>
-          <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
-            <div className="flex flex-col rounded-lg bg-white sm:flex-row">
-              <img
-                className="m-2 h-24 w-28 rounded-md border object-cover object-center"
-                src="https://images.unsplash.com/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
-                alt="Product"
-              />
-              <div className="flex w-full flex-col px-4 py-4">
-                <span className="font-semibold">
-                  Nike Air Max Pro 8888 - Super Light
-                </span>
-                <span className="float-right text-gray-400">42EU - 8.5US</span>
-                <p className="text-lg font-bold">$138.99</p>
+        <p className="text-2xl font-semibold mb-4">Order Summary</p>
+      <p className="text-gray-500 mb-6">
+        Check your items and select a suitable shipping method.
+      </p>
+
+      {orderData.length === 0 ? (
+        <p className="text-gray-400">No items selected</p>
+      ) : (
+        <div>
+          {orderData.map((item, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between p-4 mb-4 border-b border-gray-300"
+            >
+              <div className="flex items-center space-x-4">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-16 h-16 object-cover rounded-md"
+                />
+                <div>
+                  <h3 className="text-lg font-medium">{item.name}</h3>
+                  <p className="text-sm text-gray-500">{item.size}</p>
+                  <p className="text-sm text-gray-500"><span>Quantity :</span>{item.quantity}</p>
+                </div>
+              </div>
+              <div>
+                <p className="text-lg font-semibold">{item.price}</p>
               </div>
             </div>
-            <div className="flex flex-col rounded-lg bg-white sm:flex-row">
-              <img
-                className="m-2 h-24 w-28 rounded-md border object-cover object-center"
-                src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
-                alt="Product"
-              />
-              <div className="flex w-full flex-col px-4 py-4">
-                <span className="font-semibold">
-                  Nike Air Max Pro 8888 - Super Light
-                </span>
-                <span className="float-right text-gray-400">42EU - 8.5US</span>
-                <p className="mt-auto text-lg font-bold">$238.99</p>
-              </div>
+          ))}
+          {/* Total Price */}
+          <div className="mt-4 p-4 border-t border-gray-300">
+            <div className="flex justify-between">
+              <span className="text-lg font-semibold">Total Price</span>
+              <span className="text-xl font-semibold text-green-600">
+                ${calculateTotalPrice()}
+              </span>
             </div>
           </div>
+        </div>
+      )}
           {/* Shipping Methods Section */}
           <p className="mt-8 text-lg font-medium">Shipping Methods</p>
           <form className="mt-5 grid gap-6">
@@ -177,7 +204,7 @@ const StudentCheckout = () => {
           </form>
         </div>
         {/* Payment Details Section */}
-        <div className="mt-10 bg-gray-50 px-4 pt-8 lg:mt-0">
+        <div className="mt-10 border border-gray-300 rounded-lg bg-gray-50 px-4 pt-8 lg:mt-0">
           <p className="text-xl font-medium">Payment Details</p>
           <p className="text-gray-400">
             Complete your order by providing your payment details.
