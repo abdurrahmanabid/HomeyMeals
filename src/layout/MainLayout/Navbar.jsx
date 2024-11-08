@@ -91,7 +91,7 @@ const Navbar = ({ data }) => {
                     <img
                       src="https://picsum.photos/200/300" // Dummy avatar image
                       alt="Profile Avatar"
-                      className="w-10 h-10 rounded-full shadow-xl"
+                      className="min-w-10 h-10 rounded-full shadow-xl"
                     />
                     <div>
                       <p className="text-gray-800 font-semibold">{user.fullName}</p>{" "}

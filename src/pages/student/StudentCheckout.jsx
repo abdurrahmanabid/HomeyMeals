@@ -14,9 +14,8 @@ const StudentCheckout = () => {
     e.preventDefault();
     // Submit the order logic
     console.log("Order submitted");
-   
-  }; 
-  
+  };
+
   const calculateTotalPrice = () => {
       return orderData.reduce((total, item) => total + parseFloat(item.totalPrice), 0).toFixed(2);
     };
@@ -107,30 +106,47 @@ const StudentCheckout = () => {
       <div className="grid mb-8 sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
         {/* Order Summary Section */}
         <div className="px-4 pt-8">
-        <p className="text-2xl font-semibold mb-4">Order Summary</p>
-      <p className="text-gray-500 mb-6">
-        Check your items and select a suitable shipping method.
-      </p>
+          <p className="text-2xl font-semibold mb-4">Order Summary</p>
+          <p className="text-gray-500 mb-6">
+            Check your items and select a suitable shipping method.
+          </p>
 
-      {orderData.length === 0 ? (
-        <p className="text-gray-400">No items selected</p>
-      ) : (
-        <div>
-          {orderData.map((item, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between p-4 mb-4 border-b border-gray-300"
-            >
-              <div className="flex items-center space-x-4">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-16 h-16 object-cover rounded-md"
-                />
-                <div>
-                  <h3 className="text-lg font-medium">{item.name}</h3>
-                  <p className="text-sm text-gray-500">{item.size}</p>
-                  <p className="text-sm text-gray-500"><span>Quantity :</span>{item.quantity}</p>
+          {orderData.length === 0 ? (
+            <p className="text-gray-400">No items selected</p>
+          ) : (
+            <div>
+              {orderData.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-4 mb-4 border-b border-gray-300"
+                >
+                  <div className="flex items-center space-x-4">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-16 h-16 object-cover rounded-md"
+                    />
+                    <div>
+                      <h3 className="text-lg font-medium">{item.name}</h3>
+                      <p className="text-sm text-gray-500">{item.size}</p>
+                      <p className="text-sm text-gray-500">
+                        <span>Quantity :</span>
+                        {item.quantity}
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-lg font-semibold">{item.price}</p>
+                  </div>
+                </div>
+              ))}
+              {/* Total Price */}
+              <div className="mt-4 p-4 border-t border-gray-300">
+                <div className="flex justify-between">
+                  <span className="text-lg font-semibold">Total Price</span>
+                  <span className="text-xl font-semibold text-green-600">
+                    ${calculateTotalPrice()}
+                  </span>
                 </div>
               </div>
               <div>

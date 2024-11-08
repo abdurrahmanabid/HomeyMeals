@@ -1,7 +1,6 @@
 import React from "react";
-import { MdOutlineAddShoppingCart,  } from "react-icons/md";
-import Button from "./Button";
 import { TbListDetails } from "react-icons/tb";
+import Button from "./Button";
 
 const MealCard = ({ meal, handleDetails, handleAddToCart }) => {
   return (
@@ -28,7 +27,7 @@ const MealCard = ({ meal, handleDetails, handleAddToCart }) => {
         <div className="mt-2 mb-5 flex items-center justify-between">
           <p className="flex items-center">
             <span className="text-3xl font-bold text-slate-900">
-            ${meal.price}
+              ${meal.price}
             </span>
             <span className="text-sm text-slate-500 line-through ml-2">
               $25
@@ -65,7 +64,7 @@ const MealCard = ({ meal, handleDetails, handleAddToCart }) => {
             onClick={() => handleDetails(meal)}
             className="flex items-center justify-center rounded-md bg-green-500 text-white px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 focus:ring-green-300 w-full hover:bg-green-600"
           >
-            <TbListDetails  size={25} />
+            <TbListDetails size={25} />
             Details
           </Button>
         </div>

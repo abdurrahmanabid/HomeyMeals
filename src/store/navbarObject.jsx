@@ -27,3 +27,17 @@ export const seller = [
      path: "./menu",
    },
  ];
+export const rider = [
+   {
+     name: "Dashboard",
+     path: "./dashboard",
+   },
+   {
+     name: "Order",
+     path: "./order",
+   },
+   {
+     name: "Menu",
+     path: "./menu",
+   },
+ ];

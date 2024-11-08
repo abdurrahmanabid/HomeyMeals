@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const StudentCart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -12,6 +12,7 @@ const StudentCart = () => {
     
     const savedSelectedItems = JSON.parse(localStorage.getItem("selectedItems")) || [];
     setSelectedItems(savedSelectedItems);
+
   }, []);
 
   const handleRemoveItem = (index) => {
@@ -33,7 +34,7 @@ const StudentCart = () => {
 
   const handleCheckout = () => {
     if (selectedItems.length > 0) {
-      navigate('/student/checkout');
+      navigate("/student/checkout");
     } else {
       alert("Please select at least one item to proceed to checkout.");
     }
