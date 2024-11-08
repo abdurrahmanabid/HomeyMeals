@@ -6,14 +6,13 @@ import loginLottie from "../assets/lottie/login.json";
 import { loginValidationSchema } from "../validation/loginValidation";
 
 export function Login() {
-
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
       agreeToTerms: false,
     },
-    validationSchema:loginValidationSchema,
+    validationSchema: loginValidationSchema,
     onSubmit: (values) => {
       console.log("Form Submitted:", values);
     },
