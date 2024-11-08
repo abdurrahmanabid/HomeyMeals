@@ -16,29 +16,26 @@ const MealList = () => {
       ? mealData
       : mealData.filter((meal) => meal.category === selectedCategory);
 
-      const handleDetails = (meal) => {
-        navigate(`/student/meal/${meal.id}`);
-      };
+  const handleOrder = (mealName) => {
+    console.log(`${mealName} has been added to your cart!`);
+    navigate('/student/checkout');
+  };
 
-  // const handleAddToCart = (meal) => {
-  //   console.log("🚀 ~ handleAddToCart ~ meal:", meal)
-  //   // Retrieve cart data from localStorage or initialize an empty array
-  //   const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+  const handleAddToCart = (meal) => {
+    // Retrieve cart data from localStorage or initialize an empty array
+    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  //   // Add the selected meal to the cart
-  //   const updatedCart = [...existingCart, meal];
+    // Add the selected meal to the cart
+    const updatedCart = [...existingCart, meal];
 
-  //   // Save updated cart back to localStorage
-  //   localStorage.setItem("cart", JSON.stringify(updatedCart));
+    // Save updated cart back to localStorage
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
 
-  //   // Show an alert to confirm the addition
-  //   alert(`${meal.name} has been added to your cart!`);
-  //   navigate('/student/checkout');
-
-  // };
+    // Show an alert to confirm the addition
+    alert(`${meal.name} has been added to your cart!`);
+  };
 
   return (
-    <>
     <div className="flex flex-col items-center">
       <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
         Our Menu
@@ -57,12 +54,12 @@ const MealList = () => {
           <MealCard
             key={meal.id}
             meal={meal}
-            handleDetails={() => handleDetails(meal)}
+            handleOrder={() => handleOrder(meal.name)}
             handleAddToCart={() => handleAddToCart(meal)}
           />
         ))}
       </div>
-    </div></>
+    </div>
   );
 };
 
