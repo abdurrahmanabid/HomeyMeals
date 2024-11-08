@@ -3,48 +3,44 @@ import { useNavigate } from 'react-router-dom';
 
 const StudentCart = () => {
   const [cartItems, setCartItems] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]); // To store selected items for checkout
+  const [selectedItems, setSelectedItems] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Retrieve cart data from localStorage
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    console.log('Retrieved Cart from Local Storage:', savedCart); // Debugging line
     setCartItems(savedCart);
-
-    // Retrieve selected items data from localStorage
+    
     const savedSelectedItems = JSON.parse(localStorage.getItem("selectedItems")) || [];
-    setSelectedItems(savedSelectedItems); // Restore previously selected items
+    setSelectedItems(savedSelectedItems);
   }, []);
 
-  // Remove item from cart
   const handleRemoveItem = (index) => {
     const updatedCart = cartItems.filter((_, i) => i !== index);
     setCartItems(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  // Handle checkbox selection
   const handleCheckboxChange = (e, item) => {
     let updatedSelectedItems = [...selectedItems];
-    
     if (e.target.checked) {
-      updatedSelectedItems.push(item); // Add selected item to the array
+      updatedSelectedItems.push(item);
     } else {
-      updatedSelectedItems = updatedSelectedItems.filter(selectedItem => selectedItem.id !== item.id); // Remove unselected item from the array
+      updatedSelectedItems = updatedSelectedItems.filter(selectedItem => selectedItem.id !== item.id);
     }
-
     setSelectedItems(updatedSelectedItems);
-    localStorage.setItem("selectedItems", JSON.stringify(updatedSelectedItems)); // Save selected items to localStorage
+    localStorage.setItem("selectedItems", JSON.stringify(updatedSelectedItems));
   };
 
-  // Handle checkout for selected items
   const handleCheckout = () => {
     if (selectedItems.length > 0) {
       navigate('/student/checkout');
     } else {
       alert("Please select at least one item to proceed to checkout.");
     }
+  };
+
+  const calculateTotalPrice = () => {
+    return selectedItems.reduce((total, item) => total + (item.totalPrice || 0), 0).toFixed(2);
   };
 
   return (
@@ -58,32 +54,31 @@ const StudentCart = () => {
           {cartItems.map((item, index) => (
             <div
               key={index}
-              className="flex items-center justify-between p-5 bg-white shadow-md rounded-lg"
+              className="flex items-center justify-between p-5 bg-white shadow-md rounded-lg hover:shadow-lg transition-shadow duration-200"
             >
-              {/* Checkbox for selecting the item */}
               <input
                 type="checkbox"
-                className="mr-4"
-                checked={selectedItems.some(selectedItem => selectedItem.id === item.id)} // Check if item is selected
-                onChange={(e) => handleCheckboxChange(e, item)} // Pass the item object to handleCheckboxChange
+                className="mr-4 h-5 w-5 text-blue-600 rounded focus:ring-0 cursor-pointer"
+                checked={selectedItems.some(selectedItem => selectedItem.id === item.id)}
+                onChange={(e) => handleCheckboxChange(e, item)}
               />
 
               <img
                 src={item.imageUrl}
                 alt={item.name}
-                className="w-20 h-20 object-cover rounded-md"
+                className="w-20 h-20 object-cover rounded-md shadow-sm"
               />
               <div className="flex-1 ml-4">
                 <h2 className="text-xl font-semibold text-gray-800">
                   {item.name}
                 </h2>
-                <p className="text-gray-600">{item.description}</p>
-                <p className="text-gray-800 font-medium mt-2">
+                <p className="text-sm text-gray-600">{item.description}</p>
+                <p className="text-xs text-gray-500 font-medium mt-1">
                   {item.category || "Category not specified"}
                 </p>
               </div>
               <div className="flex items-center">
-                <p className="text-gray-800 font-medium mr-4">
+                <p className="text-gray-700 font-medium mr-4">
                   Quantity: {item.quantity || 1}
                 </p>
                 <p className="text-green-600 font-bold text-lg">
@@ -91,7 +86,7 @@ const StudentCart = () => {
                 </p>
               </div>
               <button
-                className="text-red-500 ml-4"
+                className="text-red-500 font-medium hover:text-red-700 ml-4 transition-colors duration-200"
                 onClick={() => handleRemoveItem(index)}
               >
                 Remove
@@ -99,7 +94,11 @@ const StudentCart = () => {
             </div>
           ))}
 
-          {/* Checkout Button */}
+          <div className="mt-8 p-4 bg-white shadow-md rounded-lg flex justify-between items-center">
+            <span className="text-lg font-semibold text-gray-800">Total Price:</span>
+            <span className="text-xl font-semibold text-green-600">${calculateTotalPrice()}</span>
+          </div>
+
           <button
             onClick={handleCheckout}
             className="w-full mt-8 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-200"
