@@ -15,6 +15,8 @@ import StudentMenu from "./pages/student/StudentMenu";
 import StudentProfileDetails from "./pages/student/StudentProfileDetails";
 import StudentMealDetails from "./pages/student/StudentsMealDetails";
 import StudentOrder from "./pages/student/StudentsOrder";
+import { consumer, seller } from './store/navbarObject';
+import StudentMealDetails from "./pages/student/StudentsMealDetails";
 import { consumer, rider, seller } from "./store/navbarObject";
 function App() {
   return (
