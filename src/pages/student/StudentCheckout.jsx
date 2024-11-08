@@ -17,15 +17,13 @@ const StudentCheckout = () => {
   };
 
   const calculateTotalPrice = () => {
-    return orderData
-      .reduce((total, item) => total + parseFloat(item.price), 0)
-      .toFixed(2);
-  };
+      return orderData.reduce((total, item) => total + parseFloat(item.totalPrice), 0).toFixed(2);
+    };
   return (
     <div>
       <div className="flex flex-col mb-5 items-center border-b bg-white py-4 sm:flex-row sm:px-10 lg:px-20 xl:px-32">
         <a href="#" className="text-2xl font-bold text-gray-800">
-          sneekpeeks
+          Checkout Orders
         </a>
         <div className="mt-4 py-2 text-xs sm:mt-0 sm:ml-auto sm:text-base">
           <div className="relative">
@@ -151,8 +149,22 @@ const StudentCheckout = () => {
                   </span>
                 </div>
               </div>
+              <div>
+                <p className="text-lg font-semibold">{item.price}*{item.quantity}={item.totalPrice} ৳</p>
+              </div>
             </div>
-          )}
+          ))}
+          {/* Total Price */}
+          <div className="mt-4 p-4 border-t border-gray-300">
+            <div className="flex justify-between">
+              <span className="text-lg font-semibold">Total Price</span>
+              <span className="text-xl font-semibold text-green-600">
+                {calculateTotalPrice()} ৳
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
           {/* Shipping Methods Section */}
           <p className="mt-8 text-lg font-medium">Shipping Methods</p>
           <form className="mt-5 grid gap-6">
