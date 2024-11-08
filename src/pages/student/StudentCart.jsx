@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const StudentCart = () => {
   const [cartItems, setCartItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]); // To store selected items for checkout
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -10,6 +11,10 @@ const StudentCart = () => {
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
     console.log('Retrieved Cart from Local Storage:', savedCart); // Debugging line
     setCartItems(savedCart);
+
+    // Retrieve selected items data from localStorage
+    const savedSelectedItems = JSON.parse(localStorage.getItem("selectedItems")) || [];
+    setSelectedItems(savedSelectedItems); // Restore previously selected items
   }, []);
 
   // Remove item from cart
@@ -19,23 +24,28 @@ const StudentCart = () => {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  // Handle checkout
-  const handleCheckout = () => {
-    if (cartItems.length > 0) {
-      navigate('/student/checkout');
+  // Handle checkbox selection
+  const handleCheckboxChange = (e, item) => {
+    let updatedSelectedItems = [...selectedItems];
+    
+    if (e.target.checked) {
+      updatedSelectedItems.push(item); // Add selected item to the array
     } else {
-      alert("Your cart is empty. Add items to checkout.");
+      updatedSelectedItems = updatedSelectedItems.filter(selectedItem => selectedItem.id !== item.id); // Remove unselected item from the array
     }
+
+    setSelectedItems(updatedSelectedItems);
+    localStorage.setItem("selectedItems", JSON.stringify(updatedSelectedItems)); // Save selected items to localStorage
   };
 
-  // Calculate total price
-  const totalPrice = cartItems.reduce((total, item) => {
-    const itemPrice = parseFloat(item.price) || 0; // Ensure price is a number
-    console.log(`Item: ${item.name}, Price: ${itemPrice}`); // Debugging line
-    return total + itemPrice; // Accumulate the total
-  }, 0);
-
-  console.log(`Total Price: ${totalPrice}`); // Debugging line
+  // Handle checkout for selected items
+  const handleCheckout = () => {
+    if (selectedItems.length > 0) {
+      navigate('/student/checkout');
+    } else {
+      alert("Please select at least one item to proceed to checkout.");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-8 sm:p-8 lg:px-28">
@@ -50,6 +60,14 @@ const StudentCart = () => {
               key={index}
               className="flex items-center justify-between p-5 bg-white shadow-md rounded-lg"
             >
+              {/* Checkbox for selecting the item */}
+              <input
+                type="checkbox"
+                className="mr-4"
+                checked={selectedItems.some(selectedItem => selectedItem.id === item.id)} // Check if item is selected
+                onChange={(e) => handleCheckboxChange(e, item)} // Pass the item object to handleCheckboxChange
+              />
+
               <img
                 src={item.imageUrl}
                 alt={item.name}
@@ -64,9 +82,14 @@ const StudentCart = () => {
                   {item.category || "Category not specified"}
                 </p>
               </div>
-              <p className="text-green-600 font-bold text-lg">
-                ${item.price || "Price not available"}
-              </p>
+              <div className="flex items-center">
+                <p className="text-gray-800 font-medium mr-4">
+                  Quantity: {item.quantity || 1}
+                </p>
+                <p className="text-green-600 font-bold text-lg">
+                  ${item.totalPrice || "Price not available"}
+                </p>
+              </div>
               <button
                 className="text-red-500 ml-4"
                 onClick={() => handleRemoveItem(index)}
@@ -75,12 +98,6 @@ const StudentCart = () => {
               </button>
             </div>
           ))}
-
-          {/* Total Price Display */}
-          <div className="flex justify-between items-center bg-gray-200 p-4 rounded-lg mt-6">
-            <span className="text-xl font-semibold">Total Amount:</span>
-            <span className="text-xl font-bold text-green-600">${totalPrice.toFixed(2)}</span>
-          </div>
 
           {/* Checkout Button */}
           <button
