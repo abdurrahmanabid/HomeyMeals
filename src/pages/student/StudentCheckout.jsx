@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Taka from "../../components/Taka";
 
 const StudentCheckout = () => {
   const [orderData, setOrderData] = useState([]);
@@ -17,8 +18,10 @@ const StudentCheckout = () => {
   };
 
   const calculateTotalPrice = () => {
-      return orderData.reduce((total, item) => total + parseFloat(item.totalPrice), 0).toFixed(2);
-    };
+    return orderData
+      .reduce((total, item) => total + parseFloat(item.totalPrice), 0)
+      .toFixed(2);
+  };
   return (
     <div>
       <div className="flex flex-col mb-5 items-center border-b bg-white py-4 sm:flex-row sm:px-10 lg:px-20 xl:px-32">
@@ -136,7 +139,9 @@ const StudentCheckout = () => {
                     </div>
                   </div>
                   <div>
-                    <p className="text-lg font-semibold">{item.price}</p>
+                    <p className="text-lg font-semibold">
+                      {item.price} x {item.quantity}={item.totalPrice} <Taka/>
+                    </p>
                   </div>
                 </div>
               ))}
@@ -145,26 +150,12 @@ const StudentCheckout = () => {
                 <div className="flex justify-between">
                   <span className="text-lg font-semibold">Total Price</span>
                   <span className="text-xl font-semibold text-green-600">
-                    ${calculateTotalPrice()}
+                    {calculateTotalPrice()} <Taka/>
                   </span>
                 </div>
               </div>
-              <div>
-                <p className="text-lg font-semibold">{item.price}*{item.quantity}={item.totalPrice} ৳</p>
-              </div>
             </div>
-          ))}
-          {/* Total Price */}
-          <div className="mt-4 p-4 border-t border-gray-300">
-            <div className="flex justify-between">
-              <span className="text-lg font-semibold">Total Price</span>
-              <span className="text-xl font-semibold text-green-600">
-                {calculateTotalPrice()} ৳
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
+          )}
           {/* Shipping Methods Section */}
           <p className="mt-8 text-lg font-medium">Shipping Methods</p>
           <form className="mt-5 grid gap-6">
