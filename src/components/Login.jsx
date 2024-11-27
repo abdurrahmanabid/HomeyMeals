@@ -1,31 +1,43 @@
 import { Player } from "@lottiefiles/react-lottie-player";
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
-import { useFormik } from "formik";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import loginLottie from "../assets/lottie/login.json";
-import { loginValidationSchema } from "../validation/loginValidation";
 
 export function Login() {
-  const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-      agreeToTerms: false,
-    },
-    validationSchema: loginValidationSchema,
-    onSubmit: (values) => {
-      console.log("Form Submitted:", values);
-    },
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log({
+      email,
+      password,
+      agreeToTerms,
+    });
+  };
+
+  const handleChange = (event) => {
+    const { type, checked, value, id } = event.target;
+
+    if (id === "agree") {
+      setAgreeToTerms(checked);
+    } else if (type === "email") {
+      setEmail(value);
+    } else if (type === "password") {
+      setPassword(value);
+    }
+  };
 
   return (
-    <div className="flex flex-col md:flex-row justify-center items-center md:my-20 p-5 bg-accent5">
+    <div className="flex flex-col md:flex-row justify-center items-center md:my-20 p-5">
       {/* Lottie Animation */}
       <div className="flex flex-col md:flex-row justify-center items-center p-5 bg-white shadow-lg border border-t-secondary border-b-secondary rounded-lg">
         {/* Login Form */}
         <form
           className="flex flex-col gap-4 w-96 max-w-md lg:border rounded-lg lg:p-6 lg:shadow-xl"
-          onSubmit={formik.handleSubmit}
+          onSubmit={handleSubmit}
         >
           {/* Welcome Message */}
           <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">
@@ -38,12 +50,11 @@ export function Login() {
               id="email"
               type="email"
               placeholder="name@email.com"
+              required
               shadow
-              {...formik.getFieldProps("email")}
+              value={email}
+              onChange={handleChange}
             />
-            {formik.touched.email && formik.errors.email ? (
-              <div className="text-red-500 text-sm">{formik.errors.email}</div>
-            ) : null}
           </div>
 
           <div>
@@ -51,24 +62,21 @@ export function Login() {
             <TextInput
               id="password"
               type="password"
+              required
               shadow
               placeholder="••••••••"
-              {...formik.getFieldProps("password")}
+              value={password}
+              onChange={handleChange}
             />
-            {formik.touched.password && formik.errors.password ? (
-              <div className="text-red-500 text-sm">
-                {formik.errors.password}
-              </div>
-            ) : null}
           </div>
 
           <div className="flex items-center gap-2">
             <Checkbox
-              id="agreeToTerms"
-              checked={formik.values.agreeToTerms}
-              onChange={formik.handleChange}
+              id="agree"
+              checked={agreeToTerms}
+              onChange={handleChange}
             />
-            <Label htmlFor="agreeToTerms" className="flex">
+            <Label htmlFor="agree" className="flex">
               I agree with the&nbsp;
               <Link
                 to="/terms"
@@ -78,11 +86,6 @@ export function Login() {
               </Link>
             </Label>
           </div>
-          {formik.touched.agreeToTerms && formik.errors.agreeToTerms ? (
-            <div className="text-red-500 text-sm">
-              {formik.errors.agreeToTerms}
-            </div>
-          ) : null}
 
           <Button
             type="submit"
