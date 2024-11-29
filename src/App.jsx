@@ -8,6 +8,10 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import { TermsAndConditions } from "./pages/TermsAndConditions";
+import RiderCurrentDElivery from "./pages/rider/RiderCurrentDelivery";
+import RiderDashboard from "./pages/rider/RiderDashboard";
+import RiderDelivery from "./pages/rider/RiderDelivery";
+import RideerNotification from "./pages/rider/RiderNotification";
 import SellerDashboard from "./pages/seller/SellerDashboard";
 import SellerOrders from "./pages/seller/SellerOrders";
 import StudentCart from "./pages/student/StudentCart";
@@ -20,7 +24,7 @@ import { consumer, rider, seller } from "./store/navbarObject";
 function App() {
   return (
     <Router>
-      <div className="App pt-[80px]">
+      <div className="App">
         {/* Insert the Navbar component (optional) */}
 
         {/* Define Routes */}
@@ -56,6 +60,10 @@ function App() {
           </Route>
           <Route path="/rider" element={<MainLayout data={rider} />}>
             <Route path="" element={<Home />} />
+            <Route path="dashboard" element={<RiderDashboard />} />
+            <Route path="delivery" element={<RiderDelivery />} />
+            <Route path="notification" element={<RideerNotification />} />
+            <Route path="current-delivery" element={<RiderCurrentDElivery />} />
           </Route>
         </Routes>
       </div>

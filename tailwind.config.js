@@ -13,6 +13,26 @@ export default {
         accent4: "#C7F0FB", // Lightest Blue
         accent5: "#eff9fc", // Lightest Blue
       },
+      animation: {
+        "spin-slow": "spin 4s linear infinite",
+        zigzag: "zigzag 1.5s ease-in-out infinite",
+        sharp: "sharp 1.2s infinite",
+        "pulse-glow": "pulse-glow 2s infinite",
+      },
+      keyframes: {
+        zigzag: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-6px)" },
+        },
+        sharp: {
+          "0%, 100%": { opacity: 0.4 },
+          "50%": { opacity: 1 },
+        },
+        "pulse-glow": {
+          "0%, 100%": { transform: "scale(1)", opacity: 0.1 },
+          "50%": { transform: "scale(1.2)", opacity: 0.3 },
+        },
+      },
     },
   },
   plugins: [flowbite.plugin()],
