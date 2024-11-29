@@ -28,16 +28,16 @@ export const seller = [
    },
  ];
 export const rider = [
-   {
-     name: "Dashboard",
-     path: "./dashboard",
-   },
-   {
-     name: "Order",
-     path: "./order",
-   },
-   {
-     name: "Menu",
-     path: "./menu",
-   },
- ];
+  {
+    name: "Dashboard",
+    path: "./dashboard",
+  },
+  {
+    name: "My Deliveries",
+    path: "./delivery",
+  },
+  {
+    name: "Notifications",
+    path: "./notification",
+  },
+];
