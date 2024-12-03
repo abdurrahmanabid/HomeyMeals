@@ -19,6 +19,10 @@ export const seller = [
      path: "./dashboard",
    },
    {
+    name: "Add Item",
+    path: "./addItem",
+  },
+   {
      name: "Order",
      path: "./order",
    },

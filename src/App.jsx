@@ -21,6 +21,7 @@ import StudentProfileDetails from "./pages/student/StudentProfileDetails";
 import StudentMealDetails from "./pages/student/StudentsMealDetails";
 import StudentOrder from "./pages/student/StudentsOrder";
 import { consumer, rider, seller } from "./store/navbarObject";
+import AddItem from "./pages/seller/AddItem";
 function App() {
   return (
     <Router>
@@ -46,6 +47,8 @@ function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="dashboard" element={<SellerDashboard />}/>
             <Route path="order" element={<SellerOrders />}/> 
+            <Route path="addItem" element={<AddItem />}/> 
+
           </Route>
 
           <Route path="/student" element={<MainLayout data={consumer} />}>
