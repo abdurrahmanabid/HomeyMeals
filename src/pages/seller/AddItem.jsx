@@ -5,6 +5,7 @@ const AddItem = () => {
     itemName: "",
     description: "",
     price: "",
+    discountPrice: "",
     image: null,
   });
   const [imagePreview, setImagePreview] = useState(null);
@@ -13,42 +14,36 @@ const AddItem = () => {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "image") {
-      const selectedFile = files[0];
-      setFormData({ ...formData, image: selectedFile });
-
-      // Create image preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      if (selectedFile) {
-        reader.readAsDataURL(selectedFile);
-      } else {
-        setImagePreview(null);
-      }
+      const file = files[0];
+      setFormData((prev) => ({ ...prev, image: file }));
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => setImagePreview(reader.result);
+        reader.readAsDataURL(file);
+      } else setImagePreview(null);
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Validate form data
-    if (!formData.itemName || !formData.description || !formData.price || !formData.image) {
+    const { itemName, description, price, discountPrice, image } = formData;
+
+    if (!itemName || !description || !price || !image) {
       alert("Please fill in all fields");
       return;
     }
+    if (discountPrice && parseFloat(discountPrice) > parseFloat(price)) {
+      alert("Discount price must be less than or equal to the original price");
+      return;
+    }
 
-    // Example of form submission logic (replace with actual API call)
     const formDataToSubmit = new FormData();
-    formDataToSubmit.append('itemName', formData.itemName);
-    formDataToSubmit.append('description', formData.description);
-    formDataToSubmit.append('price', formData.price);
-    formDataToSubmit.append('image', formData.image);
-
+    Object.entries(formData).forEach(([key, value]) =>
+      formDataToSubmit.append(key, value)
+    );
     console.log("Submitting form data:", Object.fromEntries(formDataToSubmit));
-    
-    // Reset form after submission
     resetForm();
   };
 
@@ -57,80 +52,72 @@ const AddItem = () => {
       itemName: "",
       description: "",
       price: "",
+      discountPrice: "",
       image: null,
     });
     setImagePreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setFormData({ ...formData, image: null });
-    setImagePreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
     <div className="max-w-lg mx-auto mt-10 p-6 mb-10 border border-gray-300 rounded-lg shadow-lg bg-white">
-      <h2 className="text-2xl font-semibold text-center mb-6">
-        Add New Food Item
-      </h2>
+      <h2 className="text-2xl font-semibold text-center mb-6">Add New Food Item</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {["itemName", "description", "price", "discountPrice"].map((field) => (
+          <div key={field}>
+            <label
+              htmlFor={field}
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              {field === "itemName"
+                ? "Item Name:"
+                : field === "description"
+                ? "Description:"
+                : field === "price"
+                ? "Price:"
+                : "Discount Price:"}
+            </label>
+            {field === "description" ? (
+              <textarea
+                id={field}
+                name={field}
+                value={formData[field]}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-green-300"
+                rows="4"
+                required={field !== "discountPrice"}
+                placeholder={
+                  field === "description"
+                    ? "Describe the food item"
+                    : field === "discountPrice"
+                    ? "Enter discount price (optional)"
+                    : "Enter price"
+                }
+              />
+            ) : (
+              <input
+                type={field === "price" || field === "discountPrice" ? "number" : "text"}
+                id={field}
+                name={field}
+                value={formData[field]}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-green-300"
+                required={field !== "discountPrice"}
+                min="0"
+                step="0.01"
+                placeholder={
+                  field === "itemName"
+                    ? "Enter item name"
+                    : field === "discountPrice"
+                    ? "Enter discount price (optional)"
+                    : "Enter price"
+                }
+              />
+            )}
+          </div>
+        ))}
         <div>
-          <label htmlFor="itemName" className="block text-sm font-medium text-gray-700 mb-1">
-            Item Name:
-          </label>
-          <input
-            type="text"
-            id="itemName"
-            name="itemName"
-            value={formData.itemName}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-green-300"
-            required
-            placeholder="Enter item name"
-          />
-        </div>
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-            Description:
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-green-300"
-            rows="4"
-            required
-            placeholder="Describe the food item"
-          />
-        </div>
-        <div>
-          <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-            Price:
-          </label>
-          <input
-            type="number"
-            id="price"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-green-300"
-            required
-            min="0"
-            step="0.01"
-            placeholder="Enter price"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="image"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
             Upload Image:
           </label>
           <input
@@ -145,14 +132,10 @@ const AddItem = () => {
           />
           {imagePreview && (
             <div className="mt-4 relative">
-              <img 
-                src={imagePreview} 
-                alt="Preview" 
-                className="max-w-full h-48 object-cover rounded-lg"
-              />
+              <img src={imagePreview} alt="Preview" className="max-w-full h-48 object-cover rounded-lg" />
               <button
                 type="button"
-                onClick={handleRemoveImage}
+                onClick={resetForm}
                 className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full text-xs"
               >
                 ✕
