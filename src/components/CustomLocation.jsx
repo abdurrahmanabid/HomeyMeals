@@ -1,12 +1,15 @@
 import "leaflet/dist/leaflet.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-      MapContainer,
-      Marker,
-      Popup,
-      TileLayer,
-      useMapEvents,
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  useMapEvents,
 } from "react-leaflet";
+
+// Debugging styles
+const mapStyle = { height: "500px", width: "100%", backgroundColor: "#f0f0f0" };
 
 const CustomLocation = () => {
   const [customLocation, setCustomLocation] = useState(null);
@@ -26,6 +29,18 @@ const CustomLocation = () => {
     });
     return null;
   };
+
+  useEffect(() => {
+    console.log("Custom Location Component Loaded");
+
+    // Check if the leaflet map container is visible in the DOM
+    const mapElement = document.querySelector(".leaflet-container");
+    if (mapElement) {
+      console.log("Leaflet map container found:", mapElement);
+    } else {
+      console.error("Leaflet map container not found.");
+    }
+  }, []);
 
   return (
     <div className="p-6 bg-gray-100 rounded-lg shadow-md">
@@ -47,11 +62,12 @@ const CustomLocation = () => {
 
       {/* Map */}
       <MapContainer
-        center={customLocation || [22.3314,91.8127 ]} // Default center
-        style={{ height: "500px", width: "100%" }}
+        center={customLocation || [22.3314, 91.8127]} // Default center
+        zoom={13} // Zoom level to ensure map is visible
+        style={mapStyle}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
