@@ -3,7 +3,7 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 
-const ProfileEdit = () => {
+const ProfileEdit = ({data}) => {
   const [divisions, setDivisions] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [upazillas, setUpazillas] = useState([]);
@@ -83,13 +83,15 @@ const ProfileEdit = () => {
       upazilla: values.selectedUpazilla,
       description: values.description,
       image: image ? image.name : "No image selected", // Logs the image name if available
+      latitude: "",
+      longitude:"",
     };
-
+    data(formData)
     console.log("Form Data:", formData); // Log the data to console
   };
 
   return (
-    <div className="my-4 border sm:w-4/5 m-2 overflow-hidden w-full px-4 shadow-xl sm:mx-4 sm:rounded-xl sm:px-4 sm:py-4 md:mx-auto bg-white">
+    <div className="">
       <Formik
         initialValues={{
           selectedDivision: "",
@@ -146,7 +148,6 @@ const ProfileEdit = () => {
                 component="div"
                 className="text-red-500 text-sm"
               />
-
               <Field
                 as="select"
                 name="selectedDistrict"
@@ -240,13 +241,6 @@ const ProfileEdit = () => {
                 {image && <p className="text-sm">{image.name}</p>}
               </div>
             </div>
-
-            <button
-              type="submit"
-              className="rounded-lg border-2 border-transparent bg-blue-600 px-4 py-2 font-medium text-white focus:outline-none focus:ring hover:bg-blue-700"
-            >
-              Save
-            </button>
           </Form>
         )}
       </Formik>

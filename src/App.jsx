@@ -6,7 +6,6 @@ import MainLayout from "./layout/MainLayout/MainLayouts";
 import AllMenus from "./pages/AllMenus";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
-import Profile from "./pages/Profile";
 import { TermsAndConditions } from "./pages/TermsAndConditions";
 import RiderCurrentDElivery from "./pages/rider/RiderCurrentDelivery";
 import RiderDashboard from "./pages/rider/RiderDashboard";
@@ -43,7 +42,6 @@ function App() {
 
           <Route path="/seller" element={<MainLayout data={seller} />}>
             <Route path="" element={<Home />} />
-            <Route path="profile" element={<Profile />} />
             <Route path="dashboard" element={<SellerDashboard />}/>
             <Route path="order" element={<SellerOrders />}/> 
           </Route>
