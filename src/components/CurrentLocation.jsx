@@ -31,10 +31,10 @@ const CurrentLocation = () => {
   }, []);
 
   useEffect(() => {
-    if (userLocation) {
-      // Set the center of the map to the user's location once it's detected
+    if (!userLocation) {
+      getUserLocation(); // Automatically fetch location on component mount if not available
     }
-  }, [userLocation]);
+  }, [userLocation, getUserLocation]);
 
   return (
     <div className="p-6 bg-gray-100 rounded-lg shadow-md">
@@ -65,10 +65,12 @@ const CurrentLocation = () => {
       </div>
 
       {/* Map */}
-      {userLocation && (
+      {userLocation ? (
         <MapContainer
           center={userLocation}
+          zoom={13} // Adding zoom level
           style={{ height: "500px", width: "100%" }}
+          className="leaflet-container" // Make sure the map container has the proper class
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -84,6 +86,8 @@ const CurrentLocation = () => {
             </Popup>
           </Marker>
         </MapContainer>
+      ) : (
+        <p>Loading map...</p> // Optional loading state while waiting for location
       )}
     </div>
   );
