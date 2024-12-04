@@ -9,9 +9,9 @@ import {
 } from "react-leaflet";
 
 // Debugging styles
-const mapStyle = { height: "500px", width: "100%", backgroundColor: "#f0f0f0" };
+const mapStyle = { height: "300px", width: "100%", backgroundColor: "#f0f0f0" };
 
-const CustomLocation = () => {
+const CustomLocation = ({setLocation}) => {
   const [customLocation, setCustomLocation] = useState(null);
 
   // Component to handle map clicks for custom location
@@ -20,6 +20,7 @@ const CustomLocation = () => {
       click(e) {
         const { lat, lng } = e.latlng;
         setCustomLocation({ lat, lng });
+        setLocation({ lat: lat, lng: lng });
         alert(
           `Custom location set at:\nLatitude: ${lat.toFixed(
             4
@@ -65,6 +66,7 @@ const CustomLocation = () => {
         center={customLocation || [22.3314, 91.8127]} // Default center
         zoom={13} // Zoom level to ensure map is visible
         style={mapStyle}
+        scrollWheelZoom={false}
       >
         <TileLayer
           attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"

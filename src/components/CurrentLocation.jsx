@@ -2,9 +2,8 @@ import "leaflet/dist/leaflet.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { FaLocationArrow } from "react-icons/fa";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import Swal from "sweetalert2";
 
-const CurrentLocation = () => {
+const CurrentLocation = ({setLocation}) => {
   const [userLocation, setUserLocation] = useState(null);
 
   // Function to get the user's current location
@@ -15,14 +14,11 @@ const CurrentLocation = () => {
           const { latitude, longitude } = position.coords;
           const location = { lat: latitude, lng: longitude };
           setUserLocation(location);
+          setLocation(location)
         },
         (error) => {
           console.error("Error fetching location:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Location Not Found",
-            text: "Maybe auto Geolocation is not supported by your browser. Try custom",
-          });
+          alert("Error fetching location:", error);
         }
       );
     } else {
