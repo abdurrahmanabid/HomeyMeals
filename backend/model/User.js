@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   phone: { type: String },
   role: { type: String, enum: ["Student", "Seller", "Rider"], required: true },
+  createDate: { type: Date, default: Date.now }, // Added createDate field
 });
 
 UserSchema.pre("save", async function (next) {
