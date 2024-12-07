@@ -1,5 +1,6 @@
-const User = require('../model/RegistrationModel'); // Import the User model
-const bcrypt = require('bcrypt');
+const User = require("../model/User"); // Import the User model
+const bcrypt = require("bcrypt");
+const { generateToken } = require("../utils/jwt");
 
 // Login user
 const loginController = async (req, res) => {
@@ -9,7 +10,8 @@ const loginController = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const isMatch = await user.comparePassword(password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+    if (!isMatch)
+      return res.status(400).json({ message: "Invalid credentials" });
 
     const token = generateToken({ id: user._id, role: user.role });
     res
@@ -18,5 +20,5 @@ const loginController = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-}
+};
 module.exports = loginController;
