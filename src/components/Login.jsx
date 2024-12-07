@@ -1,7 +1,7 @@
 import { Player } from "@lottiefiles/react-lottie-player";
 import axios from "axios";
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -12,7 +12,7 @@ export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(false);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -29,7 +29,6 @@ export function Login() {
 
       // Handle successful login
       if (res.status === 200 && res.data.token) {
-
         Swal.fire({
           icon: "success",
           title: "Login Successful!",
@@ -41,7 +40,7 @@ export function Login() {
           const role = res.data.role;
           navigate(`/${role}`);
 
-          console.log("🚀 ~ handleSubmit ~ role:", role)
+          console.log("🚀 ~ handleSubmit ~ role:", role);
         });
       }
     } catch (err) {
