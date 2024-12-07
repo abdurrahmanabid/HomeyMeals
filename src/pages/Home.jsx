@@ -8,13 +8,13 @@ import HowToOrder from "../components/ConsumerHome/HowtoOrder";
 import HowToSell from "../components/ConsumerHome/HowToSell";
 import Review from "../components/ConsumerHome/Review";
 import Sector from "../components/Sector";
+import useAuth from "../utils/useAuth";
 
 const Home = () => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
-
+  const user = useAuth();
+  
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       navigate(`/${user.role}`);
     }

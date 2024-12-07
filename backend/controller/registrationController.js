@@ -10,10 +10,19 @@ const registrationController = async (req, res) => {
     if (userExists)
       return res.status(400).json({ message: "Email already exists" });
 
+    // Create new user with automatic createDate
     const user = new User({ fullName, email, password, phone, role });
     const savedUser = await user.save();
 
-    const token = generateToken({ id: user._id, role: user.role });
+    // Generate token
+    const token = generateToken({
+      id: savedUser._id,
+      fullName: savedUser.fullName,
+      email: savedUser.email,
+      role: savedUser.role,
+      createDate: savedUser.createDate,
+    });
+
     res
       .cookie("token", token, { httpOnly: true, secure: true })
       .status(201)
@@ -25,6 +34,7 @@ const registrationController = async (req, res) => {
           fullName: savedUser.fullName,
           email: savedUser.email,
           role: savedUser.role,
+          createDate: savedUser.createDate, // You can return createDate here
         },
       });
   } catch (err) {

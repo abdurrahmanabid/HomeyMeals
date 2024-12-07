@@ -1,8 +1,11 @@
 import { Player } from "@lottiefiles/react-lottie-player";
+import axios from 'axios';
 import { Button, Checkbox, Label, Select, TextInput } from "flowbite-react";
 import { useFormik } from "formik";
+import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import registerLottie from "../assets/lottie/registration.json";
+import { BASE_URL } from "../utils/ServerBaseURL";
 import { registerValidationSchema } from './../validation/registerValidation';
 
 export function Register() {
@@ -18,16 +21,29 @@ export function Register() {
       agree: false,
     },
     validationSchema:registerValidationSchema,
-    onSubmit: (values) => {
+    onSubmit: async(values) => {
       console.log("User registered:", values);
       localStorage.setItem("user", JSON.stringify(values));
-      if (values.role === "Student") {
-        navigate("/student");
-      } else if (values.role === "Seller") {
-        navigate("/seller");
-      } else {
-        navigate("/rider");
-      }
+      await axios
+        .post(`${BASE_URL}auth/register`, {
+          fullName: values.fullName,
+          email: values.email,
+          password: values.password,
+          phone: values.phone,
+          role: values.role,
+        })
+        .then((res) => {
+          if (values.role === "Student") {
+            navigate("/student");
+          } else if (values.role === "Seller") {
+            navigate("/seller");
+          } else {
+            navigate("/rider");
+          }
+          Cookies.set("token", res.data.token, { expires: 1, path: "" });
+          console.log(res)
+        })
+        .catch((err) => console.log(err));
     },
   });
 

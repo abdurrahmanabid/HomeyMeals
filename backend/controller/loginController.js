@@ -13,10 +13,16 @@ const loginController = async (req, res) => {
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
-    const token = generateToken({ id: user._id, role: user.role });
+    const token = generateToken({
+      id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+      createDate: user.createDate,
+    });
     res
       .cookie("token", token, { httpOnly: true, secure: true })
-      .json({ message: "Login successful", token });
+      .json({ message: "Login successful", token, role: user.role });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

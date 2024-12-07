@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { BiLogInCircle, BiMenu } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Logout from "../../functions/Logout";
+import useAuth from "../../utils/useAuth";
 import logo from "./../../assets/imgs/favicon.png";
 
 const Navbar = ({ data }) => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = useAuth()
+  const navigate = useNavigate()
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showNavbar, setShowNavbar] = useState(true); // Track navbar visibility
@@ -13,7 +16,6 @@ const Navbar = ({ data }) => {
 
   const toggleAvatar = () => setAvatarOpen(!avatarOpen);
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
-
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -26,15 +28,15 @@ const Navbar = ({ data }) => {
       setLastScrollY(currentScrollY);
     };
 
+
     window.addEventListener("scroll", handleScroll);
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
   
   const handleLogout=()=>{
-    localStorage.removeItem("user");
+    Logout()
   }
-
   return (
     <>
     <div className="pt-[80px]"></div>
