@@ -1,209 +1,262 @@
-import React, { useEffect, useState } from "react";
-import { FaHandshake } from "react-icons/fa";
-import { IoHomeOutline } from "react-icons/io5";
-import Taka from "../../components/Taka";
+import React, { useCallback, useEffect, useState } from "react";
+import { FaCheckCircle, FaMapMarkerAlt, FaTruck } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import CustomLocation from "../../components/CustomLocation";
+import Modal from "../../components/Modal";
+import { calculateDistance } from "../../functions/calculateDistance";
+
+
+// Constants
+const SHIPPING_METHODS = [
+  {
+    value: "Cash on Delivery",
+    label: "Cash on Delivery",
+    icon: <FaTruck />,
+    description: "Set delivery location",
+  },
+  {
+    value: "Self Shipping",
+    label: "Self Shipping",
+    icon: <FaMapMarkerAlt />,
+    description: "Pickup from seller",
+  },
+];
+
+const SELLER_LOCATION = { lat: 22.3456, lng: 91.7789 };
 
 const StudentCheckout = () => {
   const [orderData, setOrderData] = useState([]);
+  const [mapModal, setMapModal] = useState(false);
+  const [mapDetails, setMapDetails] = useState(null);
+  const [distance, setDistance] = useState(0);
+  const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
-    email: "",
-    cvv: "",
-    saveCard: false,
-    shippingMethod: "Cash on Delivery", // Default method
-    deliveryAddress: "", // Add this if it isn't already in your state
+    shippingMethod: "Self Shipping", // Default to "Self Shipping"
+    shippingCharge: 0, // No charge for self-shipping
+    fullName: "",
+    phoneNumber: "",
   });
 
   useEffect(() => {
     const storedOrderData = localStorage.getItem("selectedItems");
-    if (storedOrderData) {
-      setOrderData(JSON.parse(storedOrderData)); // Set the order data from localStorage
+    if (storedOrderData) setOrderData(JSON.parse(storedOrderData));
+  }, []);
+
+  useEffect(() => {
+    if (mapDetails && formData.shippingMethod === "Cash on Delivery") {
+      const calculatedDistance = calculateDistance(
+        SELLER_LOCATION.lat,
+        SELLER_LOCATION.lng,
+        mapDetails.lat,
+        mapDetails.lng
+      );
+      const roundedDistance = Math.round(calculatedDistance);
+
+      setDistance(roundedDistance);
+      setFormData((prev) => ({
+        ...prev,
+        distance: roundedDistance,
+        shippingCharge: Math.max(roundedDistance * 10, 50), // Minimum charge: 50
+      }));
+    } else if (formData.shippingMethod === "Self Shipping") {
+      setDistance(0);
+      setFormData((prev) => ({
+        ...prev,
+        distance: 0,
+        shippingCharge: 0,
+      }));
+    }
+  }, [mapDetails, formData.shippingMethod]);
+
+  const handleInputChange = useCallback((e) => {
+    const { name, value, type, checked } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+
+    if (name === "shippingMethod") {
+      if (value === "Cash on Delivery") {
+        setMapModal(true); // Open modal for location selection
+      } else {
+        setMapDetails(null); // Reset map details for "Self Shipping"
+      }
     }
   }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
-  const calculateTotalPrice = () => {
-    return orderData
-      .reduce((total, item) => total + parseFloat(item.totalPrice), 0)
-      .toFixed(2);
-  };
+  const calculateTotalPrice = useCallback(() => {
+    const itemsTotal = orderData.reduce(
+      (total, item) => total + parseFloat(item.totalPrice),
+      0
+    );
+    return (itemsTotal + formData.shippingCharge).toFixed(2);
+  }, [orderData, formData.shippingCharge]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Combine formData with order data and total price
     const checkoutData = {
       ...formData,
       orderItems: orderData,
       totalPrice: calculateTotalPrice(),
+      studentLocation : mapDetails,
     };
-
     console.log("Checkout Data:", checkoutData);
-    alert("Checkout data logged to console!");
+    navigate('../cash-memo', {state: checkoutData})
   };
 
   return (
-    <div>
-      <div className="flex flex-col mb-5 items-center border-b bg-white py-4 sm:flex-row sm:px-10 lg:px-20 xl:px-32 text-xl font-bold">
-        Checkout Orders
-        <div className="mt-4 py-2 text-xs sm:mt-0 sm:ml-auto sm:text-base">
-          <div className="relative">{/* Steps Section */}</div>
+    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden">
+        {/* Header */}
+        <div className="bg-secondary text-white p-6">
+          <h1 className="text-3xl font-bold flex items-center">
+            <FaCheckCircle className="mr-4" size={36} />
+            Complete Your Order
+          </h1>
         </div>
-      </div>
-      <div className="grid mb-8 sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
-        {/* Order Summary Section */}
-        <div className="px-4 pt-8">
-          <p className="text-2xl font-semibold mb-4">Order Summary</p>
-          {orderData.length === 0 ? (
-            <p className="text-gray-400">No items selected</p>
-          ) : (
-            <div>
-              {orderData.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-4 mb-4 border-b border-gray-300"
-                >
-                  <div className="flex items-center space-x-4">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-16 h-16 object-cover rounded-md"
-                    />
-                    <div>
-                      <h3 className="text-lg font-medium">{item.name}</h3>
-                      <p className="text-sm text-gray-500">Size: {item.size}</p>
-                      <p className="text-sm text-gray-500">
-                        Quantity: {item.quantity}
-                      </p>
-                    </div>
-                  </div>
+
+        {/* Content */}
+        <div className="grid md:grid-cols-2 gap-8 p-8">
+          {/* Order Summary */}
+          <div>
+            <h2 className="text-2xl font-semibold mb-6 border-b pb-4">
+              Order Summary
+            </h2>
+            {orderData.map((item, index) => (
+              <div
+                key={index}
+                className="flex justify-between items-center py-4 border-b"
+              >
+                <div className="flex items-center space-x-4">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-20 h-20 object-cover rounded-lg"
+                  />
                   <div>
-                    <p className="text-lg font-semibold">
-                      {item.price} x {item.quantity} = {item.totalPrice}{" "}
-                      <Taka />
+                    <h3 className="font-medium text-lg">{item.name}</h3>
+                    <p className="text-gray-500">
+                      Size: {item.size} | Qty: {item.quantity}
                     </p>
                   </div>
                 </div>
-              ))}
-              <div className="mt-4 p-4 border-t border-gray-300">
-                <div className="flex justify-between">
-                  <span className="text-lg font-semibold">Total Price</span>
-                  <span className="text-xl font-semibold text-green-600">
-                    {calculateTotalPrice()} <Taka />
-                  </span>
-                </div>
+                <p className="font-semibold">{item.totalPrice} Taka</p>
+              </div>
+            ))}
+            <div className="mt-6 space-y-4">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Subtotal</span>
+                <span className="font-semibold">
+                  {orderData.reduce(
+                    (total, item) => total + parseFloat(item.totalPrice),
+                    0
+                  )}{" "}
+                  Taka
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Shipping</span>
+                <span className="font-semibold text-secondary">
+                  {formData.shippingCharge} Taka <span className="text-red-500">{distance>0&&<span className="text-red-500">({distance} km)</span>}</span>
+                </span>
+              </div>
+              <div className="flex justify-between text-xl font-bold border-t pt-4">
+                <span>Total</span>
+                <span className="text-green-600">
+                  {calculateTotalPrice()} Taka 
+                </span>
               </div>
             </div>
-          )}
-          {/* Shipping Methods */}
-          <p className="mt-8 text-lg font-medium">Shipping Methods</p>
-          <form className="mt-5 grid gap-6">
-            <div className="relative">
-              <input
-                className="peer hidden"
-                id="radio_1"
-                type="radio"
-                name="shippingMethod"
-                value="Cash on Delivery"
-                checked={formData.shippingMethod === "Cash on Delivery"}
-                onChange={handleInputChange}
-              />
-              <label
-                className="peer-checked:border-2 peer-checked:border-gray-700 peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4"
-                htmlFor="radio_1"
-              >
-                <FaHandshake
-                  className="w-14 object-contain border bg-accent5 h-full p-1 rounded-lg text-secondary border-accent2"
-                  size={30}
-                />
-                <div className="ml-5">
-                  <span className="mt-2 font-semibold">Cash on Delivery</span>
-                  <p className="text-slate-500 text-sm leading-6">
-                    Delivery: 20 minutes
-                  </p>
-                </div>
-              </label>
-            </div>
-            <div className="relative">
-              <input
-                className="peer hidden"
-                id="radio_2"
-                type="radio"
-                name="shippingMethod"
-                value="Fedex Delivery"
-                checked={formData.shippingMethod === "Fedex Delivery"}
-                onChange={handleInputChange}
-              />
-              <label
-                className="peer-checked:border-2 peer-checked:border-gray-700 peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4"
-                htmlFor="radio_2"
-              >
-                <IoHomeOutline
-                  className="w-14 object-contain border bg-accent5 h-full p-1 rounded-lg text-secondary border-accent2"
-                  size={30}
-                />
-                <div className="ml-5">
-                  <span className="mt-2 font-semibold">Fedex Delivery</span>
-                  <p className="text-slate-500 text-sm leading-6">
-                    Delivery: 2-4 Days
-                  </p>
-                </div>
-              </label>
-            </div>
-          </form>
-        </div>
-        {/* Payment Details Section */}
-        <div className="mt-10 border border-gray-300 rounded-lg bg-gray-50 px-4 pt-8 lg:mt-0">
-          <p className="text-xl font-medium">Payment Details</p>
-          <form onSubmit={handleSubmit}>
-            <label
-              htmlFor="email"
-              className="mt-4 mb-2 block text-sm font-medium"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="w-full rounded-md border border-gray-200 px-4 py-3 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-blue-500"
-              placeholder="your.email@gmail.com"
-              value={formData.email}
-              onChange={handleInputChange}
-            />
+          </div>
 
-            <label
-              htmlFor="deliveryAddress"
-              className="mt-4 mb-2 block text-sm font-medium"
-            >
-              Delivery Address
-            </label>
-            <textarea
-              id="deliveryAddress"
-              name="deliveryAddress"
-              className="w-full rounded-md border border-gray-200 px-4 py-3 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Enter your delivery address"
-              value={formData.deliveryAddress}
-              onChange={handleInputChange}
-            />
+          {/* Shipping & Payment */}
+          <div>
+            <h2 className="text-2xl font-semibold mb-6 border-b pb-4">
+              Shipping & Payment
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Personal Details */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  name="fullName"
+                  placeholder="Full Name"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  required
+                  className="border p-2 rounded"
+                />
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  placeholder="Phone Number"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
+                  required
+                  className="border p-2 rounded"
+                />
+              </div>
 
-            <button
-              type="submit"
-              className="mt-6 w-full rounded-md bg-blue-600 px-6 py-3 font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
-            >
-              Place Order
-            </button>
-          </form>
+              {/* Shipping Method */}
+              <div>
+                <h3 className="font-semibold mb-2">Shipping Method</h3>
+                <div className="grid gap-4">
+                  {SHIPPING_METHODS.map((method, idx) => (
+                    <label
+                      key={idx}
+                      className={`border p-4 rounded flex items-center ${
+                        formData.shippingMethod === method.value
+                          ? "border-secondary"
+                          : ""
+                      }`}
+                    >
+                      {method.icon}
+                      <div className="ml-4">
+                        <p>{method.label}</p>
+                        <p className="text-sm text-gray-500">
+                          {method.description}
+                        </p>
+                      </div>
+                      <input
+                        type="radio"
+                        name="shippingMethod"
+                        value={method.value}
+                        checked={formData.shippingMethod === method.value}
+                        onChange={handleInputChange}
+                        className="hidden"
+                      />
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500"
+              >
+                Place Order
+              </button>
+            </form>
+          </div>
         </div>
       </div>
+
+      {/* Modal */}
+      {mapModal && (
+        <Modal onClose={() => setMapModal(false)}>
+          <CustomLocation
+            setLocation={(location) => {
+              setMapDetails(location);
+              setMapModal(false); // Close the modal
+            }}
+          />
+        </Modal>
+      )}
     </div>
   );
 };
+
 
 export default StudentCheckout;
