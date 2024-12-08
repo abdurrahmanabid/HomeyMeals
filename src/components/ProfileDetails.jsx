@@ -9,9 +9,10 @@ import {
   FaUser,
 } from "react-icons/fa";
 import { TfiMapAlt } from "react-icons/tfi";
+import useAuth from "../utils/useAuth";
 import Modal from "./Modal";
 import ProfileEdit from "./ProfileEdit";
-import SetLocation from './SetLocation';
+import SetLocation from "./SetLocation";
 
 const ProfileDetails = () => {
   const [modal, setModal] = useState(false);
@@ -19,12 +20,15 @@ const ProfileDetails = () => {
   const [moreDetails, setMoreDetails] = useState(null);
   const [mapDetails, setMapDetails] = useState(null);
 
-  const profileData = {
-    name: "Sylvester Wade",
-    email: "wasoryja@mailinator.com",
-    phone: "+88 01787765129",
-    role: "Student",
-  };
+  const profileData = useAuth();
+
+  // Filter to only include specific keys
+  const filteredProfileData = Object.keys(profileData)
+    .filter((key) => ["fullName", "email", "phone", "role"].includes(key))
+    .reduce((obj, key) => {
+      obj[key] = profileData[key];
+      return obj;
+    }, {});
 
   const handleClick = () => {
     setModal(true);
@@ -38,15 +42,15 @@ const ProfileDetails = () => {
           <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-accent4 shadow-lg flex items-center justify-center">
             <FaUser size={64} className="text-secondary" />
           </div>
-          <h2 className="text-2xl font-bold">{profileData.name}</h2>
+          <h2 className="text-2xl font-bold">{profileData.fullName}</h2>
           <p className="text-sm opacity-70">{profileData.role}</p>
         </div>
 
         {/* Profile Details Section */}
         <div className="md:col-span-2 space-y-4">
-          {Object.entries(profileData).map(([key, value]) => {
+          {Object.entries(filteredProfileData).map(([key, value]) => {
             const icons = {
-              name: <FaUser size={24} className="text-secondary" />,
+              fullName: <FaUser size={24} className="text-secondary" />,
               email: <FaEnvelope size={24} className="text-secondary" />,
               phone: <FaPhone size={24} className="text-secondary" />,
               role: <FaGraduationCap size={24} className="text-secondary" />,

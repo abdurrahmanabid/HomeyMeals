@@ -19,6 +19,7 @@ const loginController = async (req, res) => {
       email: user.email,
       role: user.role,
       createDate: user.createDate,
+      phone: user.phone,
     });
     res
       .cookie("token", token, { httpOnly: true, secure: true })

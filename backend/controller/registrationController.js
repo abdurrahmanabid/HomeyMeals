@@ -21,6 +21,7 @@ const registrationController = async (req, res) => {
       email: savedUser.email,
       role: savedUser.role,
       createDate: savedUser.createDate,
+      phone: user.phone,
     });
 
     res
