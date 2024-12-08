@@ -1,10 +1,9 @@
 const User = require("../model/User");
 
 // Register a new user
-const authUserController = async (req, res) => {
+const getUsersController = async (req, res) => {
   try {
-    const userId = req.params.id; // Get user ID from URL params
-    const user = await User.findById(userId); // Find the user by ID
+    const user = await User.find();
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -17,4 +16,4 @@ const authUserController = async (req, res) => {
   }
 };
 
-module.exports = authUserController;
+module.exports = getUsersController;
