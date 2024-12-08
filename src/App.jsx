@@ -27,6 +27,8 @@ import StudentMealDetails from "./pages/student/StudentsMealDetails";
 import StudentOrder from "./pages/student/StudentsOrder";
 import { consumer, rider, seller } from "./store/navbarObject";
 import useAuth from "./utils/useAuth";
+import SellerProfileDetails from "./pages/seller/SellerProfileDetails";
+import RiderProfileDetails from "./pages/rider/RiderProfileDetails";
 
 function App() {
   const user = useAuth()
@@ -55,6 +57,7 @@ function App() {
               <Route path="dashboard" element={<SellerDashboard />} />
               <Route path="order" element={<SellerOrders />} />
               <Route path="addItem" element={<AddItem />} />
+              <Route path="profile" element={<SellerProfileDetails />} />
             </Route>
           </Route>
 
@@ -82,10 +85,8 @@ function App() {
               <Route path="dashboard" element={<RiderDashboard />} />
               <Route path="delivery" element={<RiderDelivery />} />
               <Route path="notification" element={<RideerNotification />} />
-              <Route
-                path="current-delivery"
-                element={<RiderCurrentDElivery />}
-              />
+              <Route path="profile" element={<RiderProfileDetails />} />
+              <Route path="current-delivery" element={<RiderCurrentDElivery />}/>
             </Route>
           </Route>
 

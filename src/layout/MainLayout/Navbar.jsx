@@ -115,8 +115,8 @@ const Navbar = ({ data }) => {
                       to={
                         user?.role === "Student"
                           ? "/student/profile"
-                          : user?.role === "Consumer"
-                          ? "/consumer/profile"
+                          : user?.role === "Seller"
+                          ? "/Seller/profile"
                           : "/rider/profile"
                       }
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
