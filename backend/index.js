@@ -61,7 +61,7 @@ app.use(cookieParser());
 app.use(cors());
 
 const authRoutes = require("./routes/auth");
-const userGet = require("./routes/userGet");
+const userGet = require("./routes/getUsers");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/get", userGet);
