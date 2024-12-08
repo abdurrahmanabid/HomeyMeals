@@ -19,6 +19,7 @@ import RideerNotification from "./pages/rider/RiderNotification";
 import AddItem from "./pages/seller/AddItem";
 import SellerDashboard from "./pages/seller/SellerDashboard";
 import SellerOrders from "./pages/seller/SellerOrders";
+import CashMemo from "./pages/student/CashMemo";
 import StudentCart from "./pages/student/StudentCart";
 import StudentCheckout from "./pages/student/StudentCheckout";
 import StudentMenu from "./pages/student/StudentMenu";
@@ -67,6 +68,8 @@ function App() {
               <Route path="" element={<Home />} />
               <Route path="allMenu" element={<ProductDetail />} />
               <Route path="checkout" element={<StudentCheckout />} />
+              <Route path="cash-memo" element={<CashMemo />} />
+
               <Route path="order" element={<StudentOrder />} />
               <Route path="menu" element={<StudentMenu />} />
               <Route path="profile" element={<StudentProfileDetails />} />
