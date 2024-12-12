@@ -4,6 +4,7 @@ import { Button, Checkbox, Label, Select, TextInput } from "flowbite-react";
 import { useFormik } from "formik";
 import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import registerLottie from "../assets/lottie/registration.json";
 import { BASE_URL } from "../utils/ServerBaseURL";
 import { registerValidationSchema } from './../validation/registerValidation';
@@ -22,29 +23,72 @@ export function Register() {
     },
     validationSchema:registerValidationSchema,
     onSubmit: async(values) => {
-      console.log("User registered:", values);
-      localStorage.setItem("user", JSON.stringify(values));
-      await axios
-        .post(`${BASE_URL}auth/register`, {
+      try {
+        // Show loading indicator
+        Swal.fire({
+          title: "Registering...",
+          text: "Please wait while we process your registration",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
+        // Make registration request
+        const res = await axios.post(`${BASE_URL}auth/register`, {
           fullName: values.fullName,
           email: values.email,
           password: values.password,
           phone: values.phone,
           role: values.role,
-        })
-        .then((res) => {
-          if (values.role === "Student") {
+        });
+
+        // Close loading indicator
+        Swal.close();
+
+        // Show success message
+        await Swal.fire({
+          icon: "success",
+          title: "Registration Successful!",
+          text: `Welcome, ${values.fullName}!`,
+          confirmButtonText: "Continue",
+        });
+
+        // Set token in cookies
+        Cookies.set("token", res.data.token, { expires: 1, path: "" });
+
+        // Store user info in localStorage
+        localStorage.setItem("user", JSON.stringify(values));
+
+        // Navigate based on role
+        switch (values.role) {
+          case "Student":
             navigate("/student");
-          } else if (values.role === "Seller") {
+            break;
+          case "Seller":
             navigate("/seller");
-          } else {
+            break;
+          case "Rider":
             navigate("/rider");
-          }
-          Cookies.set("token", res.data.token, { expires: 1, path: "" });
-          console.log(res)
-        })
-        .catch((err) => console.log(err));
-    },
+            break;
+          default:
+            navigate("/dashboard");
+        }
+      } catch (err) {
+        // Handle registration errors
+        Swal.fire({
+          icon: "error",
+          title: "Registration Failed",
+          text:
+            err.response?.data?.message ||
+            "An error occurred during registration. Please try again.",
+          confirmButtonText: "Try Again",
+        });
+
+        // Log the error for debugging
+        console.error("Registration error:", err);
+      }
+      },
   });
 
   return (

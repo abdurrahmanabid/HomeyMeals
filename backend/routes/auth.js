@@ -10,7 +10,7 @@ const router = express.Router();
 router.post("/register", registrationController);
 
 // Login
-router.post("/login",loginController);
+router.post("/login", loginController);
 
 // Protected Route Example
 router.get("/protected", (req, res) => {
