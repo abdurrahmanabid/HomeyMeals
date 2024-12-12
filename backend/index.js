@@ -62,9 +62,13 @@ app.use(cors());
 
 const authRoutes = require("./routes/auth");
 const userGet = require("./routes/getUsers");
+const itemRouter = require("./routes/item");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/get", userGet);
+app.use("/api/item", itemRouter);
 
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`Server running on port http://localhost:${PORT}`)
+);
