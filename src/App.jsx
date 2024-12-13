@@ -16,9 +16,12 @@ import RiderCurrentDElivery from "./pages/rider/RiderCurrentDelivery";
 import RiderDashboard from "./pages/rider/RiderDashboard";
 import RiderDelivery from "./pages/rider/RiderDelivery";
 import RideerNotification from "./pages/rider/RiderNotification";
+import RiderProfileDetails from "./pages/rider/RiderProfileDetails";
 import AddItem from "./pages/seller/AddItem";
 import SellerDashboard from "./pages/seller/SellerDashboard";
+import SellerItems from "./pages/seller/SellerItems";
 import SellerOrders from "./pages/seller/SellerOrders";
+import SellerProfileDetails from "./pages/seller/SellerProfileDetails";
 import CashMemo from "./pages/student/CashMemo";
 import StudentCart from "./pages/student/StudentCart";
 import StudentCheckout from "./pages/student/StudentCheckout";
@@ -28,8 +31,6 @@ import StudentMealDetails from "./pages/student/StudentsMealDetails";
 import StudentOrder from "./pages/student/StudentsOrder";
 import { consumer, rider, seller } from "./store/navbarObject";
 import useAuth from "./utils/useAuth";
-import SellerProfileDetails from "./pages/seller/SellerProfileDetails";
-import RiderProfileDetails from "./pages/rider/RiderProfileDetails";
 
 function App() {
   const user = useAuth()
@@ -59,6 +60,7 @@ function App() {
               <Route path="order" element={<SellerOrders />} />
               <Route path="addItem" element={<AddItem />} />
               <Route path="profile" element={<SellerProfileDetails />} />
+              <Route path="my-items" element={<SellerItems />} />
             </Route>
           </Route>
 

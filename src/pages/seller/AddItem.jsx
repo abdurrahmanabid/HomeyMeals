@@ -1,10 +1,12 @@
 import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAuth from "./../../utils/useAuth";
 
 const AddItem = () => {
   const { id } = useAuth();
   console.log("🚀 ~ AddItem ~ user:", id);
+  const navigate = useNavigate()
 
   const [formData, setFormData] = useState({
     itemName: "",
@@ -80,8 +82,9 @@ const AddItem = () => {
           text: "Food item added successfully!",
           icon: "success",
           confirmButtonText: "Great!",
-        });
-        resetForm();
+        })
+        navigate('/seller/my-items')
+        window.location.reload()
       } else {
         throw new Error("Failed to add item");
       }
@@ -96,18 +99,6 @@ const AddItem = () => {
       // Set loading to false after the submission is complete
       setLoading(false);
     }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      itemName: "",
-      description: "",
-      price: "",
-      discountPrice: "",
-      image: null,
-    });
-    setImagePreview(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
@@ -197,13 +188,6 @@ const AddItem = () => {
                 alt="Preview"
                 className="max-w-full h-48 object-cover rounded-lg"
               />
-              <button
-                type="button"
-                onClick={resetForm}
-                className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full text-xs"
-              >
-                ✕
-              </button>
             </div>
           )}
         </div>
