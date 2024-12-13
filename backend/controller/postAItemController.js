@@ -1,5 +1,5 @@
 const User = require("../model/User");
-const FoodItem = require("./../model/Item");
+const FoodItem = require("../model/FoodItem");
 
 const postAItemController = async (req, res) => {
   try {
@@ -24,6 +24,7 @@ const postAItemController = async (req, res) => {
       description,
       price: parseFloat(price),
       discountPrice: parseFloat(discountPrice) || 0,
+      status: "pending",
       image: {
         data: req.file.buffer, // Save the file buffer (image data)
         contentType: req.file.mimetype, // MIME type (e.g., 'image/jpeg')
