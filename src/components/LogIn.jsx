@@ -37,7 +37,7 @@ export function Login() {
           timer: 2000,
           showConfirmButton: false,
         }).then(() => {
-          Cookies.set("token", res.data.token, { expires: 1, path: "" });
+          Cookies.set("token", res.data.token, { expires: 1, path: "/" });
           const role = res.data.role;
           navigate(`/${role}`);
 
