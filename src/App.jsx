@@ -8,7 +8,6 @@ import ProductDetail from "./components/ProductDetails";
 import ProtectedRoute from "./components/ProtectedRoute"; // Import the new component
 import { Register } from "./components/Register";
 import MainLayout from "./layout/MainLayout/MainLayouts";
-import AllMenus from "./pages/AllMenus";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import { TermsAndConditions } from "./pages/TermsAndConditions";
@@ -43,7 +42,7 @@ function App() {
           {/* Public Routes */}
           <Route path="/" element={<MainLayout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/menu" element={<AllMenus />} />
+            <Route path="/menu" element={<StudentMenu/>} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route

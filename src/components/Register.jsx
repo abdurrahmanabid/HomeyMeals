@@ -55,7 +55,7 @@ export function Register() {
         });
 
         // Set token in cookies
-        Cookies.set("token", res.data.token, { expires: 1, path: "" });
+        Cookies.set("token", res.data.token, { expires: 1, path: "/" });
 
         // Store user info in localStorage
         localStorage.setItem("user", JSON.stringify(values));
