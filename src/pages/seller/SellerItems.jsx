@@ -1,16 +1,17 @@
 import axios from "axios";
 import {
-      BadgeInfo,
-      CalendarIcon,
-      PackageIcon,
-      StoreIcon,
-      TagIcon,
-      TrashIcon,
+  BadgeInfo,
+  CalendarIcon,
+  PackageIcon,
+  StoreIcon,
+  TagIcon,
+  TrashIcon,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import ItemDetails from "../../components/ItemDetails";
 import Modal from "../../components/Modal";
+import useAuth from "../../utils/useAuth";
 import { calculateDiscount } from "./../../functions/calculateDiscount";
 import AddItem from "./AddItem";
 
@@ -20,12 +21,14 @@ const SellerItems = () => {
   const [addItemModal, setAddItemModal] = useState(false);
   const [detailsItemModal, setDetailsItemModal] = useState(false);
   const [specificItem, setSpecificItem] = useState(false);
+  const user = useAuth();
+  console.log("🚀 ~ SellerItems ~ user:", user);
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/item/items/seller/67548b0e9969f099888543b5"
+          `http://localhost:8000/api/item/items/seller/${user.id}`
         );
         const data = await response.json();
         setItems(data.items);
@@ -153,7 +156,7 @@ const SellerItems = () => {
         </div>
 
         {/* Empty State */}
-        {items.length === 0 ? (
+        {items?.length === 0 || !items ? (
           <div className="bg-white shadow-2xl rounded-2xl p-8 sm:p-16 text-center">
             <PackageIcon
               className="mx-auto mb-4 sm:mb-8 text-gray-400"
