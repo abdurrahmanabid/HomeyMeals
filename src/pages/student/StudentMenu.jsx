@@ -1,75 +1,155 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import CategoryFilter from "../../components/CategoryFilter";
-import MealCard from "../../components/MealCard";
-import mealData from "../../store/mealData";
+import axios from "axios";
+import { Filter, Search } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
+import HomeyMealsLoader from "./../../components/HomeyMealsLoader";
+import MealCard from "./../../components/MealCard";
 
 const MealList = () => {
+  const [meals, setMeals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [categories, setCategories] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const categories = [
-    "All",
-    "Appetizers",
-    "Main Courses",
-    "Desserts",
-    "Drinks",
-  ];
-  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchMeals = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/item/items"
+        );
 
-  // Filter meals based on selected category
-  const filteredMeals =
-    selectedCategory === "All"
-      ? mealData
-      : mealData.filter((meal) => meal.category === selectedCategory);
+        const items = response.data || [];
+        setMeals(items);
 
-  const handleDetails = (meal) => {
-    navigate(`/student/meal/${meal.id}`);
-  };
+        const uniqueCategories = [
+          "All",
+          ...new Set(items.map((item) => item.category)),
+        ];
+        setCategories(uniqueCategories);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching meals:", err);
+        setError("Failed to load meals. Please try again later.");
+        setLoading(false);
+      }
+    };
 
-  // const handleAddToCart = (meal) => {
-  //   console.log("🚀 ~ handleAddToCart ~ meal:", meal)
-  //   // Retrieve cart data from localStorage or initialize an empty array
-  //   const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+    fetchMeals();
+  }, []);
 
-  //   // Add the selected meal to the cart
-  //   const updatedCart = [...existingCart, meal];
+  // Comprehensive filter logic
+  const filteredMeals = useMemo(() => {
+    let result = meals;
 
-  //   // Save updated cart back to localStorage
-  //   localStorage.setItem("cart", JSON.stringify(updatedCart));
+    // Filter by category
+    if (selectedCategory !== "All") {
+      result = result.filter((meal) => meal.category === selectedCategory);
+    }
 
-  //   // Show an alert to confirm the addition
-  //   alert(`${meal.name} has been added to your cart!`);
-  //   navigate('/student/checkout');
+    // Filter by search query
+    if (searchQuery) {
+      result = result.filter(
+        (meal) =>
+          meal?.itemName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          meal?.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
 
-  // };
+    return result;
+  }, [meals, selectedCategory, searchQuery]);
+
+  // Grouped meals logic
+  const groupedMeals = useMemo(() => {
+    const groups = {};
+    filteredMeals.forEach((meal) => {
+      if (!groups[meal.category]) {
+        groups[meal.category] = [];
+      }
+      groups[meal.category].push(meal);
+    });
+    return groups;
+  }, [filteredMeals]);
+
+  if (loading) return <HomeyMealsLoader />;
+  if (error) return <div className="text-red-500 text-center p-4">{error}</div>;
 
   return (
-    <>
-      <div className="flex flex-col items-center">
-        <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
-          Our Menu
-        </h1>
+    <div className="container mx-auto px-4 py-8 min-h-[100vh]">
+      {/* Search and Filter Section */}
+      <div className="mb-8 flex items-center space-x-4">
+        <div className="relative flex-grow">
+          <input
+            type="text"
+            placeholder="Search meals..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all duration-300 ease-in-out"
+          />
+          <Search
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+        </div>
 
-        {/* Category Selector */}
-        <CategoryFilter
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-        />
-
-        {/* Display filtered meals */}
-        <div className="flex flex-wrap justify-center">
-          {filteredMeals.map((meal) => (
-            <MealCard
-              key={meal.id}
-              meal={meal}
-              handleDetails={() => handleDetails(meal)}
-              handleAddToCart={() => handleAddToCart(meal)}
-            />
-          ))}
+        {/* Category Dropdown */}
+        <div className="relative">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="appearance-none w-full pl-3 pr-8 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all duration-300 ease-in-out"
+          >
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+          <Filter
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+            size={20}
+          />
         </div>
       </div>
-    </>
+
+      {/* Categorized Meals */}
+      {Object.entries(groupedMeals).map(([category, items]) => (
+        <div key={category} className="mb-12">
+          <div className="relative mb-6">
+            <h2 className="text-3xl font-bold text-gray-800 relative">
+              {category} Meals
+              <div className="absolute bottom-[-8px] left-0 w-24 h-1 bg-gradient-to-r from-primary to-primary/50 rounded-full"></div>
+            </h2>
+          </div>
+          {items.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {items.map((meal) => (
+                <div
+                  key={meal._id}
+                  className="transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
+                >
+                  <MealCard meal={meal} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center py-8">
+              No meals in this category.
+            </p>
+          )}
+        </div>
+      ))}
+
+      {/* No Results State */}
+      {Object.keys(groupedMeals).length === 0 && (
+        <div className="text-center py-16">
+          <p className="text-gray-500 text-xl mb-4">No meals found</p>
+          <p className="text-gray-400">
+            Try adjusting your search or category filter
+          </p>
+        </div>
+      )}
+    </div>
   );
 };
 

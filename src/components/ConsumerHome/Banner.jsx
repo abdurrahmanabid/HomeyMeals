@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Button from "../Button";
 
 const Banner = () => {
@@ -28,7 +29,7 @@ const Banner = () => {
         <p className="mt-3 sm:mt-4 text-base sm:text-lg text-gray-600">
           Find fresh and delicious meals delivered to your doorstep with ease.
         </p>
-      <Button className="mt-4 ml-0">Explore more</Button>
+      <Link  to={'/menu'}><Button className="mt-4 ml-0">Explore more</Button></Link>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from 'react-router-dom';
 import Button from "../Button";
 
 const ExploreMenu = () => {
@@ -121,7 +122,9 @@ const ExploreMenu = () => {
           </div>
         ))}
       </div>
-      <Button className="mt-4 w-96 self-center">Explore The main Menu</Button>
+      <Link to={"/menu"} className="mt-4 self-center">
+        <Button className="mt-4 ml-0">Explore Main Menu</Button>
+      </Link>
     </div>
   );
 };
