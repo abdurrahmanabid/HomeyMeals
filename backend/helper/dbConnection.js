@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 function dbConnection() {
     mongoose.connect(process.env.MONGODB_URL, {

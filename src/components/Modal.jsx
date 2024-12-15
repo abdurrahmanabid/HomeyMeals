@@ -18,6 +18,7 @@ const heightClasses = {
   xl: "h-96",
   xxl: "h-[30rem]",
   xxxl: "h-[40rem]",
+  full: "min-h-full"
 };
 
  const  Modal=({

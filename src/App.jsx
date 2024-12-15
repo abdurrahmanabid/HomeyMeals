@@ -8,7 +8,6 @@ import ProductDetail from "./components/ProductDetails";
 import ProtectedRoute from "./components/ProtectedRoute"; // Import the new component
 import { Register } from "./components/Register";
 import MainLayout from "./layout/MainLayout/MainLayouts";
-import AllMenus from "./pages/AllMenus";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import { TermsAndConditions } from "./pages/TermsAndConditions";
@@ -16,9 +15,13 @@ import RiderCurrentDElivery from "./pages/rider/RiderCurrentDelivery";
 import RiderDashboard from "./pages/rider/RiderDashboard";
 import RiderDelivery from "./pages/rider/RiderDelivery";
 import RideerNotification from "./pages/rider/RiderNotification";
+import RiderProfileDetails from "./pages/rider/RiderProfileDetails";
 import AddItem from "./pages/seller/AddItem";
 import SellerDashboard from "./pages/seller/SellerDashboard";
+import SellerItems from "./pages/seller/SellerItems";
 import SellerOrders from "./pages/seller/SellerOrders";
+import SellerProfileDetails from "./pages/seller/SellerProfileDetails";
+import CashMemo from "./pages/student/CashMemo";
 import StudentCart from "./pages/student/StudentCart";
 import StudentCheckout from "./pages/student/StudentCheckout";
 import StudentMenu from "./pages/student/StudentMenu";
@@ -39,7 +42,7 @@ function App() {
           {/* Public Routes */}
           <Route path="/" element={<MainLayout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/menu" element={<AllMenus />} />
+            <Route path="/menu" element={<StudentMenu/>} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route
@@ -55,6 +58,8 @@ function App() {
               <Route path="dashboard" element={<SellerDashboard />} />
               <Route path="order" element={<SellerOrders />} />
               <Route path="addItem" element={<AddItem />} />
+              <Route path="profile" element={<SellerProfileDetails />} />
+              <Route path="my-items" element={<SellerItems />} />
             </Route>
           </Route>
 
@@ -64,6 +69,8 @@ function App() {
               <Route path="" element={<Home />} />
               <Route path="allMenu" element={<ProductDetail />} />
               <Route path="checkout" element={<StudentCheckout />} />
+              <Route path="cash-memo" element={<CashMemo />} />
+
               <Route path="order" element={<StudentOrder />} />
               <Route path="menu" element={<StudentMenu />} />
               <Route path="profile" element={<StudentProfileDetails />} />
@@ -82,10 +89,8 @@ function App() {
               <Route path="dashboard" element={<RiderDashboard />} />
               <Route path="delivery" element={<RiderDelivery />} />
               <Route path="notification" element={<RideerNotification />} />
-              <Route
-                path="current-delivery"
-                element={<RiderCurrentDElivery />}
-              />
+              <Route path="profile" element={<RiderProfileDetails />} />
+              <Route path="current-delivery" element={<RiderCurrentDElivery />}/>
             </Route>
           </Route>
 

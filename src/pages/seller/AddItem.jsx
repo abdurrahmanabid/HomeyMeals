@@ -1,6 +1,13 @@
-import React, { useState, useRef } from "react";
+import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import useAuth from "./../../utils/useAuth";
 
 const AddItem = () => {
+  const { id } = useAuth();
+  console.log("🚀 ~ AddItem ~ user:", id);
+  const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
     itemName: "",
     description: "",
@@ -9,6 +16,7 @@ const AddItem = () => {
     image: null,
   });
   const [imagePreview, setImagePreview] = useState(null);
+  const [loading, setLoading] = useState(false); // Loading state
   const fileInputRef = useRef(null);
 
   const handleChange = (e) => {
@@ -26,16 +34,27 @@ const AddItem = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { itemName, description, price, discountPrice, image } = formData;
 
+    // Validation checks
     if (!itemName || !description || !price || !image) {
-      alert("Please fill in all fields");
+      Swal.fire({
+        title: "Error!",
+        text: "Please fill in all fields.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
       return;
     }
     if (discountPrice && parseFloat(discountPrice) > parseFloat(price)) {
-      alert("Discount price must be less than or equal to the original price");
+      Swal.fire({
+        title: "Error!",
+        text: "Discount price must be less than or equal to the original price.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
       return;
     }
 
@@ -43,25 +62,50 @@ const AddItem = () => {
     Object.entries(formData).forEach(([key, value]) =>
       formDataToSubmit.append(key, value)
     );
-    console.log("Submitting form data:", Object.fromEntries(formDataToSubmit));
-    resetForm();
-  };
 
-  const resetForm = () => {
-    setFormData({
-      itemName: "",
-      description: "",
-      price: "",
-      discountPrice: "",
-      image: null,
-    });
-    setImagePreview(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    // Set loading to true before submitting
+    setLoading(true);
+
+    // Simulate API request to submit form data
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/item/${id}/post-a-item`,
+        {
+          method: "POST",
+          body: formDataToSubmit,
+        }
+      );
+
+      if (response.ok) {
+        Swal.fire({
+          title: "Success!",
+          text: "Food item added successfully!",
+          icon: "success",
+          confirmButtonText: "Great!",
+        })
+        navigate('/seller/my-items')
+        window.location.reload()
+      } else {
+        throw new Error("Failed to add item");
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Something went wrong, please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    } finally {
+      // Set loading to false after the submission is complete
+      setLoading(false);
+    }
   };
 
   return (
     <div className="max-w-lg mx-auto mt-10 p-6 mb-10 border border-gray-300 rounded-lg shadow-lg bg-white">
-      <h2 className="text-2xl font-semibold text-center mb-6">Add New Food Item</h2>
+      <h2 className="text-2xl font-semibold text-center mb-6">
+        Add New Food Item
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {["itemName", "description", "price", "discountPrice"].map((field) => (
           <div key={field}>
@@ -96,7 +140,11 @@ const AddItem = () => {
               />
             ) : (
               <input
-                type={field === "price" || field === "discountPrice" ? "number" : "text"}
+                type={
+                  field === "price" || field === "discountPrice"
+                    ? "number"
+                    : "text"
+                }
                 id={field}
                 name={field}
                 value={formData[field]}
@@ -117,7 +165,10 @@ const AddItem = () => {
           </div>
         ))}
         <div>
-          <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="image"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Upload Image:
           </label>
           <input
@@ -132,22 +183,26 @@ const AddItem = () => {
           />
           {imagePreview && (
             <div className="mt-4 relative">
-              <img src={imagePreview} alt="Preview" className="max-w-full h-48 object-cover rounded-lg" />
-              <button
-                type="button"
-                onClick={resetForm}
-                className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full text-xs"
-              >
-                ✕
-              </button>
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="max-w-full h-48 object-cover rounded-lg"
+              />
             </div>
           )}
         </div>
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
+          className={`w-full py-2 px-4 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300 ${
+            loading ? "cursor-not-allowed opacity-50" : ""
+          }`}
+          disabled={loading}
         >
-          Add Item
+          {loading ? (
+            <span className="animate-spin">Loading...</span>
+          ) : (
+            "Add Item"
+          )}
         </button>
       </form>
     </div>
