@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { CgDetailsMore } from "react-icons/cg";
-import {
-  FaCheckCircle,
-  FaEnvelope,
-  FaGraduationCap,
-  FaMapMarkerAlt,
-  FaPhone,
-  FaUser,
-} from "react-icons/fa";
+import {FaCheckCircle,FaEnvelope,FaGraduationCap,FaMapMarkerAlt,FaPhone,FaUser,} from "react-icons/fa";
 import { TfiMapAlt } from "react-icons/tfi";
 import useAuth from "../utils/useAuth";
 import Modal from "./Modal";
