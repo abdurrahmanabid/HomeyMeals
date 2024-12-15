@@ -1,18 +1,60 @@
 const Profile = require("../model/Profile");
+const User = require("../model/User");
 
 // Create a new profile
-exports.createProfile = async (req, res) => {
-  const { userId, location, description, profilePicture } = req.body;
+
+const createProfileController = async (req, res) => {
   try {
-    const profile = await Profile.create({ userId, location, description, profilePicture });
-    res.status(201).json(profile);
+    const { userId } = req.params;
+    const { location, description } = req.body;
+
+    // Check if the user exists
+    const userExists = await User.findById(userId);
+    if (!userExists) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if a profile already exists for the user
+    const existingProfile = await Profile.findOne({ userId });
+    if (existingProfile) {
+      return res.status(400).json({ error: "Profile already exists for this user" });
+    }
+
+    // Ensure a profile picture was uploaded
+    if (!req.file) {
+      return res.status(400).json({ error: "Profile picture is required" });
+    }
+
+    // Create a new profile
+    const newProfile = new Profile({
+      userId,
+      location: {
+        upazilla: location?.upazilla || "",
+        district: location?.district || "",
+        division: location?.division || "",
+      },
+      description: description || "",
+      profilePicture: req.file.path, // Assuming you're saving the path of the uploaded image
+    });
+
+    // Save the profile
+    await newProfile.save();
+
+    res.status(201).json({
+      message: "Profile created successfully!",
+      profile: newProfile,
+    });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Failed to create the profile" });
   }
 };
 
+module.exports = createProfileController;
+
+
 // Get a profile by userId
-exports.getProfileByUserId = async (req, res) => {
+module.exports.getProfileByUserId = async (req, res) => {
   const { userId } = req.params;
   try {
     const profile = await Profile.findOne({ userId }).populate("userId");

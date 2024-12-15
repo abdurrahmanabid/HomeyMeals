@@ -2,6 +2,8 @@ import axios from "axios";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
+import useAuth from "../utils/useAuth";
+import { BASE_URL } from "../utils/ServerBaseURL";
 
 const ProfileEdit = ({data}) => {
   const [divisions, setDivisions] = useState([]);
@@ -9,7 +11,8 @@ const ProfileEdit = ({data}) => {
   const [upazillas, setUpazillas] = useState([]);
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  const user = useAuth()
+  console.log("🚀 ~ App ~ user:", user)
   // Fetch Divisions
   useEffect(() => {
     const fetchDivisions = async () => {
@@ -34,7 +37,7 @@ const ProfileEdit = ({data}) => {
       try {
         setIsLoading(true);
         const { data } = await axios.get(
-          `https://bdapis.com/api/v1.2/division/${division}`
+         `https://bdapis.com/api/v1.2/division/${division}`
         );
         setDistricts(data.data || []); // Use optional chaining and default value
       } catch (error) {
@@ -76,19 +79,47 @@ const ProfileEdit = ({data}) => {
   });
 
   // Handle form submission
-  const handleSave = (values) => {
-    const formData = {
+const handleSave = async (values) => {
+  try {
+    let base64Image = null;
+
+    // Convert the file to base64 if an image is selected
+    if (image) {
+      const reader = new FileReader();
+      const base64Promise = new Promise((resolve, reject) => {
+        reader.onloadend = () => resolve(reader.result.split(",")[1]);
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(image);
+      });
+
+      base64Image = await base64Promise; // Wait for base64 conversion
+    }
+
+    // Prepare the payload
+    const payload = {
       division: values.selectedDivision,
       district: values.selectedDistrict,
       upazilla: values.selectedUpazilla,
       description: values.description,
-      image: image ? image.name : "No image selected", // Logs the image name if available
-      latitude: "",
-      longitude:"",
+      profilePicture: base64Image, // Add base64-encoded image here
     };
-    data(formData)
-    console.log("Form Data:", formData); // Log the data to console
-  };
+
+    console.log("Sending payload:", payload);
+
+    // Send POST request with JSON data
+    await axios.post(`${BASE_URL}profile/post/${user.id}`, payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("Profile saved successfully!");
+  } catch (error) {
+    console.error("Error saving profile:", error);
+  }
+};
+
+  
 
   return (
     <div className="">
@@ -113,9 +144,6 @@ const ProfileEdit = ({data}) => {
                   Edit your account details
                 </p>
               </div>
-              <button className="mr-2 hidden rounded-lg border-2 px-4 py-2 font-medium text-gray-500 sm:inline focus:outline-none focus:ring hover:bg-gray-200">
-                Cancel
-              </button>
               <button
                 type="submit"
                 className="hidden rounded-lg border-2 border-transparent bg-blue-600 px-4 py-2 font-medium text-white sm:inline focus:outline-none focus:ring hover:bg-blue-700"

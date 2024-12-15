@@ -1,18 +1,21 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const profileSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Foreign Key
-  location: {
-    upazilla: { type: String },
-    district: { type: String },
-    division: { type: String },
+const profileSchema = new Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
-  description: { type: String },
-  profilePicture: { type: String },
+  upazilla: { type: String, required: true },
+  district: { type: String, required: true },
+  division: { type: String, required: true },
+  description: { type: String, required: true },
+  profilePicture: { type: String, required: true },
+  lat: { type: Number }, // Latitude
+  lng: { type: Number }, // Longitude
 });
 
 // Ensure a Profile is created for only one user
 profileSchema.index({ userId: 1 }, { unique: true });
 
-const Profile = mongoose.model("Profile", profileSchema);
-module.exports = Profile;
+module.exports = mongoose.model("Profile", profileSchema);
