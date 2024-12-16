@@ -1,36 +1,39 @@
-const User = require("../model/User");
 const Profile = require("../model/Profile");
-const fs = require("fs");
+const User = require("../model/User");
 
 const postProfileController = async (req, res) => {
   try {
     const { userId } = req.params;
-    const {division,district,upazilla, description } = req.body;
+    const { division, district, upazilla, description, profilePicture } =
+      req.body;
 
+    // Check if the user exists
     const userExists = await User.findById(userId);
     if (!userExists) {
       return res.status(404).json({ error: "User not found" });
     }
 
+    // Check if a profile already exists for the user
     const existingProfile = await Profile.findOne({ userId });
     if (existingProfile) {
-      return res.status(400).json({ error: "Profile already exists for this user" });
+      return res
+        .status(400)
+        .json({ error: "Profile already exists for this user" });
     }
 
-    if (!req.file) {
+    // Check if profilePicture is provided in base64 format
+    if (!profilePicture) {
       return res.status(400).json({ error: "Profile picture is required" });
     }
 
-    const profilePictureBase64 = req.file.buffer.toString("base64");
-
+    // Create a new profile
     const newProfile = new Profile({
       userId,
-        upazilla:upazilla || "",
-        district:district || "",
-        division:division || "",
-
+      upazilla: upazilla || "",
+      district: district || "",
+      division: division || "",
       description: description || "",
-      profilePicture: profilePictureBase64, 
+      profilePicture, // Save the base64 string directly
     });
 
     await newProfile.save();

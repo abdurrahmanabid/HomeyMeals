@@ -1,17 +1,33 @@
+import axios from "axios";
 import { ToggleSwitch } from "flowbite-react";
 import React, { useState } from "react";
+import useAuth from "../utils/useAuth";
 import CurrentLocation from "./CurrentLocation";
 import CustomLocation from "./CustomLocation";
 
 const SetLocation = ({data}) => {
   const [current, setCurrent] = useState( null);
   const [location,setLocation]=useState()
+  const user = useAuth()
   const handleToggleChange = (value) => {
     setCurrent(value);
   };
-  const handleSaveClick=()=>{
-    data(location)
+  const handleSaveClick=async()=>{
+    
     console.log("🚀 ~ handleSaveClick ~ location:", location)
+    const locationData = {
+      lng: location.lng,
+      lat:location.lat
+    };
+      try {
+        const res= await axios.put(
+          `http://localhost:8000/api/profile/map/put/${user.id}`,locationData
+        );
+        data(location)
+        console.log("🚀 ~ handleSaveClick ~ res:", res)
+      } catch (error) {
+        console.error("Failed to add location:", error);
+      } 
   }
     
 

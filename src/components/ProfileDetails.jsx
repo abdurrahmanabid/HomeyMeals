@@ -1,6 +1,14 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { CgDetailsMore } from "react-icons/cg";
-import {FaCheckCircle,FaEnvelope,FaGraduationCap,FaMapMarkerAlt,FaPhone,FaUser,} from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaEnvelope,
+  FaGraduationCap,
+  FaMapMarkerAlt,
+  FaPhone,
+  FaUser,
+} from "react-icons/fa";
 import { TfiMapAlt } from "react-icons/tfi";
 import useAuth from "../utils/useAuth";
 import Modal from "./Modal";
@@ -12,8 +20,26 @@ const ProfileDetails = () => {
   const [mapModal, setMapModal] = useState(false);
   const [moreDetails, setMoreDetails] = useState(null);
   const [mapDetails, setMapDetails] = useState(null);
-
+  const [profileDetails, setProfileDetails] = useState(null);
+  const [loading, setIsLoading] = useState(true);
   const profileData = useAuth();
+  const getProfileDetails = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get(
+        `http://localhost:8000/api/profile/get/${profileData.id}`
+      );
+      console.log("🚀 ~ getProfileDetails ~ data:", data.profile);
+      setProfileDetails(data.profile);
+    } catch (error) {
+      console.error("Failed to fetch details:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
+    getProfileDetails();
+  }, []);
 
   // Filter to only include specific keys
   const filteredProfileData = Object.keys(profileData)
@@ -33,7 +59,17 @@ const ProfileDetails = () => {
         {/* Profile Picture Section */}
         <div className="md:col-span-1 p-6 rounded-xl text-center ">
           <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-accent4 shadow-lg flex items-center justify-center">
-            <FaUser size={64} className="text-secondary" />
+            { moreDetails?.profilePicture || profileDetails?.profilePicture ? (
+              <img
+                className="w-full h-full rounded-full object-cover"
+                src={
+                  profileDetails?.profilePicture || moreDetails.profilePicture
+                }
+                alt={profileDetails?.fullName||moreDetails?.fullName}
+              />
+            ) : (
+              <FaUser size={64} className="text-secondary" />
+            )}
           </div>
           <h2 className="text-2xl font-bold">{profileData.fullName}</h2>
           <p className="text-sm opacity-70">{profileData.role}</p>
@@ -66,19 +102,24 @@ const ProfileDetails = () => {
           })}
 
           {/* More Details Section */}
-          {moreDetails && (
+          {(moreDetails ||
+            (profileDetails &&
+              profileDetails.upazilla &&
+              profileDetails.district)) && (
             <div className="space-y-4">
               <div className="flex items-center p-4 rounded-lg bg-accent4 shadow-lg">
                 <FaMapMarkerAlt size={24} className="text-secondary mr-4" />
                 <div>
                   <p className="text-sm font-medium opacity-70">Location</p>
                   <p className="text-lg font-semibold">
-                    {`${moreDetails.upazilla}, ${moreDetails.district}, ${moreDetails.division}`}
+                    {`${moreDetails?.upazilla || profileDetails.upazilla}, ${
+                      moreDetails?.district || profileDetails.district
+                    }, ${moreDetails?.division || profileDetails.division}`}
                   </p>
                 </div>
               </div>
 
-              {moreDetails.description && (
+              {(moreDetails?.description || profileDetails.description) && (
                 <div className="flex items-center p-4 rounded-lg bg-accent4 shadow-lg">
                   <CgDetailsMore size={24} className="text-secondary mr-4" />
                   <div>
@@ -86,46 +127,67 @@ const ProfileDetails = () => {
                       Description
                     </p>
                     <p className="text-lg font-semibold">
-                      {moreDetails.description}
+                      {moreDetails?.description || profileDetails.description}
                     </p>
                   </div>
                 </div>
               )}
             </div>
           )}
-          {mapDetails && (
+          {mapDetails ||
+          (profileDetails && profileDetails.lat && profileDetails.lng) ? (
             <div className="flex items-center p-4 rounded-lg bg-accent4 shadow-lg">
               <TfiMapAlt size={24} className="text-secondary mr-4" />
               <div>
                 <p className="text-sm font-medium opacity-70">Map Location</p>
                 <p className="text-lg font-semibold">
-                  {`Lat : ${mapDetails.lat}, Lng : ${mapDetails.lng}`}
+                  {`Lat : ${
+                    mapDetails?.lat || profileDetails?.lat || ""
+                  }, Lng : ${mapDetails?.lng || profileDetails?.lng || ""}`}
                 </p>
               </div>
             </div>
-          )}
+          ) : null}
 
           <div className="w-full p-6">
-            {!moreDetails && (
-              <button
-                className="w-full py-4 rounded-lg flex items-center justify-center font-bold text-lg transition-all hover:opacity-90 bg-primary text-accent5"
-                onClick={handleClick}
-              >
-                <FaCheckCircle className="mr-3" />
-                Set Your Full Profile
-              </button>
-            )}
-            {!mapDetails && moreDetails && (
-              <button
-                className="w-full py-4 rounded-lg flex items-center justify-center font-bold text-lg transition-all hover:opacity-90 bg-primary text-accent5"
-                onClick={() => {
-                  setMapModal(true);
-                }}
-              >
-                <FaCheckCircle className="mr-3" />
-                Set Your Map Location
-              </button>
-            )}
+            {!moreDetails &&
+              !(
+                profileDetails &&
+                profileDetails.upazilla &&
+                profileDetails.district
+              ) && (
+                <button
+                  className="w-full py-4 rounded-lg flex items-center justify-center font-bold text-lg transition-all hover:opacity-90 bg-primary text-accent5"
+                  onClick={handleClick}
+                >
+                  <FaCheckCircle className="mr-3" />
+                  Set Your Full Profile
+                </button>
+              )}
+            {/* Removed the map location button when "Set Your Full Profile" button is visible */}
+            {!(
+              !moreDetails &&
+              !(
+                profileDetails &&
+                profileDetails.upazilla &&
+                profileDetails.district
+              )
+            ) &&
+              ((!mapDetails && moreDetails) ||
+                !(
+                  profileDetails &&
+                  profileDetails.lat &&
+                  profileDetails?.lng
+                )) && (
+                <button
+                  className="w-full py-4 rounded-lg flex items-center justify-center font-bold text-lg transition-all hover:opacity-90 bg-primary text-accent5"
+                  onClick={() => {
+                    setMapModal(true);
+                  }}
+                >
+                  <FaCheckCircle className="mr-3" />Set Your Map Location
+                </button>
+              )}
           </div>
         </div>
       </div>

@@ -2,8 +2,8 @@ import axios from "axios";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
-import useAuth from "../utils/useAuth";
 import { BASE_URL } from "../utils/ServerBaseURL";
+import useAuth from "../utils/useAuth";
 
 const ProfileEdit = ({data}) => {
   const [divisions, setDivisions] = useState([]);
@@ -112,7 +112,7 @@ const handleSave = async (values) => {
         "Content-Type": "application/json",
       },
     });
-
+    data(payload)
     console.log("Profile saved successfully!");
   } catch (error) {
     console.error("Error saving profile:", error);

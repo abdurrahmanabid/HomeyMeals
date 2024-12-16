@@ -8,10 +8,20 @@ const profileRoutes = require("./routes/profile");
 dbConnection();
 
 const app = express();
-app.use(express.json());
+
+// Improved CORS configuration
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Specify your frontend's exact origin
+    credentials: true, // Important for handling cookies and authentication
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+  })
+);
+
+app.use(express.json({ limit: "10mb" })); // Increased JSON body limit
 app.use(cookieParser());
-app.use(cors());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 const authRoutes = require("./routes/auth");
 const userGet = require("./routes/getUsers");
