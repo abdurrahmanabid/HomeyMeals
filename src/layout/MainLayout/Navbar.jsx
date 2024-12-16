@@ -5,14 +5,17 @@ import { Link, useNavigate } from "react-router-dom";
 import Logout from "../../functions/Logout";
 import useAuth from "../../utils/useAuth";
 import logo from "./../../assets/imgs/favicon.png";
+import axios from "axios";
 
 const Navbar = ({ data }) => {
-  const user = useAuth()
-  const navigate = useNavigate()
+  const user = useAuth();
+  const navigate = useNavigate();
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showNavbar, setShowNavbar] = useState(true); // Track navbar visibility
   const [lastScrollY, setLastScrollY] = useState(0); // Track last scroll position
+  const [profileDetails, setProfileDetails] = useState(null);
+  const [loading, setIsLoading] = useState(true);
 
   const toggleAvatar = () => setAvatarOpen(!avatarOpen);
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
@@ -28,18 +31,35 @@ const Navbar = ({ data }) => {
       setLastScrollY(currentScrollY);
     };
 
-
     window.addEventListener("scroll", handleScroll);
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
-  
-  const handleLogout=()=>{
-    Logout()
-  }
+
+  const getProfileDetails = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get(
+        `http://localhost:8000/api/profile/get/${user.id}`
+      );
+      console.log("🚀 ~ getProfileDetails ~ data:", data.profile);
+      setProfileDetails(data.profile);
+    } catch (error) {
+      console.error("Failed to fetch details:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
+    getProfileDetails();
+  }, []);
+
+  const handleLogout = () => {
+    Logout();
+  };
   return (
     <>
-    <div className="pt-[80px]"></div>
+      <div className="pt-[80px]"></div>
       <nav
         className={`fixed top-0 left-0 w-full bg-primary py-4 shadow-xl z-50 transition-transform duration-300 ${
           showNavbar ? "translate-y-0" : "-translate-y-full"
@@ -88,25 +108,24 @@ const Navbar = ({ data }) => {
               <div>
                 {data ? (
                   <div
-                    className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 shadow-lg rounded-md z-50"
+                    className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 shadow-lg rounded-md z-50"
                     onMouseLeave={toggleAvatar}
                   >
-                    {/* Profile Info */}
-                    <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200">
-                      <img
-                        src="https://picsum.photos/200/300" // Dummy avatar image
-                        alt="Profile Avatar"
-                        className="min-w-10 h-10 rounded-full shadow-xl"
-                      />
-                      <div>
-                        <p className="text-gray-800 font-semibold">
-                          {user.fullName}
-                        </p>{" "}
-                        {/* Dummy name */}
-                        <p className="text-gray-500 text-sm">
-                          {user.email}
-                        </p>{" "}
-                        {/* Dummy email */}
+                    <div className="w-64 bg-white rounded-lg shadow-lg p-3">
+                      <div className="flex items-center gap-3 border-b pb-2 mb-2">
+                        <img
+                          src={profileDetails?.profilePicture} // Profile Image
+                          alt="Profile Avatar"
+                          className="w-10 h-10 rounded-full shadow"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-gray-800 font-semibold truncate">
+                            {user.fullName}
+                          </p>
+                          <p className="text-gray-500 text-sm truncate">
+                            {user.email}
+                          </p>
+                        </div>
                       </div>
                     </div>
 
