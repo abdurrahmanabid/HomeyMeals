@@ -29,7 +29,7 @@ const Banner = () => {
         <p className="mt-3 sm:mt-4 text-base sm:text-lg text-gray-600">
           Find fresh and delicious meals delivered to your doorstep with ease.
         </p>
-      <Link  to={'/menu'}><Button className="mt-4 ml-0">Explore more</Button></Link>
+      <Link  to={'./menu'}><Button className="mt-4 ml-0">Explore more</Button></Link>
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+import axios from "axios";
+import { LogIn, LogOut, User, UserPlus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BiLogInCircle, BiMenu } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
@@ -5,7 +7,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Logout from "../../functions/Logout";
 import useAuth from "../../utils/useAuth";
 import logo from "./../../assets/imgs/favicon.png";
-import axios from "axios";
 
 const Navbar = ({ data }) => {
   const user = useAuth();
@@ -16,6 +17,8 @@ const Navbar = ({ data }) => {
   const [lastScrollY, setLastScrollY] = useState(0); // Track last scroll position
   const [profileDetails, setProfileDetails] = useState(null);
   const [loading, setIsLoading] = useState(true);
+  const defaultPP =
+    "https://www.pngitem.com/pimgs/m/22-223968_default-profile-picture-circle-hd-png-download.png";
 
   const toggleAvatar = () => setAvatarOpen(!avatarOpen);
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
@@ -98,34 +101,41 @@ const Navbar = ({ data }) => {
               {data ? (
                 <div className="flex justify-center text-white items-center gap-3 hover:scale-105 hover:text-accent3 transition-all">
                   <h1>{user.fullName}</h1>
-                  <CgProfile className="text-3xl text-white" />
+                  {profileDetails?.profilePicture ? (
+                    <img
+                      src={profileDetails?.profilePicture || defaultPP} // Profile Image
+                      alt="Profile Avatar"
+                      className="w-10 h-10 rounded-full shadow"
+                    />
+                  ) : (
+                    <CgProfile className="text-3xl text-white" />
+                  )}
                 </div>
               ) : (
                 <BiLogInCircle className="text-3xl text-white hover:scale-105 hover:text-accent3 transition-all" />
               )}
             </button>
             {avatarOpen && (
-              <div>
+              <div className="relative">
                 {data ? (
                   <div
-                    className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 shadow-lg rounded-md z-50"
+                    className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 shadow-lg rounded-lg z-50 transition ease-in-out duration-300"
                     onMouseLeave={toggleAvatar}
                   >
-                    <div className="w-64 bg-white rounded-lg shadow-lg p-3">
-                      <div className="flex items-center gap-3 border-b pb-2 mb-2">
-                        <img
-                          src={profileDetails?.profilePicture} // Profile Image
-                          alt="Profile Avatar"
-                          className="w-10 h-10 rounded-full shadow"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-gray-800 font-semibold truncate">
-                            {user.fullName}
-                          </p>
-                          <p className="text-gray-500 text-sm truncate">
-                            {user.email}
-                          </p>
-                        </div>
+                    {/* User Profile Section */}
+                    <div className="p-4 border-b border-gray-200 flex items-center gap-4">
+                      <img
+                        src={profileDetails?.profilePicture || defaultPP}
+                        alt="Profile Avatar"
+                        className="w-12 h-12 rounded-full object-cover shadow-md"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-gray-800 font-bold truncate">
+                          {user.fullName}
+                        </p>
+                        <p className="text-gray-500 text-sm truncate">
+                          {user.email}
+                        </p>
                       </div>
                     </div>
 
@@ -138,34 +148,46 @@ const Navbar = ({ data }) => {
                           ? "/Seller/profile"
                           : "/rider/profile"
                       }
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      className="block px-5 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition duration-200"
                     >
-                      Profile
+                      <div className="flex items-center gap-2">
+                        <User className="w-5 h-5 text-gray-500" />
+                        Profile
+                      </div>
                     </Link>
-                    <Link
-                      to="/#"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    <button
                       onClick={handleLogout}
+                      className="w-full text-left px-5 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition duration-200"
                     >
-                      Logout
-                    </Link>
+                      <div className="flex items-center gap-2">
+                        <LogOut className="w-5 h-5 text-gray-500" />
+                        Logout
+                      </div>
+                    </button>
                   </div>
                 ) : (
                   <div
-                    className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-md z-50"
+                    className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-lg z-50 transition ease-in-out duration-300"
                     onMouseLeave={toggleAvatar}
                   >
+                    {/* Log-in and Registration Links */}
                     <Link
-                      to={"./login"}
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      to="./login"
+                      className="block px-5 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition duration-200"
                     >
-                      Log-in
+                      <div className="flex items-center gap-2">
+                        <LogIn className="w-5 h-5 text-gray-500" />
+                        Log-in
+                      </div>
                     </Link>
                     <Link
                       to="/register"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      className="block px-5 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition duration-200"
                     >
-                      Registration
+                      <div className="flex items-center gap-2">
+                        <UserPlus className="w-5 h-5 text-gray-500" />
+                        Registration
+                      </div>
                     </Link>
                   </div>
                 )}

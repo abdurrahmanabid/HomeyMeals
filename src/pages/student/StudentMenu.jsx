@@ -1,9 +1,9 @@
 import axios from "axios";
 import { Filter, Search } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import HomeyMealsLoader from "./../../components/HomeyMealsLoader";
 import MealCard from "./../../components/MealCard";
-import { useNavigate } from "react-router-dom";
 
 const MealList = () => {
   const [meals, setMeals] = useState([]);
@@ -73,7 +73,7 @@ const navigate = useNavigate()
   }, [filteredMeals]);
 
   const handleDetails =(meal)=>{
-    navigate(`/student/meal/${meal._id}`)
+    navigate(`../meal/${meal._id}`)
 
   }
   if (loading) return <HomeyMealsLoader />;

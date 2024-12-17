@@ -42,18 +42,21 @@ function App() {
           {/* Public Routes */}
           <Route path="/" element={<MainLayout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/menu" element={<StudentMenu/>} />
+            <Route path="/menu" element={<StudentMenu />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route
               path="/terms-and-conditions"
               element={<TermsAndConditions />}
             />
+            <Route path="meal/:mealId" element={<StudentMealDetails />} />
           </Route>
 
           {/* Seller Protected Routes */}
           <Route element={<ProtectedRoute allowedRoles={["Seller"]} />}>
             <Route path="/seller" element={<MainLayout data={seller} />}>
+              <Route path="menu" element={<StudentMenu />} />
+              <Route path="meal/:mealId" element={<StudentMealDetails />} />
               <Route path="" element={<Home />} />
               <Route path="dashboard" element={<SellerDashboard />} />
               <Route path="order" element={<SellerOrders />} />
@@ -66,6 +69,7 @@ function App() {
           {/* Student Protected Routes */}
           <Route element={<ProtectedRoute allowedRoles={["Student"]} />}>
             <Route path="/student" element={<MainLayout data={consumer} />}>
+              <Route path="meal/:mealId" element={<StudentMealDetails />} />
               <Route path="" element={<Home />} />
               <Route path="allMenu" element={<ProductDetail />} />
               <Route path="checkout" element={<StudentCheckout />} />
@@ -75,22 +79,23 @@ function App() {
               <Route path="menu" element={<StudentMenu />} />
               <Route path="profile" element={<StudentProfileDetails />} />
               <Route path="cart" element={<StudentCart />} />
-              <Route
-                path="meal/:mealId"
-                element={<StudentMealDetails />}
-              />
             </Route>
           </Route>
 
           {/* Rider Protected Routes */}
           <Route element={<ProtectedRoute allowedRoles={["Rider"]} />}>
             <Route path="/rider" element={<MainLayout data={rider} />}>
+              <Route path="menu" element={<StudentMenu />} />
               <Route path="" element={<Home />} />
               <Route path="dashboard" element={<RiderDashboard />} />
               <Route path="delivery" element={<RiderDelivery />} />
               <Route path="notification" element={<RideerNotification />} />
+              <Route path="meal/:mealId" element={<StudentMealDetails />} />
               <Route path="profile" element={<RiderProfileDetails />} />
-              <Route path="current-delivery" element={<RiderCurrentDElivery />}/>
+              <Route
+                path="current-delivery"
+                element={<RiderCurrentDElivery />}
+              />
             </Route>
           </Route>
 
