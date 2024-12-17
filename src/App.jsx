@@ -76,7 +76,7 @@ function App() {
               <Route path="profile" element={<StudentProfileDetails />} />
               <Route path="cart" element={<StudentCart />} />
               <Route
-                path="/student/meal/:mealId"
+                path="meal/:mealId"
                 element={<StudentMealDetails />}
               />
             </Route>

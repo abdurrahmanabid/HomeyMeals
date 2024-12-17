@@ -3,6 +3,7 @@ import { Filter, Search } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import HomeyMealsLoader from "./../../components/HomeyMealsLoader";
 import MealCard from "./../../components/MealCard";
+import { useNavigate } from "react-router-dom";
 
 const MealList = () => {
   const [meals, setMeals] = useState([]);
@@ -11,7 +12,7 @@ const MealList = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-
+const navigate = useNavigate()
   useEffect(() => {
     const fetchMeals = async () => {
       try {
@@ -71,6 +72,10 @@ const MealList = () => {
     return groups;
   }, [filteredMeals]);
 
+  const handleDetails =(meal)=>{
+    navigate(`/student/meal/${meal._id}`)
+
+  }
   if (loading) return <HomeyMealsLoader />;
   if (error) return <div className="text-red-500 text-center p-4">{error}</div>;
 
@@ -128,7 +133,7 @@ const MealList = () => {
                   key={meal._id}
                   className="transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
                 >
-                  <MealCard meal={meal} />
+                  <MealCard meal={meal} handleDetails={handleDetails} />
                 </div>
               ))}
             </div>
