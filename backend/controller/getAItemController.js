@@ -1,5 +1,7 @@
 const express = require("express");
 const FoodItem = require("../model/FoodItem");
+const User = require("../model/User"); // Import the User model
+const Profile = require("../model/Profile"); // Import the Profile model
 const router = express.Router();
 
 // GET request to fetch a food item by its ID
@@ -13,8 +15,26 @@ const getAItemController = async (req, res) => {
       return res.status(404).json({ error: "Food item not found" });
     }
 
-    // Respond with the food item data, including the image as Base64
+    // Fetch the user information
+    const user = await User.findById(item.sellerId); // Assuming item has a userId field
+
+    // If user is not found, return 404 error
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Fetch the profile information
+    const profile = await Profile.findOne({ userId: item.sellerId }); // Assuming profile has a userId field
+
+    // If profile is not found, return 404 error
+    if (!profile) {
+      return res.status(404).json({ error: "Profile not found" });
+    }
+    const { profilePicture, ...profileWithoutPicture } = profile._doc;
+    const { password, ...userWithoutPassword } = user._doc;
+    // Respond with the food item data, including the image as Base64, user info, and profile info
     const itemData = {
+      id: item._id,
       itemName: item.itemName,
       description: item.description,
       price: item.price,
@@ -24,6 +44,10 @@ const getAItemController = async (req, res) => {
             "base64"
           )}`
         : null, // Convert image buffer to Base64 string
+      user: {
+        ...userWithoutPassword, // Spread to include other user fields
+        ...profileWithoutPicture, // Spread to include other profile fields
+      },
     };
 
     res.status(200).json(itemData); // Return the food item data
