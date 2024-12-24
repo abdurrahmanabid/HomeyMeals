@@ -151,24 +151,6 @@ export function Login() {
               onChange={handleChange}
             />
           </div>
-
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="agree"
-              checked={agreeToTerms}
-              onChange={handleChange}
-            />
-            <Label htmlFor="agree" className="flex">
-              I agree with the&nbsp;
-              <Link
-                to="/terms"
-                className="text-cyan-600 hover:underline dark:text-cyan-500"
-              >
-                terms and conditions
-              </Link>
-            </Label>
-          </div>
-
           <Button
             type="submit"
             className="w-full bg-cyan-700 hover:bg-cyan-800 transition duration-200"
