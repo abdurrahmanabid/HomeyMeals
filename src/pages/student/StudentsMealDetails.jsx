@@ -1,20 +1,6 @@
 import axios from "axios";
 import { Alert, Badge, Button, Card, Spinner } from "flowbite-react";
-import {
-  Calendar,
-  Info,
-  Mail,
-  MapPin,
-  Minus,
-  MoveDiagonal,
-  Phone,
-  Plus,
-  Shield,
-  ShoppingCart,
-  Timer,
-  Truck,
-  User,
-} from "lucide-react";
+import {Calendar,Info,Mail,MapPin,Minus,MoveDiagonal,Phone,Plus,Shield,ShoppingCart,Timer,Truck,User} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -136,6 +122,7 @@ const handleAddToCart = () => {
     new Promise((resolve) => setTimeout(resolve, 800));
     console.log("Added to cart:", {
       mealId: mealId,
+      userId:user.id,
       quantity,
       totalPrice: final,
     });
