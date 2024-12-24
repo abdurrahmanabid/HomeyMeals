@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react";
+import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAuth from "./../../utils/useAuth";
@@ -6,7 +7,7 @@ import useAuth from "./../../utils/useAuth";
 const AddItem = () => {
   const { id } = useAuth();
   console.log("🚀 ~ AddItem ~ user:", id);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     itemName: "",
@@ -18,6 +19,24 @@ const AddItem = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false); // Loading state
   const fileInputRef = useRef(null);
+  const [profileDataError, setProfileDataError] = useState(null);
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/profile/get/${id}`
+        );
+        if (!response.data) {
+          throw new Error("Profile data not found");
+        }
+      } catch (error) {
+        setProfileDataError(error.message || "Error fetching profile data");
+      }
+    };
+
+    fetchProfileData();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -36,18 +55,37 @@ const AddItem = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check for profile data error first
+    if (profileDataError) {
+      Swal.fire({
+        title: "Set Up Your Profile",
+        text: "Please set up your profile before adding items.",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonText: "Set Your Profile",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("../profile");
+        }
+      });
+      return;
+    }
+
     const { itemName, description, price, discountPrice, image } = formData;
 
     // Validation checks
     if (!itemName || !description || !price || !image) {
       Swal.fire({
         title: "Error!",
-        text: "Please fill in all fields.",
+        text: "Please fill in all required fields.",
         icon: "error",
         confirmButtonText: "OK",
       });
       return;
     }
+
     if (discountPrice && parseFloat(discountPrice) > parseFloat(price)) {
       Swal.fire({
         title: "Error!",
@@ -66,7 +104,6 @@ const AddItem = () => {
     // Set loading to true before submitting
     setLoading(true);
 
-    // Simulate API request to submit form data
     try {
       const response = await fetch(
         `http://localhost:8000/api/item/${id}/post-a-item`,
@@ -82,22 +119,21 @@ const AddItem = () => {
           text: "Food item added successfully!",
           icon: "success",
           confirmButtonText: "Great!",
-        })
-        navigate('/seller/my-items')
-        window.location.reload()
+        });
+        navigate("/seller/my-items");
+        window.location.reload();
       } else {
         throw new Error("Failed to add item");
       }
     } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: "Something went wrong, please try again.",
+        text: error.message || "Something went wrong. Please try again.",
         icon: "error",
         confirmButtonText: "OK",
       });
     } finally {
-      // Set loading to false after the submission is complete
-      setLoading(false);
+      setLoading(false); // Reset loading state
     }
   };
 
