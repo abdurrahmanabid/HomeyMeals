@@ -17,8 +17,7 @@ const Navbar = ({ data }) => {
   const [lastScrollY, setLastScrollY] = useState(0); // Track last scroll position
   const [profileDetails, setProfileDetails] = useState(null);
   const [loading, setIsLoading] = useState(true);
-  const defaultPP =
-    "https://www.pngitem.com/pimgs/m/22-223968_default-profile-picture-circle-hd-png-download.png";
+  const defaultPP ="https://www.pngitem.com/pimgs/m/22-223968_default-profile-picture-circle-hd-png-download.png";
 
   const toggleAvatar = () => setAvatarOpen(!avatarOpen);
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
@@ -33,7 +32,6 @@ const Navbar = ({ data }) => {
       }
       setLastScrollY(currentScrollY);
     };
-
     window.addEventListener("scroll", handleScroll);
 
     return () => window.removeEventListener("scroll", handleScroll);
@@ -141,13 +139,16 @@ const Navbar = ({ data }) => {
 
                     {/* Profile and Logout Links */}
                     <Link
-                      to={
-                        user?.role === "Student"
-                          ? "/student/profile"
-                          : user?.role === "Seller"
-                          ? "/Seller/profile"
-                          : "/rider/profile"
-                      }
+                     to={
+                      user?.role === "Student"
+                        ? "/student/profile"
+                        : user?.role === "Seller"
+                        ? "/Seller/profile"
+                        : user?.role === "Admin"
+                        ? "/admin/profile"
+                        : "/rider/profile"
+                    }
+                    
                       className="block px-5 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition duration-200"
                     >
                       <div className="flex items-center gap-2">

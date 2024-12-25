@@ -7,7 +7,6 @@ export const consumer = [
     name: "Order",
     path: "./order",
   },
-
   {
     name: "cart",
     path: "./cart",
@@ -44,4 +43,27 @@ export const rider = [
     name: "Notifications",
     path: "./notification",
   },
+];
+export const admin = [
+  {
+    name: "Dashboard",
+    path: "./dashboard",
+  },
+  {
+    name: "All User",
+    path: "./all-user",
+  },
+  {
+    name: "All Items",
+    path: "./all-items",
+  },
+  {
+    name: "Category",
+    path: "./category",
+  },
+  {
+    name: "Assign Rider",
+    path: "./assign-rider",
+  },
+  
 ];

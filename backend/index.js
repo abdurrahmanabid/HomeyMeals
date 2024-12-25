@@ -26,10 +26,13 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 const authRoutes = require("./routes/auth");
 const userGet = require("./routes/getUsers");
 const itemRouter = require("./routes/item");
+const profileRoutes = require("./routes/profile");
+const categoryRoutes = require("./routes/category");
 const orderRouter = require("./routes/orderRouter");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/get", userGet);
+app.use('/api/categories', categoryRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/item", itemRouter);
 app.use("/api/order", orderRouter);

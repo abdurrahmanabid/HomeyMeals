@@ -28,8 +28,14 @@ import StudentMenu from "./pages/student/StudentMenu";
 import StudentProfileDetails from "./pages/student/StudentProfileDetails";
 import StudentMealDetails from "./pages/student/StudentsMealDetails";
 import StudentOrder from "./pages/student/StudentsOrder";
-import { consumer, rider, seller } from "./store/navbarObject";
+import { admin, consumer, rider, seller } from "./store/navbarObject";
 import useAuth from "./utils/useAuth";
+import Dashboard from "./pages/Admin/Dashboard";
+import AllUser from "./pages/Admin/AllUser";
+import UserTable from "./pages/Admin/UserTable";
+import UserDetails from "./pages/Admin/userDetails";
+import CategoryList from "./pages/Admin/CategoryList";
+import AddCategory from "./pages/Admin/AddCategory";
 
 function App() {
   const user = useAuth()
@@ -97,6 +103,17 @@ function App() {
                 element={<RiderCurrentDElivery />}
               />
             </Route>
+          </Route>
+          <Route element={<ProtectedRoute allowedRoles={["Admin"]} />}>
+          <Route path="/admin" element={<MainLayout data={admin} />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="all-user" element={<AllUser />} />
+          <Route path="user-table/:role" element={<UserTable />} />
+          <Route path="user-details/:id" element={<UserDetails />} />
+          <Route path="category" element={<CategoryList />} />
+          <Route path="add-category" element={<AddCategory />} />
+
+          </Route>
           </Route>
 
           {/* 404 Route */}
