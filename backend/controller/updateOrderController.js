@@ -18,7 +18,13 @@ const updateOrderController = async (req, res) => {
     console.log("Request body:", req.body);
 
     // Validate status manually
-    const validStatuses = ["pending", "in_progress", "completed", "canceled"];
+    const validStatuses = [
+      "pending",
+      "in_progress",
+      "completed",
+      "canceled",
+      "cancelled_by_seller",
+    ];
     if (status && !validStatuses.includes(status)) {
       return res.status(400).json({ message: `Invalid status: ${status}` });
     }
