@@ -41,6 +41,25 @@ const Home = () => {
           <HowToDeliver />
         </>
       )}
+
+{(user?.role === "Admin" || !user) && (
+
+  <>
+  <>
+  <Sector>How to Order</Sector>
+  <HowToOrder />
+</>
+ <>
+ <Sector>How To Sell</Sector>
+ <HowToSell />
+</>
+        <>
+          <Sector>How To Delivery</Sector>
+          <HowToDeliver />
+        </>
+        </>
+      )}
+
       <Sector>Explore The Menu</Sector>
       <ExploreMenu />
       <Sector>What Customers Say About Us</Sector>

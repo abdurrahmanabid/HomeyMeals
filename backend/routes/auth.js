@@ -3,6 +3,7 @@ const User = require("../model/User");
 const { generateToken, verifyToken } = require("../utils/jwt");
 const registrationController = require("../controller/registrationController");
 const loginController = require("../controller/loginController");
+const deleteUserController = require("../controller/deleteUserRoutes");
 
 const router = express.Router();
 
@@ -24,6 +25,9 @@ router.get("/protected", (req, res) => {
     res.status(400).json({ message: "Invalid token" });
   }
 });
+
+router.delete("/delete/:id", deleteUserController);
+
 
 // Logout
 router.post("/logout", (req, res) => {
