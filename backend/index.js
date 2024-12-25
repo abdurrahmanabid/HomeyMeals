@@ -3,6 +3,8 @@ require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const dbConnection = require("./helper/dbConnection");
+const profileRoutes = require("./routes/profile");
+const cartRoutes = require("./routes/cartRoutes");
 dbConnection();
 
 const app = express();
@@ -34,6 +36,7 @@ app.use('/api/categories', categoryRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/item", itemRouter);
 app.use("/api/order", orderRouter);
+app.use('/api/cart', cartRoutes);
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () =>
