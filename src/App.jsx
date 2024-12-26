@@ -40,8 +40,6 @@ import useAuth from "./utils/useAuth";
 
 function App() {
   const user = useAuth()
-  console.log("🚀 ~ App ~ user:", user)
-
   return (
     <Router>
       <div className="App">

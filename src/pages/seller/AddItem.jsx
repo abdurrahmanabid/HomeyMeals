@@ -6,22 +6,34 @@ import useAuth from "./../../utils/useAuth";
 
 const AddItem = () => {
   const { id } = useAuth();
-  console.log("🚀 ~ AddItem ~ user:", id);
   const navigate = useNavigate();
 
+  const [categories, setCategories] = useState([]); // State for categories
   const [formData, setFormData] = useState({
     itemName: "",
     description: "",
     price: "",
     discountPrice: "",
+    category: "", // Add category to form data
     image: null,
   });
   const [imagePreview, setImagePreview] = useState(null);
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
   const [profileDataError, setProfileDataError] = useState(null);
 
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/categories/getCategory" 
+        );
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
     const fetchProfileData = async () => {
       try {
         const response = await axios.get(
@@ -35,6 +47,7 @@ const AddItem = () => {
       }
     };
 
+    fetchCategories();
     fetchProfileData();
   }, [id]);
 
@@ -56,7 +69,6 @@ const AddItem = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check for profile data error first
     if (profileDataError) {
       Swal.fire({
         title: "Set Up Your Profile",
@@ -73,10 +85,10 @@ const AddItem = () => {
       return;
     }
 
-    const { itemName, description, price, discountPrice, image } = formData;
+    const { itemName, description, price, discountPrice, category, image } =
+      formData;
 
-    // Validation checks
-    if (!itemName || !description || !price || !image) {
+    if (!itemName || !description || !price || !image || !category) {
       Swal.fire({
         title: "Error!",
         text: "Please fill in all required fields.",
@@ -101,7 +113,6 @@ const AddItem = () => {
       formDataToSubmit.append(key, value)
     );
 
-    // Set loading to true before submitting
     setLoading(true);
 
     try {
@@ -133,7 +144,7 @@ const AddItem = () => {
         confirmButtonText: "OK",
       });
     } finally {
-      setLoading(false); // Reset loading state
+      setLoading(false);
     }
   };
 
@@ -166,40 +177,48 @@ const AddItem = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-green-300"
                 rows="4"
                 required={field !== "discountPrice"}
-                placeholder={
-                  field === "description"
-                    ? "Describe the food item"
-                    : field === "discountPrice"
-                    ? "Enter discount price (optional)"
-                    : "Enter price"
-                }
+                placeholder="Describe the food item"
               />
             ) : (
               <input
-                type={
-                  field === "price" || field === "discountPrice"
-                    ? "number"
-                    : "text"
-                }
+                type={field === "price" || field === "discountPrice" ? "number" : "text"}
                 id={field}
                 name={field}
                 value={formData[field]}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-green-300"
                 required={field !== "discountPrice"}
-                min="0"
-                step="0.01"
-                placeholder={
-                  field === "itemName"
-                    ? "Enter item name"
-                    : field === "discountPrice"
-                    ? "Enter discount price (optional)"
-                    : "Enter price"
-                }
+                placeholder={`Enter ${field}`}
               />
             )}
           </div>
         ))}
+
+        {/* Category Dropdown */}
+        <div>
+          <label
+            htmlFor="category"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Select Category:
+          </label>
+          <select
+            id="category"
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-green-300"
+            required
+          >
+            <option value="">Select a Category</option>
+            {categories.map((category) => (
+              <option key={category._id} value={category.name}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div>
           <label
             htmlFor="image"
@@ -234,11 +253,7 @@ const AddItem = () => {
           }`}
           disabled={loading}
         >
-          {loading ? (
-            <span className="animate-spin">Loading...</span>
-          ) : (
-            "Add Item"
-          )}
+          {loading ? <span className="animate-spin">Loading...</span> : "Add Item"}
         </button>
       </form>
     </div>

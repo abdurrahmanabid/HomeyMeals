@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import Taka from "../../components/Taka";
 
 const CashMemo = () => {
   const location = useLocation();
@@ -10,7 +11,7 @@ const CashMemo = () => {
     return null;
   }
 
-  const { fullName, phoneNumber, shippingMethod, orderItems, totalPrice } =
+  const { fullName, phoneNumber, shippingMethod, orderItems, totalPrice,price } =
     checkoutData;
 
   return (
@@ -63,14 +64,15 @@ const CashMemo = () => {
                   </p>
                   <p className="text-gray-600 text-sm">
                     <span className="font-medium">Quantity:</span>{" "}
-                    {item.quantity} x ${item.price}
+                    {item.quantity}
                   </p>
                 </div>
               </div>
               <div>
-                <p className="text-lg font-semibold text-blue-600">
-                  ${item.totalPrice}
-                </p>
+              <p className="flex items-center text-lg font-semibold text-blue-600">
+  <span className="text-sm font-normal"><Taka/></span>
+  <span className="ml-1">{item.price}</span>
+</p>
               </div>
             </div>
           ))}
@@ -80,8 +82,10 @@ const CashMemo = () => {
       {/* Total Price */}
       <div className="flex justify-between items-center border-t pt-6">
         <h3 className="text-2xl font-bold text-gray-800">Total:</h3>
-        <p className="text-2xl font-extrabold text-blue-600">${totalPrice}</p>
-      </div>
+        <p className="flex items-center text-2xl font-extrabold text-blue-600">
+  <span className="text-base font-normal"><Taka/></span>
+  <span className="ml-1">{totalPrice}</span>
+</p>      </div>
 
       {/* Footer */}
       <div className="text-center mt-10">

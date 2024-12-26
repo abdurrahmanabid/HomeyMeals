@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import CustomLocation from "../../components/CustomLocation";
 import Modal from "../../components/Modal";
 import { calculateDistance } from "../../functions/calculateDistance";
+import { useLocation } from 'react-router-dom';
+import { IoIosArrowBack } from "react-icons/io";
 import getPlaceName from "../../functions/getPlaceName";
 
 // Constants
@@ -29,7 +31,9 @@ const StudentCheckout = () => {
   const [mapModal, setMapModal] = useState(false);
   const [mapDetails, setMapDetails] = useState(null);
   const [distance, setDistance] = useState(0);
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const location = useLocation();
+  const { items, totalAmount } = location.state || { items: [], totalAmount: 0 };
   const [placeName, setPlaceName] = useState("Fetching Location...");
 
   const [formData, setFormData] = useState({
@@ -38,11 +42,11 @@ const StudentCheckout = () => {
     fullName: "",
     phoneNumber: "",
   });
-
   useEffect(() => {
-    const storedOrderData = localStorage.getItem("selectedItems");
-    if (storedOrderData) setOrderData(JSON.parse(storedOrderData));
-  }, []);
+    if (location.state?.items) {
+      setOrderData(location.state.items);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (mapDetails && formData.shippingMethod === "Cash on Delivery") {
@@ -104,7 +108,7 @@ const StudentCheckout = () => {
 
   const calculateTotalPrice = useCallback(() => {
     const itemsTotal = orderData.reduce(
-      (total, item) => total + parseFloat(item.totalPrice),
+      (total, item) => total + parseFloat(item.price),
       0
     );
     return (itemsTotal + formData.shippingCharge).toFixed(2);
@@ -121,17 +125,29 @@ const StudentCheckout = () => {
     console.log("Checkout Data:", checkoutData);
     navigate("../cash-memo", { state: checkoutData });
   };
-
+  
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden">
-        {/* Header */}
-        <div className="bg-secondary text-white p-6">
-          <h1 className="text-3xl font-bold flex items-center">
-            <FaCheckCircle className="mr-4" size={36} />
-            Complete Your Order
-          </h1>
-        </div>
+
+      {/* Header */}
+<div className="bg-secondary text-white p-6 flex items-center justify-between">
+  {/* Back Arrow */}
+  <button
+  className="text-white font-bold hover:text-gray-200 p-2 rounded-full hover:bg-gray-700 transition-all ease-in-out duration-200"
+  onClick={() => navigate(-1)}
+>
+  <IoIosArrowBack size={24} />
+</button>
+
+
+  {/* Title */}
+  <h1 className="text-2xl font-bold flex items-center">
+    <FaCheckCircle className="mr-4" size={28} />
+    Complete Your Order
+  </h1>
+</div>
+
 
         {/* Content */}
         <div className="grid md:grid-cols-2 gap-8 p-8">
@@ -158,7 +174,7 @@ const StudentCheckout = () => {
                     </p>
                   </div>
                 </div>
-                <p className="font-semibold">{item.totalPrice} Taka</p>
+                <p className="font-semibold">{item.price} Taka</p>
               </div>
             ))}
             <div className="mt-6 space-y-4">
@@ -166,7 +182,7 @@ const StudentCheckout = () => {
                 <span className="text-gray-600">Subtotal</span>
                 <span className="font-semibold">
                   {orderData.reduce(
-                    (total, item) => total + parseFloat(item.totalPrice),
+                    (total, item) => total + parseFloat(item.price),
                     0
                   )}{" "}
                   Taka
