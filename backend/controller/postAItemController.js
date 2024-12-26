@@ -4,7 +4,7 @@ const FoodItem = require("../model/FoodItem");
 const postAItemController = async (req, res) => {
   try {
     const { sellerId } = req.params;
-    const { itemName, description, price, discountPrice } = req.body;
+    const { itemName, description, price, discountPrice, category } = req.body;
 
     // Check if the seller exists
     const sellerExists = await User.findById(sellerId);
@@ -22,6 +22,7 @@ const postAItemController = async (req, res) => {
       sellerId,
       itemName,
       description,
+      category,
       price: parseFloat(price),
       discountPrice: parseFloat(discountPrice) || 0,
       status: "pending",

@@ -2,6 +2,7 @@ import axios from "axios";
 import { Filter, Search } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import NothingFound from "../../components/NothingFound";
 import HomeyMealsLoader from "./../../components/HomeyMealsLoader";
 import MealCard from "./../../components/MealCard";
 
@@ -12,17 +13,16 @@ const MealList = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-const navigate = useNavigate()
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchMeals = async () => {
       try {
         const response = await axios.get(
           "http://localhost:8000/api/item/items"
         );
-
         const items = response.data || [];
         setMeals(items);
-
         const uniqueCategories = [
           "All",
           ...new Set(items.map((item) => item.category)),
@@ -39,16 +39,11 @@ const navigate = useNavigate()
     fetchMeals();
   }, []);
 
-  // Comprehensive filter logic
   const filteredMeals = useMemo(() => {
     let result = meals;
-
-    // Filter by category
     if (selectedCategory !== "All") {
       result = result.filter((meal) => meal.category === selectedCategory);
     }
-
-    // Filter by search query
     if (searchQuery) {
       result = result.filter(
         (meal) =>
@@ -56,32 +51,37 @@ const navigate = useNavigate()
           meal?.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-
     return result;
   }, [meals, selectedCategory, searchQuery]);
 
-  // Grouped meals logic
   const groupedMeals = useMemo(() => {
     const groups = {};
     filteredMeals.forEach((meal) => {
       if (!groups[meal.category]) {
         groups[meal.category] = [];
       }
-      groups[meal.category].push(meal);
+      if (meal.status === "approved") {
+        groups[meal.category].push(meal);
+      }
+    });
+    // Remove categories with no pending meals
+    Object.keys(groups).forEach((category) => {
+      if (groups[category].length === 0) {
+        delete groups[category];
+      }
     });
     return groups;
   }, [filteredMeals]);
 
-  const handleDetails =(meal)=>{
-    navigate(`../meal/${meal._id}`)
+  const handleDetails = (meal) => {
+    navigate(`../meal/${meal._id}`);
+  };
 
-  }
   if (loading) return <HomeyMealsLoader />;
   if (error) return <div className="text-red-500 text-center p-4">{error}</div>;
 
   return (
     <div className="container mx-auto px-4 py-8 min-h-[100vh]">
-      {/* Search and Filter Section */}
       <div className="mb-8 flex items-center space-x-4">
         <div className="relative flex-grow">
           <input
@@ -97,7 +97,6 @@ const navigate = useNavigate()
           />
         </div>
 
-        {/* Category Dropdown */}
         <div className="relative">
           <select
             value={selectedCategory}
@@ -117,7 +116,6 @@ const navigate = useNavigate()
         </div>
       </div>
 
-      {/* Categorized Meals */}
       {Object.entries(groupedMeals).map(([category, items]) => (
         <div key={category} className="mb-12">
           <div className="relative mb-6">
@@ -126,33 +124,22 @@ const navigate = useNavigate()
               <div className="absolute bottom-[-8px] left-0 w-24 h-1 bg-gradient-to-r from-primary to-primary/50 rounded-full"></div>
             </h2>
           </div>
-          {items.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {items.map((meal) => (
-                <div
-                  key={meal._id}
-                  className="transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
-                >
-                  <MealCard meal={meal} handleDetails={handleDetails} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-500 text-center py-8">
-              No meals in this category.
-            </p>
-          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {items.map((meal) => (
+              <div
+                key={meal._id}
+                className="transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
+              >
+                <MealCard meal={meal} handleDetails={handleDetails} />
+              </div>
+            ))}
+          </div>
         </div>
       ))}
 
-      {/* No Results State */}
       {Object.keys(groupedMeals).length === 0 && (
-        <div className="text-center py-16">
-          <p className="text-gray-500 text-xl mb-4">No meals found</p>
-          <p className="text-gray-400">
-            Try adjusting your search or category filter
-          </p>
-        </div>
+        
+        <NothingFound message="No meals found. Please try again later." />
       )}
     </div>
   );
