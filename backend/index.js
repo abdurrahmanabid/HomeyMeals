@@ -3,11 +3,15 @@ require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const dbConnection = require("./helper/dbConnection");
-const profileRoutes = require("./routes/profile");
 const cartRoutes = require("./routes/cartRoutes");
-dbConnection();
-
+const authRoutes = require("./routes/auth");
+const userGet = require("./routes/getUsers");
+const itemRouter = require("./routes/item");
+const profileRoutes = require("./routes/profile");
+const categoryRoutes = require("./routes/category");
+const orderRouter = require("./routes/orderRouter");
 const app = express();
+dbConnection();
 
 // Improved CORS configuration
 app.use(
@@ -23,19 +27,13 @@ app.use(express.json({ limit: "10mb" })); // Increased JSON body limit
 app.use(cookieParser());
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
-const authRoutes = require("./routes/auth");
-const userGet = require("./routes/getUsers");
-const itemRouter = require("./routes/item");
-const categoryRoutes = require("./routes/category");
-const orderRouter = require("./routes/orderRouter");
-
 app.use("/api/auth", authRoutes);
 app.use("/api/get", userGet);
-app.use('/api/categories', categoryRoutes);
+app.use("/api/categories", categoryRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/item", itemRouter);
 app.use("/api/order", orderRouter);
-app.use('/api/cart', cartRoutes);
+app.use("/api/cart", cartRoutes);
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () =>

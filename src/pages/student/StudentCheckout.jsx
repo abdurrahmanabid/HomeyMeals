@@ -6,6 +6,7 @@ import Modal from "../../components/Modal";
 import { calculateDistance } from "../../functions/calculateDistance";
 import { useLocation } from 'react-router-dom';
 import { IoIosArrowBack } from "react-icons/io";
+import getPlaceName from "../../functions/getPlaceName";
 
 // Constants
 const SHIPPING_METHODS = [
@@ -33,6 +34,7 @@ const StudentCheckout = () => {
   const navigate = useNavigate()
   const location = useLocation();
   const { items, totalAmount } = location.state || { items: [], totalAmount: 0 };
+  const [placeName, setPlaceName] = useState("Fetching Location...");
 
   const [formData, setFormData] = useState({
     shippingMethod: "Self Shipping", // Default to "Self Shipping"
@@ -71,6 +73,21 @@ const StudentCheckout = () => {
       }));
     }
   }, [mapDetails, formData.shippingMethod]);
+  useEffect(() => {
+    const fetchPlaceName = async () => {
+      try {
+        const name = await getPlaceName(mapDetails.lat, mapDetails.lng);
+        console.log("🚀 ~ useEffect ~ placeName:", name);
+        setPlaceName(name);
+      } catch (error) {
+        console.error("Failed to fetch place name:", error.message);
+      }
+    };
+
+    if (mapDetails?.lat && mapDetails?.lng) {
+      fetchPlaceName();
+    }
+  }, [mapDetails]);
 
   const handleInputChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
@@ -103,10 +120,10 @@ const StudentCheckout = () => {
       ...formData,
       orderItems: orderData,
       totalPrice: calculateTotalPrice(),
-      studentLocation : mapDetails,
+      studentLocation: mapDetails,
     };
     console.log("Checkout Data:", checkoutData);
-    navigate('../cash-memo', {state: checkoutData})
+    navigate("../cash-memo", { state: checkoutData });
   };
   
   return (
@@ -174,13 +191,19 @@ const StudentCheckout = () => {
               <div className="flex justify-between">
                 <span className="text-gray-600">Shipping</span>
                 <span className="font-semibold text-secondary">
-                  {formData.shippingCharge} Taka <span className="text-red-500">{distance>0&&<span className="text-red-500">({distance} km)</span>}</span>
+                  {formData.shippingCharge} Taka{" "}
+                  <span className="text-red-500">
+                    {distance > 0 && (
+                      <><span className="text-green-500">({distance} km</span>
+                      <span className="text-red-500">-{placeName})</span></>
+                    )}
+                  </span>
                 </span>
               </div>
               <div className="flex justify-between text-xl font-bold border-t pt-4">
                 <span>Total</span>
                 <span className="text-green-600">
-                  {calculateTotalPrice()} Taka 
+                  {calculateTotalPrice()} Taka
                 </span>
               </div>
             </div>
@@ -272,6 +295,5 @@ const StudentCheckout = () => {
     </div>
   );
 };
-
 
 export default StudentCheckout;
