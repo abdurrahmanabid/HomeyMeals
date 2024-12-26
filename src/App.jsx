@@ -8,6 +8,13 @@ import ProductDetail from "./components/ProductDetails";
 import ProtectedRoute from "./components/ProtectedRoute"; // Import the new component
 import { Register } from "./components/Register";
 import MainLayout from "./layout/MainLayout/MainLayouts";
+import AboutUs from "./pages/AboutUs";
+import AddCategory from "./pages/Admin/AddCategory";
+import AllUser from "./pages/Admin/AllUser";
+import CategoryList from "./pages/Admin/CategoryList";
+import Dashboard from "./pages/Admin/Dashboard";
+import UserTable from "./pages/Admin/UserTable";
+import UserDetails from "./pages/Admin/userDetails";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import { TermsAndConditions } from "./pages/TermsAndConditions";
@@ -30,12 +37,6 @@ import StudentMealDetails from "./pages/student/StudentsMealDetails";
 import StudentOrder from "./pages/student/StudentsOrder";
 import { admin, consumer, rider, seller } from "./store/navbarObject";
 import useAuth from "./utils/useAuth";
-import Dashboard from "./pages/Admin/Dashboard";
-import AllUser from "./pages/Admin/AllUser";
-import UserTable from "./pages/Admin/UserTable";
-import UserDetails from "./pages/Admin/userDetails";
-import CategoryList from "./pages/Admin/CategoryList";
-import AddCategory from "./pages/Admin/AddCategory";
 
 function App() {
   const user = useAuth()
@@ -56,6 +57,7 @@ function App() {
               element={<TermsAndConditions />}
             />
             <Route path="meal/:mealId" element={<StudentMealDetails />} />
+            <Route path="about-us" element={<AboutUs />} />
           </Route>
 
           {/* Seller Protected Routes */}
@@ -69,6 +71,7 @@ function App() {
               <Route path="addItem" element={<AddItem />} />
               <Route path="profile" element={<SellerProfileDetails />} />
               <Route path="my-items" element={<SellerItems />} />
+              <Route path="about-us" element={<AboutUs />} />
             </Route>
           </Route>
 
@@ -85,6 +88,7 @@ function App() {
               <Route path="menu" element={<StudentMenu />} />
               <Route path="profile" element={<StudentProfileDetails />} />
               <Route path="cart" element={<StudentCart />} />
+              <Route path="about-us" element={<AboutUs />} />
             </Route>
           </Route>
 
@@ -102,18 +106,19 @@ function App() {
                 path="current-delivery"
                 element={<RiderCurrentDElivery />}
               />
+              <Route path="about-us" element={<AboutUs />} />
             </Route>
           </Route>
           <Route element={<ProtectedRoute allowedRoles={["Admin"]} />}>
-          <Route path="/admin" element={<MainLayout data={admin} />}>
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="all-user" element={<AllUser />} />
-          <Route path="user-table/:role" element={<UserTable />} />
-          <Route path="user-details/:id" element={<UserDetails />} />
-          <Route path="category" element={<CategoryList />} />
-          <Route path="add-category" element={<AddCategory />} />
-
-          </Route>
+            <Route path="/admin" element={<MainLayout data={admin} />}>
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="all-user" element={<AllUser />} />
+              <Route path="user-table/:role" element={<UserTable />} />
+              <Route path="user-details/:id" element={<UserDetails />} />
+              <Route path="category" element={<CategoryList />} />
+              <Route path="add-category" element={<AddCategory />} />
+              <Route path="about-us" element={<AboutUs />} />
+            </Route>
           </Route>
 
           {/* 404 Route */}
