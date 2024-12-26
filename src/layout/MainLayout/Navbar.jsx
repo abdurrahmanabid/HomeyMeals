@@ -43,7 +43,6 @@ const Navbar = ({ data }) => {
       const { data } = await axios.get(
         `http://localhost:8000/api/profile/get/${user.id}`
       );
-      console.log("🚀 ~ getProfileDetails ~ data:", data.profile);
       setProfileDetails(data.profile);
     } catch (error) {
       console.error("Failed to fetch details:", error);

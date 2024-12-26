@@ -22,7 +22,6 @@ const SellerItems = () => {
   const [detailsItemModal, setDetailsItemModal] = useState(false);
   const [specificItem, setSpecificItem] = useState(false);
   const user = useAuth();
-  console.log("🚀 ~ SellerItems ~ user:", user);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -60,7 +59,6 @@ const SellerItems = () => {
   };
 
   const handleDetailsClick = (item) => {
-    console.log(`Details item ${item}`);
     setDetailsItemModal(true);
     setSpecificItem(item);
   };

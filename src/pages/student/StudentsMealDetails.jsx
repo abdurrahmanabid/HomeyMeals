@@ -120,12 +120,14 @@ const handleAddToCart = () => {
   try {
     const { final } = calculatePrice();
     new Promise((resolve) => setTimeout(resolve, 800));
-    console.log("Added to cart:", {
+    const cart = {
       mealId: mealId,
       userId:user.id,
       quantity,
       totalPrice: final,
-    });
+    }
+    console.log("Added to cart:", cart);
+    const response =  axios.post('http://localhost:8000/api/cart/add', cart);
 
     // Show success message
     Swal.fire({
