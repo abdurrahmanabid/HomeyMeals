@@ -3,19 +3,20 @@ import "leaflet/dist/leaflet.css";
 import React, { useEffect, useMemo, useState } from "react";
 import { FaUtensils } from "react-icons/fa";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import LocationDisplay from "./LocationDisplay";
 
 // Initial center and zoom level for the map (can be set to Rider's location or dynamic position)
 const zoom = 13;
 
-function Distance() {
+function Distance({ dLat, dLng, rLat, rLng }) {
   const [map, setMap] = useState(null);
   const [riderLocation, setRiderLocation] = useState({
     lat: 22.3314, // Rider's location (can be dynamic)
     lng: 91.8127,
   });
   const [currentLocation, setCurrentLocation] = useState({
-    lat: 22.3288, // Set your specific latitude
-    lng: 91.8165, // Set your specific longitude
+    lat: dLat, 
+    lng: dLng, 
   });
   const [distance, setDistance] = useState(null); // Store the calculated distance
 
@@ -61,9 +62,7 @@ function Distance() {
           <Popup>
             <strong>Rider's Current Location</strong>
             <br />
-            Latitude: {riderLocation.lat.toFixed(4)}
-            <br />
-            Longitude: {riderLocation.lng.toFixed(4)}
+            <LocationDisplay lat={riderLocation.lat} lng={riderLocation.lng} />
           </Popup>
         </Marker>
 
@@ -73,7 +72,7 @@ function Distance() {
           icon={
             new L.Icon({
               iconUrl:
-                "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+                "https://static-00.iconduck.com/assets.00/map-marker-icon-342x512-gd1hf1rz.png",
               iconSize: [25, 41],
               iconAnchor: [12, 41],
               popupAnchor: [1, -34],
@@ -82,11 +81,9 @@ function Distance() {
           }
         >
           <Popup>
-            <strong>Specific Location</strong>
+            <strong>Delivery Location</strong>
             <br />
-            Latitude: {currentLocation.lat.toFixed(4)}
-            <br />
-            Longitude: {currentLocation.lng.toFixed(4)}
+            <LocationDisplay lat={currentLocation.lat} lng={currentLocation.lng} />
           </Popup>
         </Marker>
       </MapContainer>
@@ -106,7 +103,8 @@ function Distance() {
       {distance && (
         <div className="text-center mt-4">
           <p className="font-bold text-lg">
-            Distance to Specific Location: {distance.toFixed(2)} meters
+            Distance to Goal Location: {distance.toFixed(2)} meters - {" "}
+            {distance>1000 ?(`${(distance/1000).toFixed(2)} km`):null}
           </p>
         </div>
       )}

@@ -2,7 +2,6 @@ import axios from "axios";
 
 const getPlaceName = async (lat, lon) => {
   try {
-    console.log("Making API request for:", lat, lon); // Debug log
     const response = await axios.get(
       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`,
       {
@@ -11,8 +10,6 @@ const getPlaceName = async (lat, lon) => {
         },
       }
     );
-
-    console.log("API Response:", response.data); // Debug log
 
     if (response.data && response.data.display_name) {
       const addressParts = response.data.display_name.split(", ");

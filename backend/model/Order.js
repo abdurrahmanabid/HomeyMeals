@@ -46,6 +46,7 @@ const orderSchema = new Schema(
         "canceled",
         "cancelled_by_seller",
         "cancelled_by_rider",
+        "assigned_to_rider",
       ],
       default: "pending",
       required: true,

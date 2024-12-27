@@ -4,6 +4,7 @@ const updateOrderController = require("../controller/updateOrderController");
 const deleteOrderController = require("../controller/deleteOrderController");
 const getOrdersByIdController = require("../controller/getOrderByIdController");
 const getAllOrdersController = require("../controller/getAllOrdersController");
+const getOrderController = require("../controller/getOrderController");
 
 const router = express.Router();
 
@@ -12,6 +13,7 @@ router.post("/order-item", makeAOrderController);
 router.put("/update-order/:orderId", updateOrderController);
 router.delete("/delete-order/:orderId", deleteOrderController);
 router.get("/get-order", getOrdersByIdController);
+router.get("/get-a-order/:orderId", getOrderController);
 router.get("/get-all-order", getAllOrdersController);
 
 module.exports = router;

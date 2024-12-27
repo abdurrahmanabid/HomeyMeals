@@ -14,6 +14,7 @@ const makeAOrderController = async (req, res) => {
     deliveryFee,
     paymentStatus,
   } = req.body;
+  console.log("🚀 ~ makeAOrderController ~ deliveryAddress:", deliveryAddress);
 
   try {
     const newOrder = new Order({
@@ -45,7 +46,6 @@ module.exports = makeAOrderController;
 // {
 //   "studentId": "605c72ef1532073b3880d8a2",  // ObjectId of the student
 //   "sellerId": "605c72ef1532073b3880d8a3",   // ObjectId of the seller
-//   "riderId": "605c72ef1532073b3880d8a4",    // ObjectId of the rider (optional)
 //   "items": [
 //     {
 //       "itemId": "605c72ef1532073b3880d8b1",  // ObjectId of the food item

@@ -9,9 +9,7 @@ const LocationDisplay = ({ lat, lng }) => {
   useEffect(() => {
     const fetchAddress = async () => {
       try {
-        console.log("Fetching address for:", lat, lng); // Debug log
         const result = await getPlaceName(lat, lng);
-        console.log("Result:", result); // Debug log
         if (result) {
           setAddress(result);
         } else {
@@ -32,14 +30,11 @@ const LocationDisplay = ({ lat, lng }) => {
 
   // Add coordinate display for debugging
   return (
-    <div>
-      <p className="text-xs text-gray-500 mb-1">
-        Coordinates: {lat}°, {lng}°
-      </p>
+    <div className="block">
       {loading && <p className="text-sm text-gray-500">Loading address...</p>}
       {error && <p className="text-sm text-rose-500">{error}</p>}
       {!loading && !error && address && (
-        <p className="text-sm text-gray-600 mt-2">{address}</p>
+        <p className="text-sm text-gray-600 mt-2 block">{address}</p>
       )}
     </div>
   );
