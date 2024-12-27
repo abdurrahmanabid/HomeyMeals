@@ -6,9 +6,10 @@ const NothingFound = ({
   suggestion = "We couldn't find what you're looking for",
   icon = true,
   onAction = () => (window.location.href = "/"),
+  buttonLabel = "Go Back",
 }) => {
   return (
-    <div className="h-screen w-full flex items-center justify-center bg-white">
+    <div className="mt-96 w-full flex items-center justify-center">
       <div className="flex flex-col items-center space-y-8">
         {icon && (
           <SearchX className="w-16 h-16 text-gray-400" aria-hidden="true" />
@@ -23,7 +24,7 @@ const NothingFound = ({
           onClick={onAction}
           className="text-lg px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
         >
-          Go Back
+          {buttonLabel}
         </button>
       </div>
     </div>

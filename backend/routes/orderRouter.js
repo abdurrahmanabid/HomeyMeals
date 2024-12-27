@@ -7,6 +7,7 @@ const getAllOrdersController = require("../controller/getAllOrdersController");
 const { getOrdersByMonth } = require("../controller/getOrdersByMonth");
 const { getWeeklyData } = require("../controller/getWeeklyData");
 const { getTotalOrders } = require("../controller/getTotalOrders");
+const getOrderController = require("../controller/getOrderController");
 
 const router = express.Router();
 
@@ -15,6 +16,7 @@ router.post("/order-item", makeAOrderController);
 router.put("/update-order/:orderId", updateOrderController);
 router.delete("/delete-order/:orderId", deleteOrderController);
 router.get("/get-order", getOrdersByIdController);
+router.get("/get-a-order/:orderId", getOrderController);
 router.get("/get-all-order", getAllOrdersController);
 router.get("/orders-by-month", getOrdersByMonth);
 router.get("/weekly-data", getWeeklyData);

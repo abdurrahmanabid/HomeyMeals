@@ -37,6 +37,8 @@ import StudentMealDetails from "./pages/student/StudentsMealDetails";
 import StudentOrder from "./pages/student/StudentsOrder";
 import { admin, consumer, rider, seller } from "./store/navbarObject";
 import useAuth from "./utils/useAuth";
+import AllItems from "./pages/Admin/AllItems";
+import ItemTable from "./pages/Admin/ItemTable";
 
 function App() {
   const user = useAuth()
@@ -81,7 +83,10 @@ function App() {
               <Route path="allMenu" element={<ProductDetail />} />
               <Route path="checkout" element={<StudentCheckout />} />
               <Route path="cash-memo" element={<CashMemo />} />
-
+              <Route
+                path="current-delivery/:orderId"
+                element={<RiderCurrentDElivery />}
+              />
               <Route path="order" element={<StudentOrder />} />
               <Route path="menu" element={<StudentMenu />} />
               <Route path="profile" element={<StudentProfileDetails />} />
@@ -101,7 +106,7 @@ function App() {
               <Route path="meal/:mealId" element={<StudentMealDetails />} />
               <Route path="profile" element={<RiderProfileDetails />} />
               <Route
-                path="current-delivery"
+                path="current-delivery/:orderId"
                 element={<RiderCurrentDElivery />}
               />
               <Route path="about-us" element={<AboutUs />} />
@@ -109,10 +114,12 @@ function App() {
           </Route>
           <Route element={<ProtectedRoute allowedRoles={["Admin"]} />}>
             <Route path="/admin" element={<MainLayout data={admin} />}>
-              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="" element={<Dashboard />} />
               <Route path="all-user" element={<AllUser />} />
               <Route path="user-table/:role" element={<UserTable />} />
               <Route path="user-details/:id" element={<UserDetails />} />
+              <Route path="all-items" element={<AllItems />} />
+              <Route path="item-table/:category" element={<ItemTable />} />
               <Route path="category" element={<CategoryList />} />
               <Route path="add-category" element={<AddCategory />} />
               <Route path="about-us" element={<AboutUs />} />

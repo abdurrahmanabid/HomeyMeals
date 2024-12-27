@@ -1,9 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../../utils/useAuth";
 import Swal from "sweetalert2";
 import Taka from "../../components/Taka";
+import useAuth from "../../utils/useAuth";
+import HomeyMealsLoader from './../../components/HomeyMealsLoader';
+import NothingFound from './../../components/NothingFound';
 
 const StudentCart = () => {
   const user = useAuth();
@@ -27,6 +29,7 @@ const StudentCart = () => {
         : [];
 
       setCartItems(items);
+      console.log("🚀 ~ fetchItemForCart ~ items:", items)
     } catch (error) {
       console.error("Error fetching cart items:", error);
       Swal.fire({
@@ -84,6 +87,7 @@ const StudentCart = () => {
 
     const checkoutData = selectedItems.map((item) => ({
       itemId: item._id,
+      sellerId: item.meal.sellerId,
       mealId: item.meal._id,
       quantity: item.quantity,
       price: item.totalAmount,
@@ -125,12 +129,7 @@ const StudentCart = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-center text-gray-500">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p>Loading your cart...</p>
-        </div>
-      </div>
+      <HomeyMealsLoader/>
     );
   }
 
@@ -141,15 +140,7 @@ const StudentCart = () => {
       </h1>
 
       {!Array.isArray(cartItems) || cartItems.length === 0 ? (
-        <div className="text-center py-10 bg-white rounded-lg shadow-md">
-          <p className="text-gray-500 mb-4">Your cart is empty</p>
-          <button
-            onClick={() => navigate("/student/menu")}
-            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
-          >
-            Browse Menu
-          </button>
-        </div>
+        <NothingFound message="No items in cart" onAction={()=>navigate("/student/menu")} buttonLabel="Explore Menu" />
       ) : (
         <div className="space-y-6">
           {cartItems.map((item) => (
