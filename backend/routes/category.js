@@ -15,4 +15,7 @@ router.get('/getCategory/:id', categoryController.getCategoryById);
 // Delete Category by ID
 router.delete('/delete/:id', categoryController.deleteCategory);
 
+router.get('/count',categoryController.getCategoryCount);
+
+
 module.exports = router;
