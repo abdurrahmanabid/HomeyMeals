@@ -8,7 +8,7 @@ export const consumer = [
     path: "./order",
   },
   {
-    name: "cart",
+    name: "Cart",
     path: "./cart",
   },
 ];

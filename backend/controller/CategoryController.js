@@ -59,9 +59,22 @@ const deleteCategory = async (req, res) => {
   }
 };
 
+// Get total category count
+const getCategoryCount = async (req, res) => {
+  try {
+    const count = await Category.countDocuments();
+    res.status(200).json({ count });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching category count', error });
+  }
+};
+
+
+
 module.exports = {
   addCategory,
   getAllCategories,
   getCategoryById,
-  deleteCategory
+  deleteCategory,
+  getCategoryCount
 };
