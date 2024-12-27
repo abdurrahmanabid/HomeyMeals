@@ -8,7 +8,7 @@ const NothingFound = ({
   onAction = () => (window.location.href = "/"),
 }) => {
   return (
-    <div className="h-screen w-full flex items-center justify-center bg-white">
+    <div className="mt-96 w-full flex items-center justify-center">
       <div className="flex flex-col items-center space-y-8">
         {icon && (
           <SearchX className="w-16 h-16 text-gray-400" aria-hidden="true" />

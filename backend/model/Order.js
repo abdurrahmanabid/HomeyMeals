@@ -41,9 +41,11 @@ const orderSchema = new Schema(
       enum: [
         "pending",
         "in_progress",
+        "accepted_by_rider",
         "completed",
         "canceled",
         "cancelled_by_seller",
+        "cancelled_by_rider",
       ],
       default: "pending",
       required: true,
