@@ -1,11 +1,13 @@
 import axios from "axios";
-import { Badge, Button, Card, Spinner } from "flowbite-react";
+import { Badge, Button, Card, Spinner, Textarea } from "flowbite-react";
 import { Check, Clock, CreditCard, MapPin, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Star } from "react-rater";
+import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import Distance from "../../components/Distance";
 import LocationDisplay from "../../components/LocationDisplay";
+import Modal from "../../components/Modal";
 import useAuth from "../../utils/useAuth";
 
 const getStatusColor = (status) => {
@@ -44,7 +46,10 @@ const RiderCurrentDelivery = () => {
   const [loading, setLoading] = useState(true);
   const [note, setNote] = useState();
   const [riderCurrentLocation, setRiderCurrentLocation] = useState();
+  const [feedback, setFeedback] = useState("");
+  const [rating, setRating] = useState(0);
   const { role } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (role === "Rider") {
@@ -86,29 +91,75 @@ const RiderCurrentDelivery = () => {
     };
     fetchOrderDetails();
   }, [orderId]);
-  const handleDelivered=async(orderId)=>{
+  const handleDelivered = async (orderId) => {
     try {
-        const response = await axios.put(
-          `http://localhost:8000/api/order/update-order/${orderId}`,
-          {
-            status: "completed",
-            money: {
-              deliveryFee: orderDetails?.deliveryFee,
-              totalPrice: orderDetails?.totalPrice,
-            },
-          }
-        );
-        Swal.fire({
-          icon:'success',
-          title:"Order Completed",
-          text:"You have successfully Complete Your order."
-        })
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setLoading(false);
-      }
-  }
+      const response = await axios.put(
+        `http://localhost:8000/api/order/update-order/${orderId}`,
+        {
+          status: "completed",
+        }
+      );
+      Swal.fire({
+        icon: "success",
+        title: "Order Completed",
+        text: "You have successfully Complete Your order.",
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleSendNote = async (orderId) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/api/order/update-order/${orderId}`,
+        {
+          customerNotes: note,
+        }
+      );
+      Swal.fire({
+        icon: "success",
+        title: "Note Send Successfully",
+        text: "You have successfully Add your note.",
+      });
+      window.location.reload();
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRating = (selectedRating) => {
+    setRating(selectedRating);
+  };
+
+  const handleSubmit = async () => {
+    console.log("Feedback:", feedback);
+    console.log("Rating:", rating);
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/api/order/update-order/${orderId}`,
+        {
+          review: feedback,
+          rating: rating,
+        }
+      );
+      Swal.fire({
+        icon: "success",
+        title: "Rating",
+        text: "You have successfully Add your Review.",
+      });
+      // Add your submit logic here (e.g., API call)
+      navigate("/");
+      // window.location.reload();
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const renderActionButtons = () => {
     switch (role) {
@@ -116,7 +167,11 @@ const RiderCurrentDelivery = () => {
         return (
           <div className="flex gap-2">
             {orderDetails?.status === "accepted_by_rider" && (
-              <Button color="success" className="w-full" onClick={()=>handleDelivered(orderId)}>
+              <Button
+                color="success"
+                className="w-full"
+                onClick={() => handleDelivered(orderId)}
+              >
                 <Check className="h-4 w-4 mr-2" />
                 Mark as Delivered
               </Button>
@@ -124,7 +179,7 @@ const RiderCurrentDelivery = () => {
           </div>
         );
 
-      case "seller":
+      case "Seller":
         return (
           <div className="space-y-2">
             <Button color="info" className="w-full">
@@ -158,7 +213,11 @@ const RiderCurrentDelivery = () => {
                 rows="4"
                 placeholder="Enter your note here..."
               />
-              <Button color="success" className="w-full">
+              <Button
+                color="success"
+                className="w-full"
+                onClick={() => handleSendNote(orderId)}
+              >
                 <Check className="h-4 w-4 mr-2" />
                 Send Your Note
               </Button>
@@ -180,6 +239,7 @@ const RiderCurrentDelivery = () => {
             <div className="bg-gray-50 p-4 rounded-lg">
               <p>{orderDetails?.sellerId?.fullName}</p>
               <p>{orderDetails?.sellerId?.phone}</p>
+              <p className="mt-2">{orderDetails?.customerNotes}</p>
             </div>
           </div>
         );
@@ -287,18 +347,63 @@ const RiderCurrentDelivery = () => {
           {(role === "Rider" || role === "Student") && (
             <div>
               <h3 className="text-lg font-semibold mb-3">Delivery Distance</h3>
-              <Distance
-                dLat={orderDetails.deliveryAddress.lat}
-                dLng={orderDetails.deliveryAddress.lang}
-                rLat
-                rLng
-              />
+              {orderDetails.status === "completed" ? null : (
+                <Distance
+                  dLat={orderDetails.deliveryAddress.lat}
+                  dLng={orderDetails.deliveryAddress.lang}
+                  rLat
+                  rLng
+                />
+              )}
             </div>
           )}
         </div>
 
         <div className="mt-6">{renderActionButtons()}</div>
       </Card>
+      {role === "Student" && orderDetails.status === "completed" && (
+        <Modal
+          handleModalClose={() => navigate("/")}
+          title={"Order is Completed"}
+        >
+          <div className="space-y-4">
+            {/* Feedback Textarea */}
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">
+                Share your experience:
+              </label>
+              <Textarea
+                placeholder="Write your feedback here..."
+                rows={4}
+                onChange={(e) => setFeedback(e.target.value)}
+                className="w-full"
+              />
+            </div>
+
+            {/* Rating Section */}
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">
+                Rate your experience:
+              </label>
+              <div className="flex gap-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    size={24}
+                    className={`cursor-pointer ${
+                      star <= rating ? "text-yellow-400" : "text-gray-300"
+                    }`}
+                    onClick={() => handleRating(star)}
+                  />
+                ))}
+              </div>
+              <Button onClick={handleSubmit} async color="blue">
+                Submit
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
