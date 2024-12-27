@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Button } from 'flowbite-react';
-import { IoIosArrowBack } from 'react-icons/io';
 
-const AddCategory = () => {
+const AddCategory = ({ showModal }) => {
   const [categoryName, setCategoryName] = useState('');
   const [categoryDescription, setCategoryDescription] = useState('');
 
@@ -32,6 +31,10 @@ const AddCategory = () => {
       // Reset form fields after success
       setCategoryName('');
       setCategoryDescription('');
+
+      // Close the modal after successful submission
+      showModal(false);
+
     } catch (error) {
       // Show an error message if something went wrong
       Swal.fire({
@@ -41,20 +44,10 @@ const AddCategory = () => {
       });
     }
   };
-  const handleNavigate = () => {
-    window.history.back();
-  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 m-10 bg-white rounded-lg shadow-md">
-            <Button
-          onClick={handleNavigate} // Navigate back to the previous page
-          color="gray"
-          className="mb-6 flex items-center gap-2 border border-blue-500" // Added gap for spacing between the icon and text
-        >
-          <IoIosArrowBack className="text-xl mt-1.5" /> 
-          <h1 className="text-2xl font-bold text-center">Add New Category</h1>
-        </Button>
+      <h1 className="text-2xl font-bold text-center">Add New Category</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>

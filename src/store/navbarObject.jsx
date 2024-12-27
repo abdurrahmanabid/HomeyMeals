@@ -45,10 +45,7 @@ export const rider = [
   },
 ];
 export const admin = [
-  {
-    name: "Dashboard",
-    path: "./dashboard",
-  },
+ 
   {
     name: "All User",
     path: "./all-user",
