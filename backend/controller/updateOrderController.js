@@ -26,6 +26,7 @@ const updateOrderController = async (req, res) => {
       "cancelled_by_seller",
       "accepted_by_rider",
       "cancelled_by_rider",
+      "assigned_to_rider",
     ];
     if (status && !validStatuses.includes(status)) {
       return res.status(400).json({ message: `Invalid status: ${status}` });

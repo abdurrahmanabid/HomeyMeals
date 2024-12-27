@@ -81,7 +81,10 @@ function App() {
               <Route path="allMenu" element={<ProductDetail />} />
               <Route path="checkout" element={<StudentCheckout />} />
               <Route path="cash-memo" element={<CashMemo />} />
-
+              <Route
+                path="current-delivery/:orderId"
+                element={<RiderCurrentDElivery />}
+              />
               <Route path="order" element={<StudentOrder />} />
               <Route path="menu" element={<StudentMenu />} />
               <Route path="profile" element={<StudentProfileDetails />} />
@@ -101,7 +104,7 @@ function App() {
               <Route path="meal/:mealId" element={<StudentMealDetails />} />
               <Route path="profile" element={<RiderProfileDetails />} />
               <Route
-                path="current-delivery"
+                path="current-delivery/:orderId"
                 element={<RiderCurrentDElivery />}
               />
               <Route path="about-us" element={<AboutUs />} />
