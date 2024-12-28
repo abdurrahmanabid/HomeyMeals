@@ -13,6 +13,10 @@ const loginController = async (req, res) => {
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
+    if (!user.emailVerify) {
+      return res.status(403).json({ message: "Email not verified. Please verify your email before logging in." });
+    }
+    
     const token = generateToken({
       id: user._id,
       fullName: user.fullName,

@@ -4,6 +4,7 @@ const { generateToken, verifyToken } = require("../utils/jwt");
 const registrationController = require("../controller/registrationController");
 const loginController = require("../controller/loginController");
 const deleteUserController = require("../controller/deleteUserRoutes");
+const emailVerificationController = require("../controller/emailVerificationController");
 
 const router = express.Router();
 
@@ -27,7 +28,7 @@ router.get("/protected", (req, res) => {
 });
 
 router.delete("/delete/:id", deleteUserController);
-
+router.get('/:email', emailVerificationController)
 
 // Logout
 router.post("/logout", (req, res) => {
