@@ -1,9 +1,10 @@
 import { Player } from "@lottiefiles/react-lottie-player";
 import axios from "axios";
-import { Button, Checkbox, Label, TextInput } from "flowbite-react";
+import { Button, Label, TextInput } from "flowbite-react";
 import Cookies from 'js-cookie';
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Swal from "sweetalert2";
 import loginLottie from "../assets/lottie/login.json";
 import { BASE_URL } from "../utils/ServerBaseURL";
@@ -11,25 +12,18 @@ import { BASE_URL } from "../utils/ServerBaseURL";
 export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
-  const navigate=useNavigate()
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Hello", {
-      email,
-      password,
-      agreeToTerms,
-    });
     try {
       const res = await axios.post(BASE_URL + "auth/login", {
         email: email,
         password: password,
       });
 
-      // Handle successful login
       if (res.status === 200 && res.data.token) {
-
         Swal.fire({
           icon: "success",
           title: "Login Successful!",
@@ -40,14 +34,19 @@ export function Login() {
           Cookies.set("token", res.data.token, { expires: 1, path: "/" });
           const role = res.data.role;
           navigate(`/${role}`);
-
-          console.log("🚀 ~ handleSubmit ~ role:", role)
         });
       }
     } catch (err) {
-      // Handle different types of errors
       if (err.response) {
         switch (err.response.status) {
+          case 403:
+            Swal.fire({
+              icon: "error",
+              title: "Email Not Verified",
+              text: "Please verify your email before logging in.",
+              confirmButtonText: "OK",
+            });
+            break;
           case 404:
             Swal.fire({
               icon: "error",
@@ -81,7 +80,6 @@ export function Login() {
             });
         }
       } else if (err.request) {
-        // No response received
         Swal.fire({
           icon: "error",
           title: "Network Error",
@@ -89,7 +87,6 @@ export function Login() {
           confirmButtonText: "Retry",
         });
       } else {
-        // Error setting up the request
         Swal.fire({
           icon: "error",
           title: "Error",
@@ -101,27 +98,26 @@ export function Login() {
   };
 
   const handleChange = (event) => {
-    const { type, checked, value, id } = event.target;
+    const { type, value, id } = event.target;
 
-    if (id === "agree") {
-      setAgreeToTerms(checked);
-    } else if (type === "email") {
+    if (type === "email") {
       setEmail(value);
     } else if (type === "password") {
       setPassword(value);
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
   return (
     <div className="flex flex-col md:flex-row justify-center items-center md:my-20 p-5">
-      {/* Lottie Animation */}
       <div className="flex flex-col md:flex-row justify-center items-center p-5 bg-white shadow-lg border border-t-secondary border-b-secondary rounded-lg">
-        {/* Login Form */}
         <form
           className="flex flex-col gap-4 w-96 max-w-md lg:border rounded-lg lg:p-6 lg:shadow-xl"
           onSubmit={handleSubmit}
         >
-          {/* Welcome Message */}
           <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">
             Log in to Your Account
           </h2>
@@ -139,18 +135,26 @@ export function Login() {
             />
           </div>
 
-          <div>
+          <div className="relative">
             <Label htmlFor="password" value="Your password" className="mb-2" />
             <TextInput
               id="password"
-              type="password"
+              type={passwordVisible ? "text" : "password"}
               required
               shadow
               placeholder="••••••••"
               value={password}
               onChange={handleChange}
             />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute inset-y-0 right-2 mt-6 mr-3 flex items-center text-gray-600 hover:text-gray-900"
+            >
+              {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+            </button>
           </div>
+
           <Button
             type="submit"
             className="w-full bg-cyan-700 hover:bg-cyan-800 transition duration-200"

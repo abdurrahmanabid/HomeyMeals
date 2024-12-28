@@ -22,7 +22,7 @@ export function Register() {
       agree: false,
     },
     validationSchema:registerValidationSchema,
-    onSubmit: async(values) => {
+    onSubmit: async (values) => {
       try {
         // Show loading indicator
         Swal.fire({
@@ -33,7 +33,7 @@ export function Register() {
             Swal.showLoading();
           },
         });
-
+    
         // Make registration request
         const res = await axios.post(`${BASE_URL}auth/register`, {
           fullName: values.fullName,
@@ -42,38 +42,23 @@ export function Register() {
           phone: values.phone,
           role: values.role,
         });
-
+    
         // Close loading indicator
         Swal.close();
-
-        // Show success message
+    
+        // Show verification email sent message
         await Swal.fire({
           icon: "success",
           title: "Registration Successful!",
-          text: `Welcome, ${values.fullName}!`,
-          confirmButtonText: "Continue",
+          text: `A verification email has been sent to ${values.email}. Please verify your email to log in.`,
+          timer: 5000, // Timer to auto-close after 5 seconds
+          showConfirmButton: false,
         });
-
-        // Set token in cookies
-        Cookies.set("token", res.data.token, { expires: 1, path: "/" });
-
-        // Store user info in localStorage
-        localStorage.setItem("user", JSON.stringify(values));
-
-        // Navigate based on role
-        switch (values.role) {
-          case "Student":
-            navigate("/student");
-            break;
-          case "Seller":
-            navigate("/seller");
-            break;
-          case "Rider":
-            navigate("/rider");
-            break;
-          default:
-            navigate("/dashboard");
-        }
+    
+        // Redirect to login page after delay
+        setTimeout(() => {
+          navigate("/login");
+        }, 5000);
       } catch (err) {
         // Handle registration errors
         Swal.fire({
@@ -84,11 +69,12 @@ export function Register() {
             "An error occurred during registration. Please try again.",
           confirmButtonText: "Try Again",
         });
-
+    
         // Log the error for debugging
         console.error("Registration error:", err);
       }
-      },
+    },
+    
   });
 
   return (
