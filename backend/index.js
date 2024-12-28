@@ -10,6 +10,7 @@ const itemRouter = require("./routes/item");
 const profileRoutes = require("./routes/profile");
 const categoryRoutes = require("./routes/category");
 const orderRouter = require("./routes/orderRouter");
+const notificationRouter = require("./routes/notificationRoute");
 const app = express();
 dbConnection();
 
@@ -34,6 +35,7 @@ app.use("/api/profile", profileRoutes);
 app.use("/api/item", itemRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/cart", cartRoutes);
+app.use("/api/notification", notificationRouter);
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () =>
