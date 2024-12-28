@@ -1,5 +1,12 @@
 import axios from "axios";
-import { Badge, Button, Card, Clipboard, Spinner, Textarea } from "flowbite-react";
+import {
+  Badge,
+  Button,
+  Card,
+  Clipboard,
+  Spinner,
+  Textarea,
+} from "flowbite-react";
 import { Check, Clock, CreditCard, MapPin, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Star } from "react-rater";
@@ -48,61 +55,81 @@ const RiderCurrentDelivery = () => {
   const [riderCurrentLocation, setRiderCurrentLocation] = useState();
   const [feedback, setFeedback] = useState("");
   const [rating, setRating] = useState(0);
-  const { role: userRole ,id} = useAuth();
-  const [role,setRole]=useState(userRole);
+  const { role: userRole, id } = useAuth();
+  const [role, setRole] = useState(userRole);
   const navigate = useNavigate();
 
-useEffect(() => {
-  if (role === "Rider") {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude, accuracy } = position.coords;
-          console.log(
-            `Latitude: ${latitude}, Longitude: ${longitude}, Accuracy: ${accuracy} meters`
-          );
+  useEffect(() => {
+    if (role === "Rider") {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude, accuracy } = position.coords;
+            console.log(
+              `Latitude: ${latitude}, Longitude: ${longitude}, Accuracy: ${accuracy} meters`
+            );
 
-          try {
-            // Update database with Axios
-            const response = await axios.put(
-              `http://localhost:8000/api/profile/map/put/${id}`,
-              {
-                lat: latitude,
-                lng: longitude,
-              }
-            );
-            setRiderCurrentLocation({ lat: latitude, lng: longitude });
-          } catch (error) {
-            console.error("Failed to update location:", error.message);
+            try {
+              // Update database with Axios
+              const response = await axios.put(
+                `http://localhost:8000/api/profile/map/put/${id}`,
+                {
+                  lat: latitude,
+                  lng: longitude,
+                }
+              );
+              setRiderCurrentLocation({ lat: latitude, lng: longitude });
+            } catch (error) {
+              console.error("Failed to update location:", error.message);
+            }
+          },
+          async (error) => {
+            console.error("Error getting geolocation:", error.message);
+            try {
+              // Fallback to server-stored location
+              const response = await axios.get(
+                `http://localhost:8000/api/profile/get/${id}`
+              );
+              setRiderCurrentLocation({
+                lat: response.data.profile.lat,
+                lng: response.data.profile.lng,
+              });
+            } catch (error) {
+              console.error(
+                "Failed to fetch fallback location:",
+                error.message
+              );
+            }
+          },
+          {
+            enableHighAccuracy: true, // Use GPS hardware
+            timeout: 15000, // Increased timeout to 15 seconds
+            maximumAge: 0, // No cached results
           }
-        },
-        async (error) => {
-          console.error("Error getting geolocation:", error.message);
-          try {
-            // Fallback to server-stored location
-            const response = await axios.get(
-              `http://localhost:8000/api/profile/get/${id}`
-            );
-            setRiderCurrentLocation({
-              lat: response.data.profile.lat,
-              lng: response.data.profile.lng,
-            });
-          } catch (error) {
-            console.error("Failed to fetch fallback location:", error.message);
-          }
-        },
-        {
-          enableHighAccuracy: true, // Use GPS hardware
-          timeout: 15000, // Increased timeout to 15 seconds
-          maximumAge: 0, // No cached results
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
     }
-  }
-}, [role, id]);
+  }, [role, id]);
 
+  useEffect(() => {
+    const fetchRider = async () => {
+      try {
+        // Fallback to server-stored location
+        const response = await axios.get(
+          `http://localhost:8000/api/profile/get/${orderDetails.riderId._id}`
+        );
+        setRiderCurrentLocation({
+          lat: response.data.profile.lat,
+          lng: response.data.profile.lng,
+        });
+      } catch (error) {
+        console.error("Failed to fetch fallback location:", error.message);
+      }
+    };
+    fetchRider();
+  }, [orderDetails]);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -112,7 +139,7 @@ useEffect(() => {
         );
         const data = await response.json();
         console.log("🚀 ~ fetchOrderDetails ~ response:", data.paymentMethod);
-        if (role === "Student" && data.paymentMethod==="self-shipping") {
+        if (role === "Student" && data.paymentMethod === "self-shipping") {
           setRole("Rider");
         }
         setOrderDetails(data);
@@ -138,8 +165,8 @@ useEffect(() => {
         title: "Order Completed",
         text: `You have successfully Complete Your order. You have earned ${orderDetails.deliveryFee} Taka`,
       }).then(() => {
-        navigate("/dashboard")
-      })
+        navigate("/dashboard");
+      });
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -277,7 +304,7 @@ useEffect(() => {
               <p>{orderDetails?.sellerId?.phone}</p>
               <Clipboard
                 label="copy"
-                className="bg-gray-400 p-1" 
+                className="bg-gray-400 p-1"
                 valueToCopy={orderDetails?.sellerId?.phone}
               />
               <p className="mt-2">{orderDetails?.customerNotes}</p>
@@ -294,7 +321,9 @@ useEffect(() => {
               <p>{orderDetails?.studentId?.fullName}</p>
               <div className="flex items-center gap-2">
                 <p>{orderDetails?.studentId?.phone}</p>
-                <Clipboard label="copy" className="bg-gray-400 p-1"
+                <Clipboard
+                  label="copy"
+                  className="bg-gray-400 p-1"
                   valueToCopy={orderDetails?.studentId?.phone}
                 />
               </div>
@@ -305,7 +334,7 @@ useEffect(() => {
     }
   };
 
-  if (loading||!riderCurrentLocation)
+  if (loading || !riderCurrentLocation)
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Spinner size="xl" />
@@ -397,8 +426,8 @@ useEffect(() => {
                 <Distance
                   dLat={orderDetails.deliveryAddress.lat}
                   dLng={orderDetails.deliveryAddress.lang}
-                  rLat={riderCurrentLocation?.lat||0}
-                  rLng={riderCurrentLocation?.lng||0}
+                  rLat={riderCurrentLocation?.lat || 0}
+                  rLng={riderCurrentLocation?.lng || 0}
                 />
               )}
             </div>
