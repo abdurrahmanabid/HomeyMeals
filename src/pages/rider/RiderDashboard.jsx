@@ -54,7 +54,7 @@ const RiderDashboard = () => {
         const deliveryCharge = order.deliveryFee || 0;
 
         switch (order.status) {
-          case "pending":
+          case "assigned_to_rider":
             stats.pending++;
             break;
           case "in_progress":
