@@ -1,3 +1,4 @@
+import { Clipboard } from "flowbite-react";
 import L from "leaflet"; // For creating custom markers
 import "leaflet/dist/leaflet.css";
 import React, { useEffect, useMemo, useState } from "react";
@@ -9,10 +10,11 @@ import LocationDisplay from "./LocationDisplay";
 const zoom = 13;
 
 function Distance({ dLat, dLng, rLat, rLng }) {
+  console.log("🚀 ~ Distance ~ rLat, rLng:", rLat, rLng)
   const [map, setMap] = useState(null);
   const [riderLocation, setRiderLocation] = useState({
-    lat: 22.3314, // Rider's location (can be dynamic)
-    lng: 91.8127,
+    lat: rLat, // Rider's location (can be dynamic)
+    lng: rLng,
   });
   const [currentLocation, setCurrentLocation] = useState({
     lat: dLat, 
@@ -63,6 +65,10 @@ function Distance({ dLat, dLng, rLat, rLng }) {
             <strong>Rider's Current Location</strong>
             <br />
             <LocationDisplay lat={riderLocation.lat} lng={riderLocation.lng} />
+            <br />
+            <Clipboard.WithIconText
+              valueToCopy={`https://www.google.com/maps/search/?api=1&query=${riderLocation.lat},${riderLocation.lng}`}
+            />
           </Popup>
         </Marker>
 
@@ -83,7 +89,13 @@ function Distance({ dLat, dLng, rLat, rLng }) {
           <Popup>
             <strong>Delivery Location</strong>
             <br />
-            <LocationDisplay lat={currentLocation.lat} lng={currentLocation.lng} />
+            <LocationDisplay
+              lat={currentLocation.lat}
+              lng={currentLocation.lng}
+            />
+            <Clipboard.WithIconText
+              valueToCopy={`https://www.google.com/maps/search/?api=1&query=${currentLocation.lat},${currentLocation.lng}`}
+            />
           </Popup>
         </Marker>
       </MapContainer>
