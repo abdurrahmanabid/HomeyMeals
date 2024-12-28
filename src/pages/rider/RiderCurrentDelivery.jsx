@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Badge, Button, Card, Spinner, Textarea } from "flowbite-react";
+import { Badge, Button, Card, Clipboard, Spinner, Textarea } from "flowbite-react";
 import { Check, Clock, CreditCard, MapPin, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Star } from "react-rater";
@@ -48,32 +48,61 @@ const RiderCurrentDelivery = () => {
   const [riderCurrentLocation, setRiderCurrentLocation] = useState();
   const [feedback, setFeedback] = useState("");
   const [rating, setRating] = useState(0);
-  const { role } = useAuth();
+  const { role: userRole ,id} = useAuth();
+  const [role,setRole]=useState(userRole);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (role === "Rider") {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
+useEffect(() => {
+  if (role === "Rider") {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude, accuracy } = position.coords;
+          console.log(
+            `Latitude: ${latitude}, Longitude: ${longitude}, Accuracy: ${accuracy} meters`
+          );
+
+          try {
+            // Update database with Axios
+            const response = await axios.put(
+              `http://localhost:8000/api/profile/map/put/${id}`,
+              {
+                lat: latitude,
+                lng: longitude,
+              }
+            );
             setRiderCurrentLocation({ lat: latitude, lng: longitude });
-            console.log("Current Latitude:", latitude);
-            console.log("Current Longitude:", longitude);
-          },
-          (error) => {
-            console.error("Error getting geolocation:", error.message);
-            Swal.fire({
-              icon: "error",
-              title: "Geolocation is not supported by this browser.",
-            });
+          } catch (error) {
+            console.error("Failed to update location:", error.message);
           }
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
-      }
+        },
+        async (error) => {
+          console.error("Error getting geolocation:", error.message);
+          try {
+            // Fallback to server-stored location
+            const response = await axios.get(
+              `http://localhost:8000/api/profile/get/${id}`
+            );
+            setRiderCurrentLocation({
+              lat: response.data.profile.lat,
+              lng: response.data.profile.lng,
+            });
+          } catch (error) {
+            console.error("Failed to fetch fallback location:", error.message);
+          }
+        },
+        {
+          enableHighAccuracy: true, // Use GPS hardware
+          timeout: 15000, // Increased timeout to 15 seconds
+          maximumAge: 0, // No cached results
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
     }
-  }, []);
+  }
+}, [role, id]);
+
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -82,6 +111,10 @@ const RiderCurrentDelivery = () => {
           `http://localhost:8000/api/order/get-a-order/${orderId}`
         );
         const data = await response.json();
+        console.log("🚀 ~ fetchOrderDetails ~ response:", data.paymentMethod);
+        if (role === "Student" && data.paymentMethod==="self-shipping") {
+          setRole("Rider");
+        }
         setOrderDetails(data);
       } catch (error) {
         console.error("Error:", error);
@@ -97,13 +130,16 @@ const RiderCurrentDelivery = () => {
         `http://localhost:8000/api/order/update-order/${orderId}`,
         {
           status: "completed",
+          paymentStatus: "completed",
         }
       );
       Swal.fire({
         icon: "success",
         title: "Order Completed",
-        text: "You have successfully Complete Your order.",
-      });
+        text: `You have successfully Complete Your order. You have earned ${orderDetails.deliveryFee} Taka`,
+      }).then(() => {
+        navigate("/dashboard")
+      })
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -239,6 +275,11 @@ const RiderCurrentDelivery = () => {
             <div className="bg-gray-50 p-4 rounded-lg">
               <p>{orderDetails?.sellerId?.fullName}</p>
               <p>{orderDetails?.sellerId?.phone}</p>
+              <Clipboard
+                label="copy"
+                className="bg-gray-400 p-1" 
+                valueToCopy={orderDetails?.sellerId?.phone}
+              />
               <p className="mt-2">{orderDetails?.customerNotes}</p>
             </div>
           </div>
@@ -251,7 +292,12 @@ const RiderCurrentDelivery = () => {
             <h3 className="text-lg font-semibold mb-3">Customer Information</h3>
             <div className="bg-gray-50 p-4 rounded-lg">
               <p>{orderDetails?.studentId?.fullName}</p>
-              <p>{orderDetails?.studentId?.phone}</p>
+              <div className="flex items-center gap-2">
+                <p>{orderDetails?.studentId?.phone}</p>
+                <Clipboard label="copy" className="bg-gray-400 p-1"
+                  valueToCopy={orderDetails?.studentId?.phone}
+                />
+              </div>
               <p className="mt-2">{orderDetails?.customerNotes}</p>
             </div>
           </div>
@@ -259,7 +305,7 @@ const RiderCurrentDelivery = () => {
     }
   };
 
-  if (loading)
+  if (loading||!riderCurrentLocation)
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Spinner size="xl" />
@@ -351,8 +397,8 @@ const RiderCurrentDelivery = () => {
                 <Distance
                   dLat={orderDetails.deliveryAddress.lat}
                   dLng={orderDetails.deliveryAddress.lang}
-                  rLat
-                  rLng
+                  rLat={riderCurrentLocation?.lat||0}
+                  rLng={riderCurrentLocation?.lng||0}
                 />
               )}
             </div>

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { format } from "date-fns";
+import { Clipboard } from "flowbite-react";
 import {
   AlertCircle,
   CheckCircle,
@@ -11,10 +12,12 @@ import {
   Phone,
   RefreshCw,
   Truck,
+  TruckIcon,
   User,
   XCircle,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import HomeyMealsLoader from "../../components/HomeyMealsLoader";
 import LocationDisplay from "../../components/LocationDisplay";
@@ -71,6 +74,7 @@ const RiderDelivery = () => {
   const [error, setError] = useState(null);
   const { id } = useAuth();
   console.log("🚀 ~ RiderDelivery ~ id:", id);
+  const navigate = useNavigate();
 
   const fetchOrders = async () => {
     try {
@@ -82,6 +86,7 @@ const RiderDelivery = () => {
         }
       );
       setOrders(response.data);
+      // console.log("🚀 ~ fetchOrders ~ response.data:", response.data)
       setError(null);
     } catch (error) {
       setError("Failed to fetch orders");
@@ -234,9 +239,14 @@ const RiderDelivery = () => {
                           <p className="text-sm text-gray-600">
                             {order.studentId.fullName}
                           </p>
-                          <p className="inline-flex items-center gap-2 text-sm text-gray-600">
-                            <Phone size={14} /> {order.studentId.phone}
+                          <p className="inline-flex items-center gap-5 text-sm text-gray-600">
+                            <Phone size={14} /> {order.studentId.phone}<Clipboard
+                            label="copy"
+                            className="bg-gray-400 p-1"
+                            valueToCopy={order.studentId.phone}
+                          />
                           </p>
+                          
                           <p className="inline-flex items-center gap-2 text-sm text-gray-600">
                             <Mail size={14} /> {order.studentId.email}
                           </p>
@@ -262,7 +272,23 @@ const RiderDelivery = () => {
                     </div>
 
                     <div>
-                      <div className="rounded-lg bg-gray-50 p-4">
+                      <div>
+                        <h4 className="flex items-center gap-2 text-sm font-medium text-gray-900">
+                          <User size={16} /> Seller Information
+                        </h4>
+                        <div className="mt-3 space-y-2">
+                          <p className="text-sm text-gray-600">
+                            {order.sellerId.fullName}
+                          </p>
+                          <p className="inline-flex items-center gap-2 text-sm text-gray-600 mr-2">
+                            <Phone size={14} /> {order.sellerId.phone}
+                          </p>
+                          <p className="inline-flex items-center gap-2 text-sm text-gray-600">
+                            <Mail size={14} /> {order.sellerId.email}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="rounded-lg bg-gray-50 p-4 ">
                         <h4 className="flex items-center gap-2 text-sm font-medium text-gray-900">
                           <Package size={16} /> Order Details
                         </h4>
@@ -290,8 +316,7 @@ const RiderDelivery = () => {
                           </span>
                         </div>
                       </div>
-
-                      {order.status === "in_progress" && (
+                      {order.status === "assigned_to_rider" && (
                         <div className="mt-6 flex justify-end gap-3">
                           <button
                             className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
@@ -304,6 +329,18 @@ const RiderDelivery = () => {
                             onClick={() => handleAcceptOrder(order._id)}
                           >
                             <CheckCircle size={16} /> Accept
+                          </button>
+                        </div>
+                      )}
+                      {order.status === "accepted_by_rider" && (
+                        <div className="mt-6 flex justify-end gap-3">
+                          <button
+                            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+                            onClick={() =>
+                              navigate(`../current-delivery/${order._id}`)
+                            }
+                          >
+                            <TruckIcon size={16} /> Track Order
                           </button>
                         </div>
                       )}
