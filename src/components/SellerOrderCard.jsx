@@ -28,9 +28,15 @@ const OrderedCard = ({ order,key }) => {
   };
   const handleAcceptOrder = async (order) => {
     try {
-      await axios.put(`http://localhost:8000/api/order/update-order/${order._id}`, {
-        status: "in_progress",
-      });
+      await axios.put(
+        `http://localhost:8000/api/order/update-order/${order._id}`,
+        {
+          status:
+            order.paymentMethod === "self-shipping"
+              ? "accepted_by_rider"
+              : "in_progress",
+        }
+      );
       Swal.fire({
         icon: "success",
         title: "Success",

@@ -1,16 +1,20 @@
 import axios from "axios";
 import { Alert, Badge, Button, Card, Spinner } from "flowbite-react";
 import {
-  AlertCircle, CheckCircle, Loader2,
-  ThumbsUp, Truck, XCircle
+  AlertCircle,
+  CheckCircle,
+  Loader2,
+  ThumbsUp,
+  Truck,
+  XCircle,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAuth from "../../utils/useAuth";
-import LocationDisplay from './../../components/LocationDisplay';
-import Modal from './../../components/Modal';
-import NothingFound from './../../components/NothingFound';
+import LocationDisplay from "./../../components/LocationDisplay";
+import Modal from "./../../components/Modal";
+import NothingFound from "./../../components/NothingFound";
 
 const StudentOrder = () => {
   const { id } = useAuth();
@@ -44,46 +48,44 @@ const StudentOrder = () => {
 
     getOrders();
   }, [id]);
-    const handleDetailsClick = async (item) => {
-      console.log("🚀 ~ handleDetailsClick ~ item:", item);
-      try {
-        const response = await axios.get(
-          `http://localhost:8000/api/item/get-item/${item.itemId}`
-        );
-        setMeal(response.data); // Assuming response.data contains the orders
-        console.log("🚀 ~ handleDetailsClick ~ response.data:", response.data);
-      } catch (err) {
-        console.error("Error fetching orders:", err);
-        setError(err.message || "Failed to fetch orders");
-      } finally {
-        setLoading(false);
-      }
-    };
-    const handleCancelOrder = async (order) => {
-      try {
-        await axios.put(
-          `http://localhost:8000/api/order/update-order/${order._id}`,
-          {
-            status: "canceled",
-          }
-        );
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Order cancelled successfully",
-        })
-        window.location.reload();
-      }
-      catch (err) {
-        console.error("Error cancelling order:", err);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to cancel order",
-        });
-      }
+  const handleDetailsClick = async (item) => {
+    console.log("🚀 ~ handleDetailsClick ~ item:", item);
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/item/get-item/${item.itemId}`
+      );
+      setMeal(response.data); // Assuming response.data contains the orders
+      console.log("🚀 ~ handleDetailsClick ~ response.data:", response.data);
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+      setError(err.message || "Failed to fetch orders");
+    } finally {
+      setLoading(false);
     }
-
+  };
+  const handleCancelOrder = async (order) => {
+    try {
+      await axios.put(
+        `http://localhost:8000/api/order/update-order/${order._id}`,
+        {
+          status: "canceled",
+        }
+      );
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Order cancelled successfully",
+      });
+      window.location.reload();
+    } catch (err) {
+      console.error("Error cancelling order:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to cancel order",
+      });
+    }
+  };
 
   const statusIcon = (status) => {
     switch (status) {
@@ -103,7 +105,6 @@ const StudentOrder = () => {
         return <AlertCircle className="text-gray-500" size={20} />;
     }
   };
-
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 lg:p-12">
@@ -213,7 +214,15 @@ const StudentOrder = () => {
                   {order.status === "canceled" ||
                   order.status === "in_progress" ||
                   order.status === "pending" ? null : (
-                    <Button color="gray" size="sm" onClick={() => {navigate(`../current-delivery/${order._id}`);}}>
+                    <Button
+                      color="gray"
+                      size="sm"
+                      onClick={() => {
+                        if (order.paymentMethod==="self-shipping") {
+                          navigate(`../me-as-a-rider/${order._id}`);
+                        } else navigate(`../current-delivery/${order._id}`);
+                      }}
+                    >
                       <Truck size={16} className="mr-2" />
                       Track Order
                     </Button>
@@ -223,7 +232,8 @@ const StudentOrder = () => {
                       <span>
                         <span className="font-medium">
                           Wait For Assign Rider
-                        </span> - Your order is in progress.
+                        </span>{" "}
+                        - Your order is in progress.
                       </span>
                     </Alert>
                   )}

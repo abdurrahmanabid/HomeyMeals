@@ -10,9 +10,11 @@ import { Register } from "./components/Register";
 import MainLayout from "./layout/MainLayout/MainLayouts";
 import AboutUs from "./pages/AboutUs";
 import AddCategory from "./pages/Admin/AddCategory";
+import AllItems from "./pages/Admin/AllItems";
 import AllUser from "./pages/Admin/AllUser";
 import CategoryList from "./pages/Admin/CategoryList";
 import Dashboard from "./pages/Admin/Dashboard";
+import ItemTable from "./pages/Admin/ItemTable";
 import UserTable from "./pages/Admin/UserTable";
 import UserDetails from "./pages/Admin/userDetails";
 import Home from "./pages/Home";
@@ -29,6 +31,7 @@ import SellerItems from "./pages/seller/SellerItems";
 import SellerOrders from "./pages/seller/SellerOrders";
 import SellerProfileDetails from "./pages/seller/SellerProfileDetails";
 import CashMemo from "./pages/student/CashMemo";
+import MeAsARider from "./pages/student/MeAsARider";
 import StudentCart from "./pages/student/StudentCart";
 import StudentCheckout from "./pages/student/StudentCheckout";
 import StudentMenu from "./pages/student/StudentMenu";
@@ -37,8 +40,6 @@ import StudentMealDetails from "./pages/student/StudentsMealDetails";
 import StudentOrder from "./pages/student/StudentsOrder";
 import { admin, consumer, rider, seller } from "./store/navbarObject";
 import useAuth from "./utils/useAuth";
-import AllItems from "./pages/Admin/AllItems";
-import ItemTable from "./pages/Admin/ItemTable";
 
 function App() {
   const user = useAuth()
@@ -83,6 +84,7 @@ function App() {
               <Route path="allMenu" element={<ProductDetail />} />
               <Route path="checkout" element={<StudentCheckout />} />
               <Route path="cash-memo" element={<CashMemo />} />
+              <Route path="me-as-a-rider/:orderId" element={<MeAsARider />} />
               <Route
                 path="current-delivery/:orderId"
                 element={<RiderCurrentDElivery />}
