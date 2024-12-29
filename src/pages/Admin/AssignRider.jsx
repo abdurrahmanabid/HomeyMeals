@@ -129,7 +129,8 @@ const AssignRider = () => {
           {selectedOrder && (
             <PendingOrderDetails
               order={selectedOrder}
-              fullAddress={selectedOrder.fullAddress} // Pass the full address to the modal
+              fullAddress={selectedOrder.fullAddress} 
+              onClose={() => setSelectedOrder(null)}
             />
           )}
         </Modal.Body>
