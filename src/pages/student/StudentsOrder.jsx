@@ -1,14 +1,16 @@
 import axios from "axios";
-import { Alert, Badge, Button, Card, Spinner } from "flowbite-react";
+import { Alert, Badge, Button, Card, Spinner, Textarea } from "flowbite-react";
 import {
   AlertCircle,
   CheckCircle,
   Loader2,
+  Star,
   ThumbsUp,
   Truck,
-  XCircle,
+  XCircle
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { Star as StarRater } from "react-rater";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAuth from "../../utils/useAuth";
@@ -22,6 +24,9 @@ const StudentOrder = () => {
   const [loading, setLoading] = useState(true);
   const [meal, setMeal] = useState(null);
   const [error, setError] = useState(null);
+  const [modalData, setModalData] = useState(null);
+  const [rating,setRating]= useState(0);
+  const [feedback,setFeedback]= useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -102,6 +107,39 @@ const StudentOrder = () => {
       });
     }
   };
+  const handleRateOrder =async({itemId,studentId,orderId}) => {
+    console.log("🚀 ~ handleRateOrder ~ orderId,studentId:", itemId,studentId)
+    console.log("🚀 ~ handleRateOrder ~ id:", id)
+    try {
+      await axios.post(`http://localhost:8000/api/rating/add-rating`, {
+      studentId:studentId,
+      itemId: itemId,
+      review: feedback,
+      star: rating,
+    });
+    const response = await axios.put(
+      `http://localhost:8000/api/order/update-order/${orderId}`,
+      {
+        review: "rated",
+      }
+    );
+    setRating(null)
+    setFeedback(null)
+    setModalData(null)
+    Swal.fire({
+      icon: "success",
+      title: "Success",
+      text: "Order rated successfully",
+    })
+    } catch (error) {
+      console.error("Error rating order:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to rate order",
+      });
+    }
+  }
 
   const statusIcon = (status) => {
     switch (status) {
@@ -229,12 +267,14 @@ const StudentOrder = () => {
                 <div className="flex justify-between items-center mt-4">
                   {order.status === "canceled" ||
                   order.status === "in_progress" ||
-                  order.status === "pending" ? null : (
+                  order.status === "pending" ||
+                  order.status === "cancelled_by_rider" ||
+                  order.status === "completed" ? null : (
                     <Button
                       color="gray"
                       size="sm"
                       onClick={() => {
-                        if (order.paymentMethod==="self-shipping") {
+                        if (order.paymentMethod === "self-shipping") {
                           navigate(`../me-as-a-rider/${order._id}`);
                         } else navigate(`../current-delivery/${order._id}`);
                       }}
@@ -263,6 +303,35 @@ const StudentOrder = () => {
                     >
                       Cancel Order
                     </Button>
+                  )}
+                  {order.status === "completed" && (
+                    <>
+                      {order.review === "rated" ? (
+                        <Alert color="warning" withBorderAccent>
+                          <span>
+                            <span className="font-medium">
+                              You Have Rated This Meal
+                            </span>{" "}
+                            - Thanks for your feedback.
+                          </span>
+                        </Alert>
+                      ) : (
+                        <Button
+                          color="warning"
+                          size="sm"
+                          onClick={() => {
+                            setModalData({
+                              orderId: order._id,
+                              itemId: order.items[0].itemId,
+                              studentId: order.studentId._id,
+                            });
+                          }}
+                        >
+                          <Star size={16} className="mr-2" />
+                          Rate This Meal
+                        </Button>
+                      )}
+                    </>
                   )}
                 </div>
               </Card>
@@ -314,6 +383,47 @@ const StudentOrder = () => {
           </div>
         </Modal>
       )}
+      {modalData&&<Modal
+        handleModalClose={() => setModalData(null)}
+        title={"Order is Completed"}
+      >
+        <div className="space-y-4">
+          {/* Feedback Textarea */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Share your experience:
+            </label>
+            <Textarea
+              placeholder="Write your feedback here..."
+              rows={4}
+              onChange={(e) => setFeedback(e.target.value)}
+              className="w-full"
+            />
+          </div>
+
+          {/* Rating Section */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Rate your experience:
+            </label>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <StarRater
+                  key={star}
+                  size={30}
+                  className={`cursor-pointer ${
+                    star <= rating ? "text-yellow-400" : "text-gray-300"
+                  }`}
+                  onClick={() => setRating(star)}
+                />
+              ))}
+            </div>
+            <Button onClick={() => handleRateOrder(modalData)} async color="blue">
+              Submit
+            </Button>
+          </div>
+        </div>
+      </Modal>}
     </div>
   );
 };

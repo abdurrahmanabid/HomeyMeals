@@ -6,6 +6,7 @@ const {
   getRatingsByItemId,
   updateRating,
   deleteRating,
+  getAverageRatingByItemId,
 } = require("../controller/ratingController");
 
 // Create a new rating
@@ -22,5 +23,6 @@ router.put("/:ratingId", updateRating);
 
 // Delete a rating
 router.delete("/:ratingId", deleteRating);
+router.get("/average-rating/:itemId", getAverageRatingByItemId);
 
 module.exports = router;

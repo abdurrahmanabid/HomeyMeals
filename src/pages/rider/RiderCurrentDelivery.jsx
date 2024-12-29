@@ -1,5 +1,6 @@
 import axios from "axios";
 import {
+  Alert,
   Badge,
   Button,
   Card,
@@ -7,7 +8,7 @@ import {
   Spinner,
   Textarea,
 } from "flowbite-react";
-import { Check, Clock, CreditCard, MapPin, X } from "lucide-react";
+import { Check, Clock, CreditCard, Home, MapPin, PackageCheck, StarIcon, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Star } from "react-rater";
 import { useNavigate, useParams } from "react-router-dom";
@@ -57,6 +58,7 @@ const RiderCurrentDelivery = () => {
   const [rating, setRating] = useState(0);
   const { role: userRole, id } = useAuth();
   const [role, setRole] = useState(userRole);
+  const [modal,setModal]=useState(false)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -112,6 +114,8 @@ const RiderCurrentDelivery = () => {
       }
     }
   }, [role, id]);
+
+  
 
   useEffect(() => {
     const fetchRider = async () => {
@@ -229,11 +233,16 @@ const RiderCurrentDelivery = () => {
     console.log("Feedback:", feedback);
     console.log("Rating:", rating);
     try {
+      await axios.post(`http://localhost:8000/api/rating/add-rating`, {
+        studentId: id,
+        itemId: orderDetails.items[0].itemId,
+        review: feedback,
+        star: rating,
+      });
       const response = await axios.put(
         `http://localhost:8000/api/order/update-order/${orderId}`,
         {
-          review: feedback,
-          rating: rating,
+          review: "rated",
         }
       );
       Swal.fire({
@@ -287,32 +296,79 @@ const RiderCurrentDelivery = () => {
 
       case "Student":
         return (
-          <div className="space-y-2">
-            {/* Editable Note Section */}
-            <div className="mb-4">
-              <label
-                htmlFor="studentNote"
-                className="block text-gray-700 font-semibold mb-2"
-              >
-                Update Your Note
-              </label>
-              <textarea
-                id="studentNote"
-                onChange={(e) => setNote(e.target.value)} // Handle input change
-                className="w-full p-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500"
-                rows="4"
-                placeholder="Enter your note here..."
-              />
-              <Button
-                color="success"
-                className="w-full"
-                onClick={() => handleSendNote(orderId)}
-              >
-                <Check className="h-4 w-4 mr-2" />
-                Send Your Note
-              </Button>
-            </div>
-          </div>
+          <>
+            {orderDetails.status === "completed" ? (
+              <>
+                <Alert color="success" withBorderAccent>
+                  <div className="p-4  rounded-lg ">
+                    {/* Icon and Text Section */}
+                    <div className="flex items-start gap-4">
+                      <div className="bg-green-100 p-2 rounded-full">
+                        <PackageCheck size={24} className="text-green-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-green-700">
+                          Yes! Your Order is completed
+                        </h3>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons - New Line */}
+                    <div className="flex flex-col md:flex-row mt-4 items-center gap-4">
+                      {/* Make Rating Button */}
+                      <Button
+                        color="warning"
+                        size="lg"
+                        className="flex items-center gap-2 w-full md:w-auto"
+                        onClick={()=>{setModal(true)}}
+                      >
+                        <StarIcon size={18} />
+                        Rate Your Meal
+                      </Button>
+
+                      {/* Go to Home Button */}
+                      <Button
+                        color="light"
+                        size="lg"
+                        className="flex items-center gap-2 w-full md:w-auto"
+                        onClick={()=>navigate('/')}
+                      >
+                        <Home size={18} />
+                        Go to Home
+                      </Button>
+                    </div>
+                  </div>
+                </Alert>
+              </>
+            ) : (
+              <div className="space-y-2">
+                {/* Editable Note Section */}
+                <div className="mb-4">
+                  <label
+                    htmlFor="studentNote"
+                    className="block text-gray-700 font-semibold mb-2"
+                  >
+                    Update Your Note
+                  </label>
+                  <textarea
+                    id="studentNote"
+                    onChange={(e) => setNote(e.target.value)} // Handle input change
+                    className="w-full p-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500"
+                    rows="4"
+                    placeholder="Enter your note here..."
+                  />
+                  <Button
+                    color="success"
+                    className="w-full"
+                    onClick={() => handleSendNote(orderId)}
+                  >
+                    <Check className="h-4 w-4 mr-2" />
+                    Send Your Note
+                  </Button>
+                </div>
+              </div>
+            )}
+          </>
         );
 
       default:
@@ -463,9 +519,9 @@ const RiderCurrentDelivery = () => {
 
         <div className="mt-6">{renderActionButtons()}</div>
       </Card>
-      {role === "Student" && orderDetails.status === "completed" && (
+      {role === "Student" && modal && (
         <Modal
-          handleModalClose={() => navigate("/")}
+          handleModalClose={() => setModal(false)}
           title={"Order is Completed"}
         >
           <div className="space-y-4">
@@ -491,7 +547,7 @@ const RiderCurrentDelivery = () => {
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star
                     key={star}
-                    size={24}
+                    size={30}
                     className={`cursor-pointer ${
                       star <= rating ? "text-yellow-400" : "text-gray-300"
                     }`}
