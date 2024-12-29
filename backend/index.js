@@ -11,6 +11,7 @@ const profileRoutes = require("./routes/profile");
 const categoryRoutes = require("./routes/category");
 const orderRouter = require("./routes/orderRouter");
 const notificationRouter = require("./routes/notificationRoute");
+const ratingRouter = require("./routes/ratingRoutes");
 const app = express();
 dbConnection();
 
@@ -36,6 +37,7 @@ app.use("/api/item", itemRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/cart", cartRoutes);
 app.use("/api/notification", notificationRouter);
+app.use("/api/rating", ratingRouter);
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () =>
