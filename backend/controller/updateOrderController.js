@@ -12,6 +12,7 @@ const updateOrderController = async (req, res) => {
       paymentStatus,
       cancellationReason,
       rating,
+      riderId,
     } = req.body;
 
     // Log the incoming data for debugging
@@ -42,6 +43,7 @@ const updateOrderController = async (req, res) => {
       ...(paymentStatus && { paymentStatus }),
       ...(cancellationReason && { cancellationReason }),
       ...(rating && { rating }),
+      ...(riderId && { riderId }),
     };
 
     // Find and update the order

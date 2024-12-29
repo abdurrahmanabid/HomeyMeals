@@ -1,11 +1,12 @@
 import axios from "axios";
+import { Modal } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2"; // Import SweetAlert2
-import LocationDisplay from "./../../components/LocationDisplay";
-import { Modal } from "flowbite-react";
 import { calculateDistance } from "../../functions/calculateDistance";
+import LocationDisplay from "./../../components/LocationDisplay";
 
 const PendingOrderDetails = ({ order, fullAddress, onClose }) => {
+  console.log("🚀 ~ PendingOrderDetails ~ order:", order)
   const [profile, setProfile] = useState(null);
   const [loading, setPendingLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -72,6 +73,22 @@ const PendingOrderDetails = ({ order, fullAddress, onClose }) => {
         riderId: selectedRider.userId._id,
         status: "assigned_to_rider",
       });
+      await axios.post(
+        `http://localhost:8000/api/notification/add-notification`,
+        {
+          userId: selectedRider.userId._id,
+          title: "New Order",
+          message: `New Order Arrived, Get Ready For Ride.`,
+        }
+      );
+      await axios.post(
+        `http://localhost:8000/api/notification/add-notification`,
+        {
+          userId: order.sellerId,
+          title: "Rider is Coming",
+          message: `To take of your delicious food rider is coming`,
+        }
+      );
 
       Swal.fire("Success", "Rider assigned successfully!", "success");
       setRiderModalOpen(false);
