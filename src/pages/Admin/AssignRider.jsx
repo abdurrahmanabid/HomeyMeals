@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
-import PendingOrderDetails from "../Admin/PendingOrderDetail";
 import { Modal } from "flowbite-react"; // Import Flowbite's Modal component
+import React, { useEffect, useState } from "react";
+import PendingOrderDetails from "../Admin/PendingOrderDetail";
+import HomeyMealsLoader from './../../components/HomeyMealsLoader';
+import NothingFound from './../../components/NothingFound';
 
 const AssignRider = () => {
   const [orders, setOrders] = useState([]);
@@ -62,11 +64,11 @@ const AssignRider = () => {
     setSelectedOrder({ ...order, fullAddress: address });
   };
 
-  if (loading) return <div className="text-center mt-6">Loading...</div>;
-  if (error) return <div className="text-center mt-6 text-red-500">{error}</div>;
+  if (loading) return <HomeyMealsLoader/>
+  if (error) return <NothingFound message="No Pending Items"/>;
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 min-h-[70vh]">
       <h2 className="text-2xl font-bold mb-4">Orders</h2>
       {orders.length === 0 ? (
         <div className="text-center mt-6">No orders found.</div>
@@ -120,6 +122,7 @@ const AssignRider = () => {
       <Modal
         show={!!selectedOrder} // Show modal if selectedOrder is not null
         onClose={() => setSelectedOrder(null)} // Close modal when clicking outside or on the close button
+        size="5xl"
       >
         <Modal.Header>Order Details</Modal.Header>
         <Modal.Body>

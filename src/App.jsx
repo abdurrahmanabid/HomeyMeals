@@ -12,9 +12,11 @@ import AboutUs from "./pages/AboutUs";
 import AddCategory from "./pages/Admin/AddCategory";
 import AllItems from "./pages/Admin/AllItems";
 import AllUser from "./pages/Admin/AllUser";
+import AssignRider from "./pages/Admin/AssignRider";
 import CategoryList from "./pages/Admin/CategoryList";
 import Dashboard from "./pages/Admin/Dashboard";
 import ItemTable from "./pages/Admin/ItemTable";
+import PendingOrderDetails from "./pages/Admin/PendingOrderDetail";
 import UserTable from "./pages/Admin/UserTable";
 import UserDetails from "./pages/Admin/userDetails";
 import Home from "./pages/Home";
@@ -40,8 +42,6 @@ import StudentMealDetails from "./pages/student/StudentsMealDetails";
 import StudentOrder from "./pages/student/StudentsOrder";
 import { admin, consumer, rider, seller } from "./store/navbarObject";
 import useAuth from "./utils/useAuth";
-import AssignRider from "./pages/Admin/AssignRider";
-import PendingOrderDetails from "./pages/Admin/PendingOrderDetail";
 
 function App() {
   const user = useAuth()
@@ -128,8 +128,11 @@ function App() {
               <Route path="add-category" element={<AddCategory />} />
               <Route path="about-us" element={<AboutUs />} />
               <Route path="assign-rider" element={<AssignRider />} />
-              <Route path="assign-rider/:id" element={<PendingOrderDetails/>} />
-
+              <Route
+                path="assign-rider/:id"
+                element={<PendingOrderDetails />}
+              />
+              <Route path="profile" element={<SellerProfileDetails />} />
             </Route>
           </Route>
 

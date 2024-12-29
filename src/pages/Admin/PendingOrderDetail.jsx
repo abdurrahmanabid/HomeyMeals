@@ -1,11 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import LocationDisplay from "../../components/LocationDisplay";
+import LocationDisplay from './../../components/LocationDisplay';
 
 const PendingOrderDetails = ({ order, fullAddress }) => {
   console.log("🚀 ~ PendingOrderDetails ~ order:", order)
   const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setPendingLoading] = useState(true);
   const [error, setError] = useState(null);
   const [address, setAddress] = useState(null);
   const [addressLoading, setAddressLoading] = useState(false);
@@ -16,24 +16,28 @@ const PendingOrderDetails = ({ order, fullAddress }) => {
     new Intl.NumberFormat("en-BD", { style: "currency", currency: "BDT" }).format(value);
 
   useEffect(() => {
+    
     const fetchUsersProfile = async () => {
       if (!order?.sellerId?._id) {
         console.log("Seller ID not available.");
-        setLoading(false);
         return; // Exit early if seller ID is not available
       }
       try {
         const response = await axios.get(`http://localhost:8000/api/profile/get/${order.sellerId._id}`);
         console.log("Profile fetched:", response.data?.profile); // Check the response
         setProfile(response.data?.profile);
-        setLoading(false);
+        setPendingLoading(false);
       } catch (err) {
         console.error("Error fetching profile:", err); // Log error
         setError("Failed to fetch profile.");
-        setLoading(false);
+        setPendingLoading(false);
+      }finally{
+        setPendingLoading(false);
       }
     };
-    fetchUsersProfile();
+    if (order) {
+      fetchUsersProfile();
+    }
   }, [order?.sellerId._id,]);
 
 
@@ -79,8 +83,8 @@ const PendingOrderDetails = ({ order, fullAddress }) => {
           <p><strong>Email:</strong> {order.sellerId.email || "N/A"}</p>
           <p><strong>Phone:</strong> {order.sellerId.phone || "N/A"}</p>
           <p><strong>Address:</strong> <LocationDisplay
-                lat={profile.profile.lat}
-                lng={profile.profile.lng}
+                lat={profile.lat}
+                lng={profile.lng}
               /></p>
         </div>
       )}
