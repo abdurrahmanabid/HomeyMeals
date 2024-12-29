@@ -267,7 +267,9 @@ const StudentOrder = () => {
                 <div className="flex justify-between items-center mt-4">
                   {order.status === "canceled" ||
                   order.status === "in_progress" ||
-                  order.status === "pending" ? null : (
+                  order.status === "pending" ||
+                  order.status === "cancelled_by_rider" ||
+                  order.status === "completed" ? null : (
                     <Button
                       color="gray"
                       size="sm"
