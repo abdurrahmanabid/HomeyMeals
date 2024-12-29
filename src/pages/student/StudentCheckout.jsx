@@ -162,6 +162,23 @@ const StudentCheckout = () => {
             text: `${selectedProduct.name} ordered successfully!`,
           });
         });
+        const notificationRes = await axios.post(
+          `http://localhost:8000/api/notification/add-notification`,
+          {
+            userId: id,
+            title: "Order Placed",
+            message: `You have successfully placed an order for ${selectedProduct.name}`,
+          }
+        );
+        const sellerNotification = await axios.post(
+          `http://localhost:8000/api/notification/add-notification`,
+          {
+            userId: selectedProduct.sellerId,
+            title: "New Order",
+            message: `You have received a new order for ${selectedProduct.name}.`,
+          }
+        );
+        console.log("🚀 ~ handleSubmit ~ notificationRes:", notificationRes)
 
       if (currentOrderIndex < items.length - 1) {
         setCurrentOrderIndex((prev) => prev + 1);

@@ -19,11 +19,11 @@ import UserTable from "./pages/Admin/UserTable";
 import UserDetails from "./pages/Admin/userDetails";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
+import Notification from "./pages/Notification";
 import { TermsAndConditions } from "./pages/TermsAndConditions";
 import RiderCurrentDElivery from "./pages/rider/RiderCurrentDelivery";
 import RiderDashboard from "./pages/rider/RiderDashboard";
 import RiderDelivery from "./pages/rider/RiderDelivery";
-import RideerNotification from "./pages/rider/RiderNotification";
 import RiderProfileDetails from "./pages/rider/RiderProfileDetails";
 import AddItem from "./pages/seller/AddItem";
 import SellerDashboard from "./pages/seller/SellerDashboard";
@@ -73,6 +73,7 @@ function App() {
               <Route path="profile" element={<SellerProfileDetails />} />
               <Route path="my-items" element={<SellerItems />} />
               <Route path="about-us" element={<AboutUs />} />
+              <Route path="notification" element={<Notification />} />
             </Route>
           </Route>
 
@@ -94,6 +95,7 @@ function App() {
               <Route path="profile" element={<StudentProfileDetails />} />
               <Route path="cart" element={<StudentCart />} />
               <Route path="about-us" element={<AboutUs />} />
+              <Route path="notification" element={<Notification />} />
             </Route>
           </Route>
 
@@ -104,7 +106,7 @@ function App() {
               <Route path="" element={<Home />} />
               <Route path="dashboard" element={<RiderDashboard />} />
               <Route path="delivery" element={<RiderDelivery />} />
-              <Route path="notification" element={<RideerNotification />} />
+              <Route path="notification" element={<Notification />} />
               <Route path="meal/:mealId" element={<StudentMealDetails />} />
               <Route path="profile" element={<RiderProfileDetails />} />
               <Route

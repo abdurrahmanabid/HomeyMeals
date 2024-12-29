@@ -100,11 +100,12 @@ const RiderDelivery = () => {
     fetchOrders();
   }, []);
 
-  const handleAcceptOrder = async (orderId) => {
+  const handleAcceptOrder = async (order) => {
+    console.log("🚀 ~ handleAcceptOrder ~ order:", order)
     try {
       // Add your API call here
       await axios.put(
-        `http://localhost:8000/api/order/update-order/${orderId}`,
+        `http://localhost:8000/api/order/update-order/${order._id}`,
         {
           status: "accepted_by_rider",
         }
@@ -115,6 +116,23 @@ const RiderDelivery = () => {
         text: "Order accepted successfully",
       });
       // Refresh orders after successful acceptance
+      
+      const studentNotification = await axios.post(
+        `http://localhost:8000/api/notification/add-notification`,
+        {
+          userId: order.studentId._id,
+          title: "Delivery On the Way",
+          message: `Hi ${order.studentId.fullName}, Your order has been successfully accepted by ${order.riderId.fullName}.`,
+        }
+      );
+      const sellerNotification = await axios.post(
+        `http://localhost:8000/api/notification/add-notification`,
+        {
+          userId: order.sellerId._id,
+          title: "Rider Accepted",
+          message: `Hi ${order.sellerId.fullName}, Your order has been successfully accepted by seller ${order.riderId.fullName}.`,
+        }
+      );
       await fetchOrders();
     } catch (error) {
       Swal.fire({
@@ -143,6 +161,15 @@ const RiderDelivery = () => {
         text: "Order declined successfully",
       });
       // Refresh orders after successful decline
+      
+      await axios.post(
+        `http://localhost:8000/api/notification/add-notification`,
+        {
+          userId: id,
+          title: "Delivery canceled",
+          message: `You have successfully Decline Your order.`,
+        }
+      );
       await fetchOrders();
     } catch (error) {
       console.error("Error declining order:", error);
@@ -326,7 +353,7 @@ const RiderDelivery = () => {
                           </button>
                           <button
                             className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
-                            onClick={() => handleAcceptOrder(order._id)}
+                            onClick={() => handleAcceptOrder(order)}
                           >
                             <CheckCircle size={16} /> Accept
                           </button>

@@ -11,6 +11,10 @@ export const consumer = [
     name: "Cart",
     path: "./cart",
   },
+  {
+    name: "Notifications",
+    path: "./notification",
+  },
 ];
 export const seller = [
   {
@@ -28,6 +32,10 @@ export const seller = [
   {
     name: "My Items",
     path: "./my-items",
+  },
+  {
+    name: "Notifications",
+    path: "./notification",
   },
 ];
 export const rider = [

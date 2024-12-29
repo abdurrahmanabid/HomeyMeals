@@ -76,6 +76,22 @@ const StudentOrder = () => {
         title: "Success",
         text: "Order cancelled successfully",
       });
+      await axios.post(
+        `http://localhost:8000/api/notification/add-notification`,
+        {
+          userId: order.studentId,
+          title: "Cancel Meal",
+          message: `You have successfully Cancel Your order.`,
+        }
+      );
+      await axios.post(
+        `http://localhost:8000/api/notification/add-notification`,
+        {
+          userId: order.sellerId,
+          title: "Your Meal Cancelled",
+          message: `Hi ${order.sellerId.fullName}, Your meal has been cancelled by ${order.studentId.fullName}.`,
+        }
+      );
       window.location.reload();
     } catch (err) {
       console.error("Error cancelling order:", err);
