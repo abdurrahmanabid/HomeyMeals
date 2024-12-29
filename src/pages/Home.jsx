@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Banner from "../components/ConsumerHome/Banner";
-import ExploreMenu from "../components/ConsumerHome/ExploreMenu";
 import FeaturesCard from "../components/ConsumerHome/FeaturesCard";
 import HowToDeliver from "../components/ConsumerHome/HowToDelivery";
 import HowToOrder from "../components/ConsumerHome/HowtoOrder";
@@ -9,6 +8,7 @@ import HowToSell from "../components/ConsumerHome/HowToSell";
 import Review from "../components/ConsumerHome/Review";
 import Sector from "../components/Sector";
 import useAuth from "../utils/useAuth";
+import Category from "../components/ConsumerHome/Category";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -60,8 +60,8 @@ const Home = () => {
         </>
       )}
 
-      <Sector>Explore The Menu</Sector>
-      <ExploreMenu />
+      <Sector>Explore Category</Sector>
+      <Category />
       <Sector>What Customers Say About Us</Sector>
       <Review />
     </div>
