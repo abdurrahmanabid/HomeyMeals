@@ -169,7 +169,7 @@ const RiderCurrentDelivery = () => {
         title: "Order Completed",
         text: `You have successfully Complete Your order. You have earned ${orderDetails.deliveryFee} Taka`,
       }).then(() => {
-        navigate("/dashboard");
+        navigate("/Rider/dashboard");
       });
       const riderNotification = await axios.post(
         `http://localhost:8000/api/notification/add-notification`,
