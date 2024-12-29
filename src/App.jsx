@@ -40,6 +40,8 @@ import StudentMealDetails from "./pages/student/StudentsMealDetails";
 import StudentOrder from "./pages/student/StudentsOrder";
 import { admin, consumer, rider, seller } from "./store/navbarObject";
 import useAuth from "./utils/useAuth";
+import AssignRider from "./pages/Admin/AssignRider";
+import PendingOrderDetails from "./pages/Admin/PendingOrderDetail";
 
 function App() {
   const user = useAuth()
@@ -125,6 +127,9 @@ function App() {
               <Route path="category" element={<CategoryList />} />
               <Route path="add-category" element={<AddCategory />} />
               <Route path="about-us" element={<AboutUs />} />
+              <Route path="assign-rider" element={<AssignRider />} />
+              <Route path="assign-rider/:id" element={<PendingOrderDetails/>} />
+
             </Route>
           </Route>
 

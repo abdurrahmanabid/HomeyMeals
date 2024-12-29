@@ -28,7 +28,7 @@ const MeAsARider = () => {
           title: "Order Completed",
           text: `You have successfully Complete Your order.`,
         }).then(() => {
-          navigate("/dashboard");
+          navigate("/");
         });
       } catch (error) {
         console.error("Error:", error);
