@@ -98,3 +98,35 @@ exports.deleteRating = async (req, res) => {
       .json({ message: "Failed to delete rating", error: error.message });
   }
 };
+// Get Average Rating of a Meal
+exports.getAverageRatingByItemId = async (req, res) => {
+  try {
+    const { itemId } = req.params;
+
+    if (!itemId) {
+      return res.status(400).json({ message: "itemId is required." });
+    }
+
+    const ratings = await Rating.find({ itemId });
+
+    if (ratings.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No ratings found for this meal." });
+    }
+
+    const totalStars = ratings.reduce((acc, rating) => acc + rating.star, 0);
+    const averageRating = totalStars / ratings.length;
+
+    res.status(200).json({
+      itemId,
+      averageRating: averageRating.toFixed(2),
+      totalRatings: ratings.length,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to calculate average rating",
+      error: error.message,
+    });
+  }
+};

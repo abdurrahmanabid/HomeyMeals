@@ -15,6 +15,18 @@ const MealList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
+  const fetchRating = async (itemId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/rating/average-rating/${itemId}`
+      );
+      return parseFloat(response.data.averageRating) || 0;
+    } catch (err) {
+      console.error(`Error fetching rating for item ${itemId}:`, err);
+      return 0;
+    }
+  };
+
   useEffect(() => {
     const fetchMeals = async () => {
       try {
@@ -22,7 +34,19 @@ const MealList = () => {
           "http://localhost:8000/api/item/items"
         );
         const items = response.data || [];
-        setMeals(items);
+
+        // Fetch ratings for all meals
+        const mealsWithRatings = await Promise.all(
+          items.map(async (meal) => {
+            const rating = await fetchRating(meal._id);
+            return {
+              ...meal,
+              averageRating: rating,
+            };
+          })
+        );
+
+        setMeals(mealsWithRatings);
         const uniqueCategories = [
           "All",
           ...new Set(items.map((item) => item.category)),
@@ -138,7 +162,6 @@ const MealList = () => {
       ))}
 
       {Object.keys(groupedMeals).length === 0 && (
-        
         <NothingFound message="No meals found. Please try again later." />
       )}
     </div>

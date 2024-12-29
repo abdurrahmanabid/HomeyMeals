@@ -1,6 +1,22 @@
 import axios from "axios";
 import { Alert, Badge, Button, Card, Spinner } from "flowbite-react";
-import {Calendar,Info,Mail,MapPin,Minus,MoveDiagonal,Phone,Plus,Shield,ShoppingCart,Timer,Truck,User} from "lucide-react";
+import {
+  Calendar,
+  Info,
+  Mail,
+  MapPin,
+  Minus,
+  MoveDiagonal,
+  Phone,
+  Plus,
+  Shield,
+  ShoppingCart,
+  Soup,
+  Star,
+  Timer,
+  Truck,
+  User,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -39,10 +55,12 @@ const StudentMealDetails = () => {
   const { mealId } = useParams();
   const [meal, setMeal] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingR, setLoadingR] = useState(true);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
+  const [review, setReview] = useState();
   const user = useAuth();
 
   useEffect(() => {
@@ -52,12 +70,35 @@ const StudentMealDetails = () => {
         const response = await axios.get(
           `http://localhost:8000/api/item/get-item/${mealId}`
         );
+
         setMeal(response.data);
         console.log("🚀 ~ fetchMeal ~ response.data:", response.data);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to load meal details");
       } finally {
         setLoading(false);
+      }
+    };
+
+    fetchMeal();
+  }, [mealId]);
+
+  useEffect(() => {
+    const fetchMeal = async () => {
+      try {
+        setLoadingR(true);
+        const reviewResponse = await axios.get(
+          `http://localhost:8000/api/rating/item/${mealId}`
+        );
+        console.log(
+          "🚀 ~ fetchMeal ~ reviewResponse.data:",
+          reviewResponse.data.ratings
+        );
+        setReview(reviewResponse.data.ratings);
+      } catch (err) {
+        console.log("🚀 ~ fetchMeal ~ err:", err)
+      } finally {
+        setLoadingR(false);
       }
     };
 
@@ -98,55 +139,54 @@ const StudentMealDetails = () => {
     };
   };
 
-const handleAddToCart = () => {
-
-  if (!userProfile?.profile.lat || !userProfile || !userProfile?.profile) {
-    Swal.fire({
-      title: "Profile Required",
-      text: user ? "You need to complete your profile to add items to the cart." : "You need to login to add items to the cart." ,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: user?"Go to Profile":"Login",
-      cancelButtonText: "Cancel",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        user ? navigate("../profile") : navigate("/login");
-      }
-    });
-    return;
-  }
-
-  setAddingToCart(true);
-  try {
-    const { final } = calculatePrice();
-    new Promise((resolve) => setTimeout(resolve, 800));
-    const cart = {
-      mealId: mealId,
-      userId:user.id,
-      quantity,
-      totalPrice: final,
+  const handleAddToCart = () => {
+    if (!userProfile?.profile.lat || !userProfile || !userProfile?.profile) {
+      Swal.fire({
+        title: "Profile Required",
+        text: user
+          ? "You need to complete your profile to add items to the cart."
+          : "You need to login to add items to the cart.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: user ? "Go to Profile" : "Login",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          user ? navigate("../profile") : navigate("/login");
+        }
+      });
+      return;
     }
-    console.log("Added to cart:", cart);
-    const response =  axios.post('http://localhost:8000/api/cart/add', cart);
 
-    // Show success message
-    Swal.fire({
-      title: "Success",
-      text: "Item has been added to the cart successfully!",
-      icon: "success",
-      confirmButtonText: "OK",
-    });
-  } catch (err) {
-    setError("Failed to add item to cart");
-  } finally {
-    setAddingToCart(false);
-  }
-};
+    setAddingToCart(true);
+    try {
+      const { final } = calculatePrice();
+      new Promise((resolve) => setTimeout(resolve, 800));
+      const cart = {
+        mealId: mealId,
+        userId: user.id,
+        quantity,
+        totalPrice: final,
+      };
+      console.log("Added to cart:", cart);
+      const response = axios.post("http://localhost:8000/api/cart/add", cart);
 
-  if (loading) {
-    return (
-      <HomeyMealsLoader/>
-    );
+      // Show success message
+      Swal.fire({
+        title: "Success",
+        text: "Item has been added to the cart successfully!",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    } catch (err) {
+      setError("Failed to add item to cart");
+    } finally {
+      setAddingToCart(false);
+    }
+  };
+
+  if (loading || loadingR) {
+    return <HomeyMealsLoader />;
   }
 
   if (error) {
@@ -272,6 +312,60 @@ const handleAddToCart = () => {
                   />
                 </div>
               </div>
+            </Section>
+            <Section title="Product Rating" icon={Soup}>
+              {review?.length > 0 ? (
+                <div className="space-y-4">
+                  {review.map((reviewItem) => (
+                    <div
+                      key={reviewItem._id}
+                      className="flex items-start gap-4 p-4 border rounded-lg shadow-md bg-gray-50"
+                    >
+                      {/* Avatar Placeholder */}
+                      <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold uppercase">
+                        {reviewItem.studentId.fullName.charAt(0)}
+                      </div>
+
+                      {/* Review Details */}
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-lg font-semibold text-gray-800">
+                            {reviewItem.studentId.fullName}
+                          </h3>
+                          {/* Star Rating */}
+                          <div className="flex items-center gap-1 text-yellow-500">
+                            {Array.from({ length: 5 }, (_, index) => (
+                              <Star
+                                key={index}
+                                size={16}
+                                fill={
+                                  index < reviewItem.star
+                                    ? "currentColor"
+                                    : "none"
+                                }
+                                stroke="currentColor"
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {reviewItem.review}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center text-center p-6 bg-gray-50 border rounded-lg shadow-md">
+                  <Info size={32} className="text-gray-400 mb-2" />
+                  <h3 className="text-lg font-semibold text-gray-700">
+                    No Reviews Yet
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Be the first to leave a review and share your experience!
+                  </p>
+                </div>
+              )}
             </Section>
           </div>
 
