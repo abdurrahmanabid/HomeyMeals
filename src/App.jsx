@@ -12,9 +12,11 @@ import AboutUs from "./pages/AboutUs";
 import AddCategory from "./pages/Admin/AddCategory";
 import AllItems from "./pages/Admin/AllItems";
 import AllUser from "./pages/Admin/AllUser";
+import AssignRider from "./pages/Admin/AssignRider";
 import CategoryList from "./pages/Admin/CategoryList";
 import Dashboard from "./pages/Admin/Dashboard";
 import ItemTable from "./pages/Admin/ItemTable";
+import PendingOrderDetails from "./pages/Admin/PendingOrderDetail";
 import UserTable from "./pages/Admin/UserTable";
 import UserDetails from "./pages/Admin/userDetails";
 import Home from "./pages/Home";
@@ -127,6 +129,12 @@ function App() {
               <Route path="category" element={<CategoryList />} />
               <Route path="add-category" element={<AddCategory />} />
               <Route path="about-us" element={<AboutUs />} />
+              <Route path="assign-rider" element={<AssignRider />} />
+              <Route
+                path="assign-rider/:id"
+                element={<PendingOrderDetails />}
+              />
+              <Route path="profile" element={<SellerProfileDetails />} />
             </Route>
           </Route>
 

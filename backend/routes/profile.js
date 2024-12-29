@@ -4,6 +4,7 @@ const postProfileController = require("../controller/postProfileController");
 const multer = require("multer");
 const getProfileController = require("../controller/getProfileController");
 const updateProfileForMap = require("../controller/updateProfileForMap");
+const { getAllProfiles } = require("../controller/getAllProfiles");
 
 // Multer storage configuration
 const storage = multer.memoryStorage();
@@ -17,5 +18,6 @@ router.post(
 
 router.get("/get/:userId", getProfileController);
 router.put("/map/put/:userId", updateProfileForMap);
+router.get("/getAllProfiles", getAllProfiles);
 
 module.exports = router;
