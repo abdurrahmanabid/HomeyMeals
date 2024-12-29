@@ -24,6 +24,15 @@ const SetLocation = ({data}) => {
           `http://localhost:8000/api/profile/map/put/${user.id}`,locationData
         );
         data(location)
+        const notificationRes = await axios.post(
+          `http://localhost:8000/api/notification/add-notification`,
+          {
+            userId: user.id,
+            title: "Profile Set",
+            message:"You have successfully set your profile - HomeyMeals"
+          }
+        );
+        console.log("🚀 ~ handleSaveClick ~ notificationRes:", notificationRes)
         console.log("🚀 ~ handleSaveClick ~ res:", res)
       } catch (error) {
         console.error("Failed to add location:", error);

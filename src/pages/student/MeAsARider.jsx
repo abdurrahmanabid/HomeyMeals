@@ -28,8 +28,24 @@ const MeAsARider = () => {
           title: "Order Completed",
           text: `You have successfully Complete Your order.`,
         }).then(() => {
-          navigate("/dashboard");
+          navigate("/");
         });
+        const studentNotification = await axios.post(
+          `http://localhost:8000/api/notification/add-notification`,
+          {
+            userId: orderDetails.studentId._id,
+            title: "Delivery Completed",
+            message: `Hi ${orderDetails.studentId.fullName}, Your order has been successfully completed.`,
+          }
+        );
+        const sellerNotification = await axios.post(
+          `http://localhost:8000/api/notification/add-notification`,
+          {
+            userId: orderDetails.sellerId._id,
+            title: "Meal Delivered",
+            message: `Hi ${orderDetails.sellerId.fullName}, Your meal has been successfully delivered to ${orderDetails.studentId.fullName}.`,
+          }
+        );
       } catch (error) {
         console.error("Error:", error);
       } finally {

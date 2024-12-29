@@ -167,6 +167,33 @@ const RiderCurrentDelivery = () => {
       }).then(() => {
         navigate("/dashboard");
       });
+      const riderNotification = await axios.post(
+        `http://localhost:8000/api/notification/add-notification`,
+        {
+          userId: id,
+          title: "Delivery Completed",
+          message: `You have successfully Complete Your order. You have earned ${orderDetails.deliveryFee} Taka`,
+        }
+      );
+      console.log("🚀 ~ handleDelivered ~ riderNotification:", riderNotification)
+      const studentNotification = await axios.post(
+        `http://localhost:8000/api/notification/add-notification`,
+        {
+          userId: orderDetails.studentId._id,
+          title: "Delivery Completed",
+          message: `Hi ${orderDetails.studentId.fullName}, Your order has been successfully completed.`,
+        }
+      );
+      console.log("🚀 ~ handleDelivered ~ studentNotification:", studentNotification)
+      const sellerNotification = await axios.post(
+        `http://localhost:8000/api/notification/add-notification`,
+        {
+          userId: orderDetails.sellerId._id,
+          title: "Meal Delivered",
+          message: `Hi ${orderDetails.sellerId.fullName}, Your product has been successfully delivered.`,
+        }
+      );
+      console.log("🚀 ~ handleDelivered ~ sellerNotification:", sellerNotification)
     } catch (error) {
       console.error("Error:", error);
     } finally {
