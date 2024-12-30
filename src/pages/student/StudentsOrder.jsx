@@ -107,7 +107,7 @@ const StudentOrder = () => {
       });
     }
   };
-  const handleRateOrder =async({itemId,studentId,orderId}) => {
+  const handleRateOrder =async({itemId,studentId,orderId,sellerId}) => {
     console.log("🚀 ~ handleRateOrder ~ orderId,studentId:", itemId,studentId)
     console.log("🚀 ~ handleRateOrder ~ id:", id)
     try {
@@ -121,6 +121,14 @@ const StudentOrder = () => {
       `http://localhost:8000/api/order/update-order/${orderId}`,
       {
         review: "rated",
+      }
+    );
+    const notificationRes = await axios.post(
+      `http://localhost:8000/api/notification/add-notification`,
+      {
+        userId: sellerId,
+        title: "Order Rated",
+        message: ` Your order has been successfully rated  as ${rating} stars and review: ${feedback} on #${itemId} item.`,
       }
     );
     setRating(null)
@@ -324,6 +332,7 @@ const StudentOrder = () => {
                               orderId: order._id,
                               itemId: order.items[0].itemId,
                               studentId: order.studentId._id,
+                              sellerId : order.sellerId._id
                             });
                           }}
                         >
