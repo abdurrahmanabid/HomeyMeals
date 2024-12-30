@@ -42,6 +42,8 @@ import StudentMealDetails from "./pages/student/StudentsMealDetails";
 import StudentOrder from "./pages/student/StudentsOrder";
 import { admin, consumer, rider, seller } from "./store/navbarObject";
 import useAuth from "./utils/useAuth";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 
 function App() {
   const user = useAuth()
@@ -55,6 +57,8 @@ function App() {
             <Route path="/menu" element={<StudentMenu />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword/>} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route
               path="/terms-and-conditions"
               element={<TermsAndConditions />}
