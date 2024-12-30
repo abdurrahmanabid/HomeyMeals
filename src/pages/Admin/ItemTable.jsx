@@ -50,15 +50,32 @@ const ItemTable = () => {
   const handleStatusChange = async (newStatus) => {
     try {
       const updatedItem = { ...selectedItem, status: newStatus };
+  
+      // Update the item status in the database
       await axios.put(`http://localhost:8000/api/item/update-item/${selectedItem._id}`, updatedItem);
+  
+      // Update the local state
       setItems(items.map((item) => (item._id === selectedItem._id ? updatedItem : item)));
-      Swal.fire('Success!', 'Item status updated.', 'success');
+  
+      // Send a notification
+      await axios.post(
+        `http://localhost:8000/api/notification/add-notification`,
+        {
+          userId: selectedItem.sellerId,
+          title: "Item Status Update",
+          message: `Your item status has been updated to "${newStatus}" - HomeyMeals.`,
+        }
+      );
+  
+      // Show success message
+      Swal.fire('Success!', `Item status updated to "${newStatus}".`, 'success');
       handleCloseModal();
     } catch (error) {
       console.error('Error updating item status:', error);
       Swal.fire('Error!', 'Failed to update item status. Please try again.', 'error');
     }
   };
+  
 
   if (loading) {
     return (
