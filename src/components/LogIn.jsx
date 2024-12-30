@@ -167,6 +167,10 @@ export function Login() {
             <Link to="/register" className="text-cyan-600 hover:underline">
               Register here
             </Link>
+            <br/>
+            <Link to="/forgot-password" className="text-cyan-600 hover:underline">
+            Forgot Password
+            </Link>
           </p>
         </form>
         <div className="hidden lg:block">

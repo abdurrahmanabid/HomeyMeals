@@ -5,6 +5,7 @@ const registrationController = require("../controller/registrationController");
 const loginController = require("../controller/loginController");
 const deleteUserController = require("../controller/deleteUserRoutes");
 const emailVerificationController = require("../controller/emailVerificationController");
+const { forgotPassword, resetPassword } = require("../controller/forgatePasswardController");
 
 const router = express.Router();
 
@@ -29,6 +30,11 @@ router.get("/protected", (req, res) => {
 
 router.delete("/delete/:id", deleteUserController);
 router.get('/:email', emailVerificationController)
+
+router.post("/forgot-password", forgotPassword);
+
+// Reset Password route
+router.post("/reset-password/:token", resetPassword);
 
 // Logout
 router.post("/logout", (req, res) => {
